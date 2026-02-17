@@ -142,6 +142,49 @@ Setup: <steps>
 - <important note>
 ```
 
+## Template: Framework-Heavy Project
+
+For projects that heavily rely on framework APIs (especially post-training-cutoff versions):
+
+```markdown
+# <Project Name>
+
+<One-line description>. Tech stack: <framework vX.Y> + <language> + <db>.
+
+## Retrieval Directive
+
+Prefer retrieval-led reasoning over pre-training-led reasoning for <framework> tasks.
+Explore project structure first, then consult docs index for API details.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `<command>` | <description> |
+
+## Architecture
+
+<root>/
+  <dir>/    # <purpose>
+
+## [<Framework> Docs Index]
+
+|root: ./agent_docs/<framework>
+|<category>:{<file1>,<file2>}
+|<category>/<sub>:{<file1>,<file2>}
+
+## Post-Cutoff APIs Used
+
+| API | Docs | Notes |
+|-----|------|-------|
+| `<api>` | `agent_docs/<path>` | <usage context in this project> |
+
+## Gotchas
+
+- <gotcha>
+- Run `/optimize-context` when this file feels outdated
+```
+
 ## File Types & Locations
 
 | Type | Location | Purpose |
@@ -171,3 +214,17 @@ Claude auto-discovers CLAUDE.md files in parent directories.
 - One-off fixes unlikely to recur
 - Verbose explanations when a one-liner suffices
 - Standard language/framework behavior Claude already knows
+- Content that doesn't change agent behavior (noise — may distract)
+
+## Passive Context vs Skills
+
+From Vercel research: agents ignored available skills 56% of the time.
+
+| Use Case | Approach |
+| --- | --- |
+| General framework knowledge | **Passive** — embed in CLAUDE.md as docs index |
+| Project conventions & architecture | **Passive** — always available, no invocation needed |
+| Action-specific workflows (migrations, upgrades) | **Skills** — user-triggered, specific workflow |
+| One-time operations (scaffolding, code generation) | **Skills** — explicit invocation makes sense |
+
+**Rule:** If the agent needs this info on every task → passive context. If only for specific user-triggered actions → skill.

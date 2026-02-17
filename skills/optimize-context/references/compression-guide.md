@@ -43,13 +43,26 @@ Key patterns: REST + JSON, auth via Bearer token, pagination via cursor.
 
 ### 3. Pipe-Delimited Indexes
 
-For large documentation sets, use compressed indexes:
+For large documentation sets, use compressed indexes matching the Vercel format:
 
 ```text
-[Docs Index]|root: ./agent_docs
-|api/|endpoints.md,auth.md,errors.md
-|models/|user.md,order.md,product.md
+[Next.js Docs Index]|root: ./.next-docs
+|IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for Next.js tasks.
+|01-app/01-getting-started:{01-installation.mdx,02-project-structure.mdx}
+|01-app/02-building-your-application/01-routing:{01-defining-routes.mdx,02-pages.mdx,03-layouts-and-templates.mdx}
+|01-app/02-building-your-application/04-caching:{01-overview.mdx,02-data-cache.mdx}
 ```
+
+Generic format for any framework:
+
+```text
+[<Framework> Docs Index]|root: ./<docs-dir>
+|IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for <framework> tasks.
+|<category>/{<file1>,<file2>,...}
+|<category>/<subcategory>:{<file1>,<file2>,...}
+```
+
+Key: embed the retrieval directive directly inside the index, not as a separate section.
 
 ### 4. One-Liner Patterns
 
@@ -89,7 +102,35 @@ Claude knows standard framework patterns **up to its training cutoff**. Prioriti
 
 **Rule:** If Claude would get it right without docs → remove. If Claude would guess wrong → document thoroughly.
 
-### 7. Deduplication
+### 7. Novel Content Identification
+
+Determine what the model knows vs. what it needs to be told:
+
+1. **Detect framework version** — check `package.json`, lockfiles, configs
+2. **Compare to training cutoff** — Claude's cutoff: May 2025. APIs released after this need full documentation
+3. **Categorize content:**
+
+| Category | Action | Example |
+| --- | --- | --- |
+| Post-cutoff APIs | Document in detail with usage examples | Next.js 16: `connection()`, `'use cache'`, `cacheLife()` |
+| Custom/internal APIs | Document thoroughly — model has zero knowledge | Your `createServiceClient()` wrapper |
+| Non-default configs | Keep as one-liners | Custom Webpack config, non-standard tsconfig |
+| Standard framework behavior | Compress to minimal or remove | Express middleware ordering, React useState |
+| Common language syntax | Delete entirely | JavaScript async/await, Python list comprehensions |
+
+**Rule:** If the model would get it right without docs → remove. If it would guess wrong → document thoroughly.
+
+### 8. Noise Reduction
+
+Vercel found that irrelevant context can actively hurt agent performance ("unused skill may introduce noise or distraction"). Apply the same principle to CLAUDE.md:
+
+- **Remove** generic best practices (e.g. "write tests", "use meaningful names")
+- **Remove** obvious framework defaults the model already knows
+- **Remove** duplicate information that appears in multiple places
+- **Remove** verbose explanations when a one-liner suffices
+- **Keep only** content that changes agent behavior — if removing a line wouldn't change the agent's output, remove it
+
+### 9. Deduplication
 
 | Situation | Action |
 | --- | --- |
@@ -140,16 +181,26 @@ Key decisions: `agent_docs/adr/` (read specific ADR when relevant)
 
 ### Framework Docs Index Automation
 
-If project uses a framework with an official docs index tool, recommend it:
+**Step 1: Check for official tools**
 
 | Framework | Command | What it does |
 | --- | --- | --- |
-| Next.js | `npx @next/codemod@canary agents-md` | Downloads matching docs → `.next-docs/`, injects index into AGENTS.md |
+| Next.js | `npx @next/codemod@canary agents-md` | Downloads version-matched docs → `.next-docs/`, injects pipe-delimited index |
 
-For frameworks without official tools:
+**Step 2: If no official tool, generate manually**
 
-- Auto-generate pipe-delimited index from `agent_docs/` or project docs
-- Use context7 MCP (`resolve-library-id` → `query-docs`) for current framework docs
+1. **Fetch docs** — use context7 MCP (`resolve-library-id` → `query-docs`) to get current framework docs for the project's version
+2. **Store locally** — save to `agent_docs/<framework>/` or `.docs/`
+3. **Generate index** — create pipe-delimited index pointing to local files:
+   ```text
+   [<Framework> Docs Index]|root: ./agent_docs/<framework>
+   |IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for <framework> tasks.
+   |<category>:{<file1>,<file2>}
+   ```
+4. **Inject into CLAUDE.md** — add the index block, not the full docs
+5. **Focus on post-cutoff** — prioritize indexing docs for APIs released after training cutoff
+
+**Step 3: Verify retrievability** — agent should be able to find and read specific docs from the index
 
 ## Verification Checklist
 

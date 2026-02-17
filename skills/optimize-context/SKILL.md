@@ -7,9 +7,18 @@ description: |
 # /optimize-context
 
 Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness.
-Passive context (CLAUDE.md) achieves 100% agent pass rate vs 79% for skills-based approaches,
-and well-compressed context (8KB) performs identically to verbose (40KB).
-See [Vercel research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals).
+
+**Why passive context wins** ([Vercel research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)):
+
+| Configuration | Pass Rate |
+| --- | --- |
+| Baseline (no docs) | 53% |
+| Skills (default) | 53% — agents ignored skills 56% of the time |
+| Skills (with explicit instructions) | 79% |
+| **AGENTS.md docs index** | **100%** |
+
+Compressed context (8KB) performs identically to verbose (40KB).
+Passive context wins because: (1) no decision point about when to retrieve, (2) consistent availability every turn, (3) no sequencing issues.
 
 ## Workflow
 
@@ -50,6 +59,15 @@ Also list `agent_docs/` and `.claude/rules/` (if any) for deduplication checks.
 
 Detect framework: check `package.json`, `requirements.txt`, `go.mod`, etc. If official docs index tool exists (e.g. `npx @next/codemod@canary agents-md`), recommend it.
 
+**Novel content detection:**
+
+1. Identify framework + version from lockfiles/configs
+2. Compare against model training cutoff (Claude: May 2025)
+3. List APIs/features that are post-cutoff → these need detailed documentation
+4. List well-known patterns within training data → candidates for compression/removal
+
+Example post-cutoff APIs (Next.js 16): `connection()`, `'use cache'`, `cacheLife()`, `cacheTag()`, `forbidden()`, `unauthorized()`, `proxy.ts`, async `cookies()`/`headers()`, `after()`, `updateTag()`, `refresh()`
+
 **No CLAUDE.md found?** → Create one using the appropriate template from [references/templates.md](references/templates.md), then continue to phase 2.
 
 ### 2. Quality Assessment
@@ -60,12 +78,14 @@ Quick checklist:
 
 | Criterion | Weight | Check |
 | --- | --- | --- |
-| Commands/workflows | 20 | Build/test/deploy present and copy-paste ready? |
-| Architecture clarity | 20 | Can Claude understand codebase structure? |
-| Non-obvious patterns | 15 | Gotchas and quirks documented? |
-| Conciseness | 15 | No verbose explanations or obvious info? |
-| Currency | 15 | Reflects current codebase state? |
-| Actionability | 15 | Instructions executable, not vague? |
+| Commands/workflows | 15 | Build/test/deploy present and copy-paste ready? |
+| Architecture clarity | 15 | Can Claude understand codebase structure? |
+| Retrieval readiness | 15 | Has retrieval directive, docs index, explore-first wording? |
+| Conciseness | 15 | No verbose explanations, no noise, no obvious info? |
+| Non-obvious patterns | 10 | Gotchas and quirks documented? |
+| Novel content coverage | 10 | Post-cutoff APIs detailed, known patterns removed? |
+| Currency | 10 | Reflects current codebase state? |
+| Actionability | 10 | Instructions executable, not vague? |
 
 Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29).
 
@@ -82,8 +102,10 @@ Check CLAUDE.md against codebase reality:
 | Redundant | Duplicated with agent_docs or .claude/rules |
 | Outdated | Code examples not matching current codebase |
 | Oversized | Verbose sections compressible via tables/one-liners |
+| Noise | Content that doesn't aid agent decision-making and may distract (generic advice, obvious patterns, well-known framework defaults) |
+| Missing retrieval | Framework project lacks retrieval directive or docs index |
 
-Categorize as `Stale (must fix)`, `Gaps (must add)`, `Redundant (can reduce)`, `OK`.
+Categorize as `Stale (must fix)`, `Gaps (must add)`, `Redundant (can reduce)`, `Noise (should remove)`, `OK`.
 
 **Gate:** User confirms report before proceeding.
 
@@ -111,12 +133,19 @@ Show each change with reason and size impact before applying.
 1. Edit CLAUDE.md files using Edit tool
 2. Verify size: `wc -c` each file
 3. Verify all sections still intact
-4. **Eval-based validation:**
+4. **Command & path validation:**
    - Run 2-3 commands documented in CLAUDE.md → confirm they still work
    - Verify file paths referenced → `ls` each critical path
+5. **Retrieval & wording validation:**
    - Check retrieval directive present (if project uses a framework)
    - Confirm wording uses explore-first framing (not absolute "MUST" directives)
-5. Re-score to confirm improvement
+   - Verify docs index points to files that exist and are retrievable
+6. **Behavior-based eval** (for framework projects with post-cutoff APIs):
+   - Pick 2-3 post-cutoff APIs documented in CLAUDE.md
+   - Ask: "Can the agent find the right docs file for this API from the index?"
+   - Verify the index entry leads to correct, readable documentation
+   - If project has no post-cutoff APIs, verify novel project patterns are documented instead
+7. Re-score to confirm improvement
 
 Report: `Score: XX → XX | Fixed N stale | Added N gaps | Removed N redundant | Size: XX KB → XX KB`
 
@@ -129,12 +158,14 @@ Report: `Score: XX → XX | Fixed N stale | Added N gaps | Removed N redundant |
 
 | Criterion | Score | Issue |
 | --- | --- | --- |
-| Commands | 15/20 | Missing deploy command |
-| Architecture | 10/20 | No module relationships |
-| Non-obvious | 12/15 | — |
-| Conciseness | 5/15 | 3 verbose sections |
-| Currency | 10/15 | `src/legacy/` no longer exists |
-| Actionability | 10/15 | Vague "see docs" references |
+| Commands | 12/15 | Missing deploy command |
+| Architecture | 8/15 | No module relationships |
+| Retrieval readiness | 0/15 | No retrieval directive or docs index |
+| Conciseness | 5/15 | 3 verbose sections + noise |
+| Non-obvious | 8/10 | — |
+| Novel content | 3/10 | Post-cutoff APIs not identified |
+| Currency | 7/10 | `src/legacy/` no longer exists |
+| Actionability | 7/10 | Vague "see docs" references |
 
 ### Findings
 
@@ -157,4 +188,6 @@ Report: `Score: XX → XX | Fixed N stale | Added N gaps | Removed N redundant |
 - **Retrieval over pre-training** — Ensure CLAUDE.md includes retrieval directive for framework projects
 - **Explore-first wording** — Use "Prefer X" / "Check project first" over "You MUST" directives
 - **Prioritize novel content** — APIs/patterns outside training data get more space than well-known ones
+- **Noise reduction** — Remove content that doesn't aid decision-making; unused/irrelevant context may distract the agent (Vercel: skills ignored 56% of the time when not relevant)
+- **Passive over active** — For general framework knowledge, embed in CLAUDE.md (passive) rather than relying on skills (active retrieval). Skills are best for action-specific workflows users explicitly trigger
 - **Self-invocation** — Recommend adding staleness reminder in CLAUDE.md (e.g. "Run `/optimize-context` when CLAUDE.md feels outdated")

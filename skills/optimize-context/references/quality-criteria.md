@@ -4,45 +4,56 @@
 
 | Criterion | Weight | What to check |
 | --- | --- | --- |
-| Commands/workflows | 20 | Build, test, lint, deploy commands present and copy-paste ready |
-| Architecture clarity | 20 | Key directories, module relationships, entry points documented |
-| Non-obvious patterns | 15 | Gotchas, quirks, workarounds, "why we do it this way" |
-| Conciseness | 15 | No filler, no obvious info, each line adds value |
-| Currency | 15 | Commands work, file references accurate, tech stack current |
-| Actionability | 15 | Instructions executable, paths real, steps concrete |
+| Commands/workflows | 15 | Build, test, lint, deploy commands present and copy-paste ready |
+| Architecture clarity | 15 | Key directories, module relationships, entry points documented |
+| Retrieval readiness | 15 | Retrieval directive present, docs index for framework projects, explore-first wording |
+| Conciseness | 15 | No filler, no obvious info, no noise, each line adds value |
+| Non-obvious patterns | 10 | Gotchas, quirks, workarounds, "why we do it this way" |
+| Novel content coverage | 10 | Post-cutoff APIs documented in detail, well-known patterns compressed/removed |
+| Currency | 10 | Commands work, file references accurate, tech stack current |
+| Actionability | 10 | Instructions executable, paths real, steps concrete |
 
 ## Score Breakdown
 
-**20/20 Commands:** All essential commands with context, dev workflow clear
-**15/20:** Most commands present, some missing context
-**10/20:** Basic commands only, no workflow
-**5/20:** Few commands, many missing
-**0/20:** No commands
+**15/15 Commands:** All essential commands with context, dev workflow clear
+**10/15:** Most commands present, some missing context
+**5/15:** Basic commands only, no workflow
+**0/15:** No commands
 
-**20/20 Architecture:** Key dirs explained, module relationships, entry points, data flow
-**15/20:** Good overview, minor gaps
-**10/20:** Basic directory listing only
-**0/20:** No architecture info
+**15/15 Architecture:** Key dirs explained, module relationships, entry points, data flow
+**10/15:** Good overview, minor gaps
+**5/15:** Basic directory listing only
+**0/15:** No architecture info
 
-**15/15 Non-obvious:** Gotchas captured, workarounds, edge cases, unusual pattern reasons
-**10/15:** Some patterns documented
-**5/15:** Minimal
-**0/15:** None
+**15/15 Retrieval readiness:** Has retrieval directive ("Prefer retrieval-led reasoning..."), docs index pointing to retrievable files, explore-first wording throughout
+**10/15:** Has retrieval directive but no docs index, or uses some "MUST" directives
+**5/15:** Partial retrieval guidance, mostly invoke-first wording
+**0/15:** No retrieval guidance, full docs embedded inline, or absolute directives only
 
-**15/15 Conciseness:** Dense valuable content, no redundancy with code (exclude auto-generated sections like `<claude-mem-context>` from size measurement)
-**10/15:** Mostly concise, some padding
-**5/15:** Verbose in places
-**0/15:** Mostly filler
+**15/15 Conciseness:** Dense valuable content, no noise, no redundancy (exclude auto-generated sections like `<claude-mem-context>` from size measurement)
+**10/15:** Mostly concise, some padding or noise
+**5/15:** Verbose in places, generic advice present
+**0/15:** Mostly filler or noise
 
-**15/15 Currency:** Reflects current codebase, commands work, refs accurate
-**10/15:** Mostly current, minor staleness
-**5/15:** Several outdated references
-**0/15:** Severely outdated
+**10/10 Non-obvious:** Gotchas captured, workarounds, edge cases, unusual pattern reasons
+**7/10:** Some patterns documented
+**3/10:** Minimal
+**0/10:** None
 
-**15/15 Actionability:** Copy-paste ready, concrete steps, real paths
-**10/15:** Mostly actionable
-**5/15:** Some vague instructions
-**0/15:** Theoretical
+**10/10 Novel content:** Post-cutoff APIs documented in detail with examples, well-known patterns compressed or removed. Custom/internal APIs thoroughly documented
+**7/10:** Some novel content identified, but incomplete coverage
+**3/10:** Treats all content equally regardless of novelty
+**0/10:** Only documents well-known patterns, misses post-cutoff or custom APIs
+
+**10/10 Currency:** Reflects current codebase, commands work, refs accurate
+**7/10:** Mostly current, minor staleness
+**3/10:** Several outdated references
+**0/10:** Severely outdated
+
+**10/10 Actionability:** Copy-paste ready, concrete steps, real paths
+**7/10:** Mostly actionable
+**3/10:** Some vague instructions
+**0/10:** Theoretical
 
 ## Grades
 
@@ -64,27 +75,26 @@
 - "TODO" items never completed
 - Duplicate info across multiple CLAUDE.md files
 
-## Vercel-Aligned Checks
+## Vercel-Aligned Quick Checks
 
-In addition to the rubric, verify these patterns from Vercel research:
+These patterns are now scored within the main rubric (Retrieval readiness + Novel content criteria). Use this as a quick pass/fail checklist:
 
 | Check | Pass | Fail |
 | --- | --- | --- |
-| Retrieval directive | Has "Prefer retrieval-led reasoning" or equivalent for framework projects | No retrieval guidance |
-| Wording style | Uses explore-first / "Prefer X" framing | Uses absolute "MUST" directives that cause tunnel vision |
-| Novel content priority | Post-training-cutoff APIs documented in detail | Equal space for obvious and novel content |
-| Self-invocation hint | Has reminder to run `/optimize-context` when stale | No maintenance guidance |
-| Framework docs index | Has pointer to docs/ or retrieval index (if framework project) | Full docs embedded inline |
-
-These checks don't add to the 100-point score but are reported as bonus flags: `✅ Vercel-aligned` or `⚠️ Missing Vercel patterns`.
+| Retrieval directive | Has "Prefer retrieval-led reasoning" or equivalent | No retrieval guidance |
+| Wording style | Explore-first / "Prefer X" framing | Absolute "MUST" → causes tunnel vision |
+| Novel content | Post-cutoff APIs detailed, known patterns compressed | Equal space for all content |
+| Docs index | Pointer to retrievable docs (if framework project) | Full docs embedded inline |
+| Self-invocation | Reminder to run `/optimize-context` when stale | No maintenance guidance |
+| Noise-free | No generic advice, no obvious patterns | Filler content that may distract agent |
 
 ## Assessment Process
 
 1. Read CLAUDE.md completely
-2. Cross-reference with actual codebase (check files exist, commands work)
-3. Score each criterion (100-point rubric)
-4. Run Vercel-aligned checks (bonus flags)
-5. **Eval-based validation:** Run 2-3 documented commands, verify file paths exist
-6. Calculate total, assign grade
-7. List specific issues + Vercel alignment status
-8. Propose concrete improvements
+2. Detect framework + version, identify post-cutoff APIs
+3. Cross-reference with actual codebase (check files exist, commands work)
+4. Score each criterion (100-point rubric — Vercel patterns integrated)
+5. Run quick checks (retrieval, wording, noise, docs index)
+6. **Eval-based validation:** Run 2-3 commands, verify paths, test docs index retrievability
+7. Calculate total, assign grade
+8. List specific issues with improvement suggestions
