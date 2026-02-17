@@ -154,7 +154,7 @@ Report: `Score: XX → XX | Fixed N stale | Added N gaps | Removed N redundant |
 ```markdown
 ## Audit Report
 
-### ./CLAUDE.md — Score: 62/100 (Grade C) | Size: 18.2 KB
+### ./CLAUDE.md — Score: 50/100 (Grade C) | Size: 18.2 KB
 
 | Criterion | Score | Issue |
 | --- | --- | --- |
