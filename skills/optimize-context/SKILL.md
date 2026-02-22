@@ -154,7 +154,7 @@ The Status column is **mandatory** — compare each score against the minimum th
 
 ### 3. Audit
 
-Check CLAUDE.md against codebase reality:
+Audit each section deeply — trace references to actual codebase files, verify commands by running them, cross-reference architecture claims against real directory structure. Surface-level checks are insufficient.
 
 | Check | What to look for |
 | --- | --- |
@@ -184,6 +184,8 @@ For templates by project type: [references/templates.md](references/templates.md
 
 **Size targets:** <8KB optimal, 8-15KB acceptable, >15KB needs compression.
 **Size measurement:** Exclude auto-generated sections (`<claude-mem-context>`, plugin-injected blocks) from byte count — score only human-authored content.
+
+**Persistent artifact:** Write the full audit report + proposed changes table to `.claude/optimize-context-report.md`. This file survives context compression in long sessions — if context is compacted mid-run, re-read this file to resume.
 
 **Output format** (must show before editing):
 
@@ -241,6 +243,11 @@ Proceed directly to phase 5 after outputting the proposed changes table.
 
 Every row must have an actual result — do NOT skip rows or mark as N/A without explanation.
 
+**If verification fails** (commands broken, paths missing, score decreased):
+1. Revert the edit (`git checkout` the file)
+2. Return to Phase 4 — re-scope the changes that caused failure
+3. Do NOT incrementally patch — revert and re-apply cleanly
+
 Report: `Score: XX → XX | Fixed N stale | Added N gaps | Removed N redundant | Size: XX KB → XX KB`
 
 **Example output (phases 2-3):**
@@ -286,4 +293,5 @@ Critical check: FAIL ⚠️ — Architecture at 8/15 (min 10), Retrieval readine
 - **Prioritize novel content** — APIs/patterns outside training data get more space than well-known ones
 - **Noise reduction** — Remove content that doesn't aid decision-making; unused/irrelevant context may distract the agent (Vercel: skills ignored 56% of the time when not relevant)
 - **Passive over active** — For general framework knowledge, embed in CLAUDE.md (passive) rather than relying on skills (active retrieval). Skills are best for action-specific workflows users explicitly trigger
+- **Persistent artifacts** — Write audit report to `.claude/optimize-context-report.md` so findings survive context compression in long sessions
 - **Self-invocation** — Recommend adding staleness reminder in CLAUDE.md (e.g. "Run `/optimize-context` when CLAUDE.md feels outdated")
