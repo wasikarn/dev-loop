@@ -185,13 +185,13 @@ Key decisions: `agent_docs/adr/` (read specific ADR when relevant)
 
 ### Framework Docs Index Automation
 
-**Step 1: Check for official tools**
+#### Step 1: Check for official tools
 
 | Framework | Command | What it does |
 | --- | --- | --- |
 | Next.js | `npx @next/codemod@canary agents-md` | Downloads version-matched docs → `.next-docs/`, injects pipe-delimited index |
 
-**Step 2: If no official tool, generate manually**
+#### Step 2: If no official tool, generate manually
 
 1. **Fetch docs** — use context7 MCP (`resolve-library-id` → `query-docs`) to get current framework docs for the project's version
 2. **Store locally** — save to `agent_docs/<framework>/` or `.docs/`

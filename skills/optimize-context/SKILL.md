@@ -244,6 +244,7 @@ Proceed directly to phase 5 after outputting the proposed changes table.
 Every row must have an actual result — do NOT skip rows or mark as N/A without explanation.
 
 **If verification fails** (commands broken, paths missing, score decreased):
+
 1. Revert the edit (`git checkout` the file)
 2. Return to Phase 4 — re-scope the changes that caused failure
 3. Do NOT incrementally patch — revert and re-apply cleanly
