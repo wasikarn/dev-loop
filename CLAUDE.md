@@ -6,16 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A collection of Claude Code skills (custom slash commands). Each skill is a self-contained prompt workflow installed into Claude Code via the skills system.
 
+## Docs Index
+
+Prefer reading source before editing — key references:
+
+| Reference | Contents |
+| --- | --- |
+| [`references/skills-best-practices.md`](references/skills-best-practices.md) | Full frontmatter spec, description rules, substitutions (`$0`/`$1`/`!`), context budget |
+| `skills/<name>/references/checklist.md` | Per-skill review criteria with severity markers (review-pr skills) |
+| `skills/<name>/references/examples.md` | Per-skill ✅/❌ code examples for all 12 rules (review-pr skills) |
+
 ## Skill Structure
 
 Each skill lives at `skills/<skill-name>/` with this layout:
 
 ```text
 skills/<name>/
-  SKILL.md          # Main entry point — required
-  references/       # Supporting docs referenced from SKILL.md
-  assets/           # Static assets
-  scripts/          # Helper scripts
+  SKILL.md          # Agent entry point — required; loaded when skill is invoked
+  CLAUDE.md         # Contributor context — read by Claude when editing this repo
+  references/       # Supporting docs loaded into agent context from SKILL.md
+  assets/           # Static assets (templates, boilerplate)
+  scripts/          # Helper scripts referenced from SKILL.md or CLAUDE.md
 ```
 
 ### SKILL.md Frontmatter
@@ -71,3 +82,20 @@ Validate commands per project:
 4. Keep `description:` trigger-complete (what + when + keywords) — max 1024 chars
 5. Use `disable-model-invocation: true` for side-effect skills (deploy, PR review)
 6. Install symlink: `bash scripts/link-skill.sh <name>` (or `--list` to check, no args to link all)
+7. Lint: `npx markdownlint-cli2 "skills/<name>/**/*.md"` — pre-commit hook auto-fixes staged `.md` files
+
+## Repo Commands
+
+| Task | Command |
+| --- | --- |
+| Lint all markdown | `npx markdownlint-cli2 "skills/**/*.md"` |
+| Link new skill | `bash scripts/link-skill.sh <name>` |
+| Link all skills | `bash scripts/link-skill.sh` |
+| Check all links | `bash scripts/link-skill.sh --list` |
+
+## Gotchas
+
+- `context: fork` in SKILL.md frontmatter — works in PR review skills but attribute is officially unsupported; don't add to new skills without testing
+- Pre-commit hook auto-fixes staged `.md` files — runs `scripts/fix-tables.py` + `markdownlint-cli2 --fix`; no manual fix needed before commit
+- `disable-model-invocation: true` removes description from context entirely (skill never auto-triggers); `user-invocable: false` hides from menu but keeps context — different effects
+- Run `/optimize-context` when this file feels stale
