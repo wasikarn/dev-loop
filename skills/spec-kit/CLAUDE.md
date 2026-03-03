@@ -50,5 +50,4 @@ ls -la ~/.claude/skills/spec-kit
 
 ## Gotchas
 
-- This CLAUDE.md is **gitignored** (`**/CLAUDE.md` in root `.gitignore`) — local context only, not committed
-- SKILL.md and references/ ARE tracked by git — changes there are shared
+- This CLAUDE.md is **tracked in git** — changes here are shared with the team

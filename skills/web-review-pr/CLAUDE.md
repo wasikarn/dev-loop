@@ -37,8 +37,7 @@ SKILL.md frontmatter controls how Claude invokes this skill:
 
 ## Gotchas
 
-- This CLAUDE.md is **gitignored** (`**/CLAUDE.md` in root `.gitignore`) — local context only, not committed
-- SKILL.md and references/ ARE tracked by git — changes there are shared
+- This CLAUDE.md is **tracked in git** — changes here are shared with the team
 - **Pages Router project** — App Router patterns (RSC, Server Components, `React.cache()`) do NOT apply
 - Reviewer comments must be in Thai mixed with English technical terms (casual Slack/PR tone)
 - Submit all inline comments + decision in ONE `gh api` call — not one-by-one

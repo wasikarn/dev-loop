@@ -6,8 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A collection of Claude Code skills (custom slash commands). Each skill is a self-contained prompt workflow installed into Claude Code via the skills system.
 
-> **Note:** `.gitignore` excludes `**/CLAUDE.md` (to suppress claude-mem auto-generated files). This root CLAUDE.md is therefore not tracked by git — it's for local session context only.
-
 ## Skill Structure
 
 Each skill lives at `skills/<skill-name>/` with this layout:
@@ -25,8 +23,7 @@ skills/<name>/
 ```yaml
 ---
 name: skill-name                    # Slash command trigger: /skill-name
-description: |                      # When to invoke (used by Claude to match intent)
-  ...
+description: "When to invoke (used by Claude to match intent)"
 argument-hint: "[arg1] [arg2?]"    # Optional: shown in autocomplete
 context: fork                       # Optional: isolate skill in fork context
 disable-model-invocation: true      # Optional: prevent nested model calls
@@ -69,3 +66,4 @@ Validate commands per project:
 2. Add `references/` docs if the skill needs supporting material
 3. Keep `description:` concise but trigger-complete — Claude uses it to decide when to invoke the skill
 4. Use `context: fork` + `disable-model-invocation: true` for heavy agent-dispatching skills
+5. Install symlink: `bash scripts/link-skill.sh <name>` (or `--list` to check, no args to link all)
