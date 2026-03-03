@@ -3,8 +3,7 @@
 # Output: compact JSON to stdout. Run before starting optimize-context workflow.
 # Usage: bash skills/optimize-context/scripts/pre-scan.sh [project-root]
 #
-# Replaces ~5 separate agent reads (package.json, lockfiles, ls, wc, find) with one script.
-# Saves ~2-4k tokens per run by consolidating discovery into a single structured output.
+# Replaces ~5 separate agent reads with one script. Saves ~2-4k tokens per run.
 
 set -euo pipefail
 ROOT="${1:-.}"
@@ -12,15 +11,13 @@ cd "$ROOT"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 json_str() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g; s/	/\\t/g'; }
-node_field() { node -e "try{const p=require('./package.json');console.log(p.$1||'')}catch(e){}" 2>/dev/null || true; }
 
-# ── CLAUDE.md files ──────────────────────────────────────────────────────────
+# ── CLAUDE.md files (stat for total, awk for human — single file read each) ──
 files_json="["
 first_file=1
 while IFS= read -r f; do
-  total=$(wc -c < "$f" 2>/dev/null | tr -d ' ' || echo 0)
-  # Human bytes: exclude auto-generated claude-mem blocks
-  human=$(grep -v '<claude-mem-context>' "$f" 2>/dev/null | wc -c | tr -d ' ' || echo "$total")
+  total=$(stat -f%z "$f" 2>/dev/null || wc -c < "$f" | tr -d ' ')
+  human=$(awk '!/claude-mem-context/ { h += length($0) + 1 } END { print h+0 }' "$f" 2>/dev/null || echo "$total")
   [[ $first_file -eq 0 ]] && files_json+=","
   files_json+="{\"path\":\"$(json_str "$f")\",\"bytes\":$total,\"human_bytes\":$human}"
   first_file=0
@@ -28,32 +25,46 @@ done < <(find . \( -name "CLAUDE.md" -o -name ".claude.local.md" -o -name ".clau
            ! -path "*/node_modules/*" ! -path "*/.git/*" 2>/dev/null | sort)
 files_json+="]"
 
-# ── Framework detection ───────────────────────────────────────────────────────
+# ── Framework + npm scripts (single python3 parse — checks both deps + devDeps) ──
 framework="none"
 fw_version="unknown"
+npm_scripts="{}"
 
 if [[ -f "package.json" ]]; then
-  for dep in "dependencies?.next" "devDependencies?.next"; do
-    ver=$(node_field "$dep"); [[ -n "$ver" ]] && { framework="nextjs"; fw_version="$ver"; break; }
-  done
-  if [[ "$framework" == "none" ]]; then
-    ver=$(node_field "dependencies?.['@nestjs/core']"); [[ -n "$ver" ]] && { framework="nestjs"; fw_version="$ver"; }
-  fi
-  if [[ "$framework" == "none" ]]; then
-    ver=$(node_field "dependencies?.express"); [[ -n "$ver" ]] && { framework="express"; fw_version="$ver"; }
-  fi
-  if [[ "$framework" == "none" ]]; then
-    for dep in "dependencies?.react" "devDependencies?.react"; do
-      ver=$(node_field "$dep"); [[ -n "$ver" ]] && { framework="react"; fw_version="$ver"; break; }
-    done
-  fi
+  pkg_out=$(python3 - <<'PY' 2>/dev/null || printf 'none\nunknown\n{}'
+import json, sys
+try:
+    p = json.load(open('package.json'))
+    deps = {**p.get('dependencies', {}), **p.get('devDependencies', {})}
+    fw, ver = 'none', 'unknown'
+    for pkg, fw_name in [('next','nextjs'),('@nestjs/core','nestjs'),('express','express'),('react','react')]:
+        if pkg in deps:
+            fw, ver = fw_name, deps[pkg]
+            break
+    print(fw)
+    print(ver)
+    print(json.dumps(p.get('scripts', {})))
+except Exception:
+    print('none'); print('unknown'); print('{}')
+PY
+)
+  line_num=0
+  while IFS= read -r line; do
+    ((line_num++)) || true
+    case $line_num in
+      1) framework="$line" ;;
+      2) fw_version="$line" ;;
+      3) npm_scripts="$line" ;;
+    esac
+  done <<< "$pkg_out"
 fi
 
+# ── Python / Go fallback ──────────────────────────────────────────────────────
 if [[ "$framework" == "none" ]]; then
   for req_file in requirements.txt pyproject.toml setup.py; do
     if [[ -f "$req_file" ]]; then
       framework="python"
-      grep -qi "django" "$req_file" 2>/dev/null && framework="django"
+      grep -qi "django"  "$req_file" 2>/dev/null && framework="django"
       grep -qi "fastapi" "$req_file" 2>/dev/null && framework="fastapi"
       break
     fi
@@ -65,20 +76,13 @@ if [[ "$framework" == "none" && -f "go.mod" ]]; then
   fw_version=$(awk '/^go / {print $2; exit}' go.mod || echo "unknown")
 fi
 
-# ── npm scripts ───────────────────────────────────────────────────────────────
-npm_scripts="{}"
-if [[ -f "package.json" ]]; then
-  npm_scripts=$(node -e "try{const p=require('./package.json');console.log(JSON.stringify(p.scripts||{}))}catch(e){console.log('{}')}" 2>/dev/null || echo "{}")
-fi
-
 # ── Directory structure (2 levels, excluding common noise) ───────────────────
-dir_list=$(find . -maxdepth 2 \
+dir_json=$(find . -maxdepth 2 \
   ! -path "*/node_modules*" ! -path "*/.git*" ! -path "*/.next*" \
   ! -path "*/dist*" ! -path "*/build*" ! -path "*/__pycache__*" \
-  ! -path "*/.turbo*" 2>/dev/null | sort | head -80)
-dir_json=$(printf '%s\n' "$dir_list" | python3 -c \
-  "import sys,json; print(json.dumps([l.rstrip() for l in sys.stdin if l.strip()]))" 2>/dev/null \
-  || echo "[]")
+  ! -path "*/.turbo*" 2>/dev/null | sort | head -80 \
+  | python3 -c "import sys,json; print(json.dumps([l.rstrip() for l in sys.stdin if l.strip()]))" \
+  2>/dev/null || echo "[]")
 
 # ── Supplementary paths ───────────────────────────────────────────────────────
 has_agent_docs="false"; [[ -d "agent_docs" ]] && has_agent_docs="true"

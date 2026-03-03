@@ -5,38 +5,36 @@ description: "Audit, score, and optimize CLAUDE.md files for maximum agent effec
 
 # /optimize-context
 
-Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness.
+Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invoke as `/optimize-context [--dry-run]` — add `--dry-run` to run phases 1-3 only (report without edits).
+
+## References
+
+| File | Purpose |
+| --- | --- |
+| [quality-criteria.md](references/quality-criteria.md) | 100-pt rubric with per-score breakdown |
+| [compression-guide.md](references/compression-guide.md) | 9 compression techniques + passive context patterns |
+| [templates.md](references/templates.md) | CLAUDE.md templates by project type |
+| `scripts/pre-scan.sh` | Phase 1 metadata collector — run first to save ~2-4k tokens |
 
 **Why passive context wins** ([Vercel research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)):
 
 > Vercel uses `AGENTS.md`; Claude Code uses `CLAUDE.md` — same concept, same results.
 
-| Configuration | Pass Rate |
-| --- | --- |
-| Baseline (no docs) | 53% |
-| Skills (default) | 53% — agents ignored skills 56% of the time |
-| Skills (with explicit instructions) | 79% |
-| **AGENTS.md docs index** | **100%** |
+| Config | Overall | Build | Lint | Test | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Baseline (no docs) | 53% | 84% | 95% | 63% | — |
+| Skills (default) | 53% | 84% | 89% ↓ | 58% ↓ | Ignored 56% of time |
+| Skills (instructed) | 79% | 95% | 100% | 84% | — |
+| **AGENTS.md** | **100%** | **100%** | **100%** | **100%** | — |
 
-Detailed breakdown — skills can **degrade** performance (noise effect):
-
-| Config | Build | Lint | Test |
-| --- | --- | --- | --- |
-| Baseline | 84% | 95% | 63% |
-| Skills (default) | 84% | 89% ↓ | 58% ↓ |
-| Skills (instructed) | 95% | 100% | 84% |
-| **AGENTS.md** | **100%** | **100%** | **100%** |
-
-Even with explicit instructions achieving 95%+ skill invocation rate, pass rate peaked at 79%.
-Compressed context (8KB) performs identically to verbose (40KB).
-Passive context wins because: (1) no decision point about when to retrieve, (2) consistent availability every turn, (3) no sequencing issues.
+Compressed context (8KB) performs identically to verbose (40KB). Passive wins: no decision point about when to retrieve, consistent every turn, no sequencing issues.
 
 **Target expectations:**
 
-| Vercel's 100% pass rate | Skill's quality score |
-| --- | --- |
+| Vercel's 100% pass rate                              | Skill's quality score                                 |
+| ---------------------------------------------------- | ----------------------------------------------------- |
 | Agent completes tasks (build/lint/test) successfully | CLAUDE.md quality measured against 8-criterion rubric |
-| Achieved by having good passive context | Scores depend on project type and complexity |
+| Achieved by having good passive context              | Scores depend on project type and complexity          |
 
 - **Grade B (70+) + no critical criterion below 10** = good baseline
 - **Grade A (90+)** = ideal for framework-heavy or complex projects
@@ -45,12 +43,12 @@ Passive context wins because: (1) no decision point about when to retrieve, (2) 
 
 Critical minimum thresholds (score below these → must fix before passing):
 
-| Criterion | Min | Why |
-| --- | --- | --- |
-| Commands | 10/15 | Agent must know how to build/test |
-| Architecture | 10/15 | Agent must understand project structure |
+| Criterion           | Min   | Why                                          |
+| ------------------- | ----- | -------------------------------------------- |
+| Commands            | 10/15 | Agent must know how to build/test            |
+| Architecture        | 10/15 | Agent must understand project structure      |
 | Retrieval readiness | 10/15 | Key Vercel finding (framework projects only) |
-| Conciseness | 10/15 | Noise actively hurts agent performance |
+| Conciseness         | 10/15 | Noise actively hurts agent performance       |
 
 ## Workflow
 
@@ -79,22 +77,22 @@ Output is compact JSON: `claude_files` (path + bytes), `framework` (name + versi
 
 Identify each file's type:
 
-| Type | Location | Purpose |
-| --- | --- | --- |
-| Project root | `./CLAUDE.md` | Primary context (shared via git) |
-| Local overrides | `./.claude.local.md` | Personal settings (gitignored) |
-| Global defaults | `~/.claude/CLAUDE.md` | User-wide defaults |
-| Package-specific | `./packages/*/CLAUDE.md` | Module-level in monorepos |
+| Type             | Location                 | Purpose                          |
+| ---------------- | ------------------------ | -------------------------------- |
+| Project root     | `./CLAUDE.md`            | Primary context (shared via git) |
+| Local overrides  | `./.claude.local.md`     | Personal settings (gitignored)   |
+| Global defaults  | `~/.claude/CLAUDE.md`    | User-wide defaults               |
+| Package-specific | `./packages/*/CLAUDE.md` | Module-level in monorepos        |
 
 Also list `agent_docs/` and `.claude/rules/` (if any) for deduplication checks.
 
 **Classify context type:**
 
-| Type | Signal | Strategy |
-| --- | --- | --- |
-| Horizontal | Uses major framework (Next.js, NestJS, etc.) | Prioritize retrieval index + docs pointer |
-| Vertical | Custom/internal project | Prioritize workflow docs + architecture |
-| Hybrid | Framework + complex domain logic | Both: retrieval index + project-specific workflows |
+| Type       | Signal                                       | Strategy                                           |
+| ---------- | -------------------------------------------- | -------------------------------------------------- |
+| Horizontal | Uses major framework (Next.js, NestJS, etc.) | Prioritize retrieval index + docs pointer          |
+| Vertical   | Custom/internal project                      | Prioritize workflow docs + architecture            |
+| Hybrid     | Framework + complex domain logic             | Both: retrieval index + project-specific workflows |
 
 Detect framework: check `package.json`, `requirements.txt`, `go.mod`, etc. If official docs index tool exists (e.g. `npx @next/codemod@canary agents-md`), recommend it.
 
@@ -117,16 +115,16 @@ Score each file using the 100-point rubric. See [references/quality-criteria.md]
 
 Quick checklist:
 
-| Criterion | Weight | Check |
-| --- | --- | --- |
-| Commands/workflows | 15 | Build/test/deploy present and copy-paste ready? |
-| Architecture clarity | 15 | Can Claude understand codebase structure? |
-| Retrieval readiness | 15 | Has retrieval directive, docs index, explore-first wording? |
-| Conciseness | 15 | No verbose explanations, no noise, no obvious info? |
-| Non-obvious patterns | 10 | Gotchas and quirks documented? |
-| Novel content coverage | 10 | Post-cutoff APIs detailed, known patterns removed? |
-| Currency | 10 | Reflects current codebase state? |
-| Actionability | 10 | Instructions executable, not vague? |
+| Criterion              | Weight | Check                                                       |
+| ---------------------- | ------ | ----------------------------------------------------------- |
+| Commands/workflows     | 15     | Build/test/deploy present and copy-paste ready?             |
+| Architecture clarity   | 15     | Can Claude understand codebase structure?                   |
+| Retrieval readiness    | 15     | Has retrieval directive, docs index, explore-first wording? |
+| Conciseness            | 15     | No verbose explanations, no noise, no obvious info?         |
+| Non-obvious patterns   | 10     | Gotchas and quirks documented?                              |
+| Novel content coverage | 10     | Post-cutoff APIs detailed, known patterns removed?          |
+| Currency               | 10     | Reflects current codebase state?                            |
+| Actionability          | 10     | Instructions executable, not vague?                         |
 
 Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29).
 
@@ -157,15 +155,15 @@ The Status column is **mandatory** — compare each score against the minimum th
 
 Audit each section deeply — trace references to actual codebase files, verify commands by running them, cross-reference architecture claims against real directory structure. Surface-level checks are insufficient.
 
-| Check | What to look for |
-| --- | --- |
-| Stale | References to files/patterns that no longer exist |
-| Gaps | Codebase conventions not documented |
-| Redundant | Duplicated with agent_docs or .claude/rules |
-| Outdated | Code examples not matching current codebase |
-| Oversized | Verbose sections compressible via tables/one-liners |
-| Noise | Content that doesn't aid agent decision-making and may distract (generic advice, obvious patterns, well-known framework defaults) |
-| Missing retrieval | Framework project lacks retrieval directive or docs index |
+| Check             | What to look for                                                                                                                  |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Stale             | References to files/patterns that no longer exist                                                                                 |
+| Gaps              | Codebase conventions not documented                                                                                               |
+| Redundant         | Duplicated with agent_docs or .claude/rules                                                                                       |
+| Outdated          | Code examples not matching current codebase                                                                                       |
+| Oversized         | Verbose sections compressible via tables/one-liners                                                                               |
+| Noise             | Content that doesn't aid agent decision-making and may distract (generic advice, obvious patterns, well-known framework defaults) |
+| Missing retrieval | Framework project lacks retrieval directive or docs index                                                                         |
 
 Categorize as `Stale (must fix)`, `Gaps (must add)`, `Redundant (can reduce)`, `Noise (should remove)`, `OK`.
 
@@ -260,27 +258,27 @@ Report: `Score: XX → XX | Fixed N stale | Added N gaps | Removed N redundant |
 
 ### ./CLAUDE.md — Score: 50/100 (Grade C) | Size: 18.2 KB
 
-| Criterion | Score | Status | Issue |
-| --- | --- | --- | --- |
-| Commands | 12/15 | ✅ | Missing deploy command |
-| Architecture | 8/15 | ⚠️ CRITICAL | No module relationships |
-| Retrieval readiness | 0/15 | ⚠️ CRITICAL | No retrieval directive or docs index |
-| Conciseness | 5/15 | ⚠️ CRITICAL | 3 verbose sections + noise |
-| Non-obvious | 8/10 | ✅ | — |
-| Novel content | 3/10 | ✅ | Post-cutoff APIs not identified |
-| Currency | 7/10 | ✅ | `src/legacy/` no longer exists |
-| Actionability | 7/10 | ✅ | Vague "see docs" references |
+| Criterion           | Score | Status      | Issue                                |
+| ------------------- | ----- | ----------- | ------------------------------------ |
+| Commands            | 12/15 | ✅          | Missing deploy command               |
+| Architecture        | 8/15  | ⚠️ CRITICAL | No module relationships              |
+| Retrieval readiness | 0/15  | ⚠️ CRITICAL | No retrieval directive or docs index |
+| Conciseness         | 5/15  | ⚠️ CRITICAL | 3 verbose sections + noise           |
+| Non-obvious         | 8/10  | ✅          | —                                    |
+| Novel content       | 3/10  | ✅          | Post-cutoff APIs not identified      |
+| Currency            | 7/10  | ✅          | `src/legacy/` no longer exists       |
+| Actionability       | 7/10  | ✅          | Vague "see docs" references          |
 
 Critical check: FAIL ⚠️ — Architecture at 8/15 (min 10), Retrieval readiness at 0/15 (min 10), Conciseness at 5/15 (min 10)
 
 ### Findings
 
-| # | Type | Detail |
-| --- | --- | --- |
-| 1 | Stale (must fix) | `src/legacy/` removed in v3 |
-| 2 | Gaps (must add) | No env setup instructions |
-| 3 | Redundant (can reduce) | API docs duplicated in agent_docs/ |
-| 4 | Oversized | Architecture section 4KB → compressible to 0.8KB |
+| #   | Type                   | Detail                                           |
+| --- | ---------------------- | ------------------------------------------------ |
+| 1   | Stale (must fix)       | `src/legacy/` removed in v3                      |
+| 2   | Gaps (must add)        | No env setup instructions                        |
+| 3   | Redundant (can reduce) | API docs duplicated in agent_docs/               |
+| 4   | Oversized              | Architecture section 4KB → compressible to 0.8KB |
 ```
 
 ## Key Rules
@@ -296,5 +294,4 @@ Critical check: FAIL ⚠️ — Architecture at 8/15 (min 10), Retrieval readine
 - **Prioritize novel content** — APIs/patterns outside training data get more space than well-known ones
 - **Noise reduction** — Remove content that doesn't aid decision-making; unused/irrelevant context may distract the agent (Vercel: skills ignored 56% of the time when not relevant)
 - **Passive over active** — For general framework knowledge, embed in CLAUDE.md (passive) rather than relying on skills (active retrieval). Skills are best for action-specific workflows users explicitly trigger
-- **Persistent artifacts** — Write audit report to `.claude/optimize-context-report.md` so findings survive context compression in long sessions
 - **Self-invocation** — Recommend adding staleness reminder in CLAUDE.md (e.g. "Run `/optimize-context` when CLAUDE.md feels outdated")
