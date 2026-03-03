@@ -58,7 +58,21 @@ Map each AC to file(s) in `git diff develop...HEAD`:
 
 **Scope:** `git diff develop...HEAD` — changed files only.
 
-Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: AC context from Phase 2 + checklist from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
+## Hard Rules — Include in Every Agent Prompt
+
+Flag unconditionally — no confidence filter, always report:
+
+- `as any` / `as unknown as T` → 🔴
+- `throw new Error(...)` → 🔴 (use `XxxException.staticMethod()`)
+- `new MyService()` inside UseCase/Controller → 🔴 (use `@inject`)
+- empty `catch {}` / swallowed errors → 🔴
+- nesting > 1 level → 🔴 (use early return)
+- `.innerJoin()` → 🔴 (use `whereHas`/subquery)
+- query inside loop → 🔴 (N+1)
+- `console.log` → 🔴 (use `Logger` from `App/Helpers/Logger`)
+- bare string DI paths `'App/Services/X'` → 🔴 (use `InjectPaths` constant)
+
+Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: Hard Rules above (verbatim) + AC context from Phase 2 + criteria from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
 
 | Agent |
 | ------- |

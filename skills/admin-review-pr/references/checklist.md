@@ -10,7 +10,25 @@ For ✅/❌ code examples → [examples.md](examples.md)
 | # | Aspect |
 | --- | -------- |
 | 1 | **Functional Correctness** |
-| 2 | **App Helpers** |
+| 2 | **App Helpers & Util Functions** |
+
+### #1 Functional Correctness
+
+- All AC requirements implemented — map each AC to specific code → 🔴
+- `result.isOk` checked before accessing `result.data` → 🔴
+- Null/undefined handled before use → 🔴
+- Edge cases: empty array, expired state, missing optional fields → 🔴
+- Error paths show user-facing feedback (toast, alert) — not silent → 🔴
+
+### #2 App Helpers & Util Functions
+
+- `QUERY_KEYS` constant used — no inline query key strings → 🔴
+- `ROUTE_PATHS` used — no hardcoded `/manage/...` or `/ad/...` strings → 🔴
+- `ObjectUtil.mapKeysToCamelCase/SnakeCase` used — no manual key mapping → 🟡
+- `appConfig.*` used — not `process.env.*` directly → 🟡
+- Existing service singletons used (`adServiceV2`, `adService`) — not `new AdService()` → 🔴
+- Existing shared hooks used (`usePersistFilters`, `useQueryState`) where applicable → 🟡
+- `*_STATUS_TEXT` / `*_STATUS_OPTIONS` constants used — no hardcoded Thai status strings → 🔴
 
 ## Performance
 
@@ -18,14 +36,51 @@ For ✅/❌ code examples → [examples.md](examples.md)
 | --- | -------- |
 | 3 | **N+1 Prevention** |
 
+### #3 N+1 Prevention
+
+- Independent fetches use `Promise.all([...])` — no sequential `await` → 🔴
+- `includes=` param used for server-side eager loading of relations → 🟡
+- No query/fetch inside loop → 🔴
+- `getServerSideProps`/`getStaticProps` fetches all needed data in one pass → 🟡
+
 ## Maintainability
 
 | # | Aspect |
 | --- | -------- |
 | 4 | **DRY & Simplicity** |
 | 5 | **Flatten Structure** |
-| 6 | **Small Functions & SOLID** |
+| 6 | **Small Function & SOLID** |
 | 7 | **Elegance** |
+
+### #4 DRY & Simplicity
+
+- 3+ identical JSX blocks or logic → extract to component/hook/constant → 🟡
+- No redundant conditions (`if (x === true)` → `if (x)`) → 🟡
+- Derive state — no `useEffect` just to sync computed values → 🟡
+- No premature abstraction for single-use logic → 🟡
+
+### #5 Flatten Structure
+
+- Max 1 nesting level — use early returns for all guard clauses → 🔴
+- No nested ternaries (`a ? b ? c : d : e`) → 🔴
+- No callback hell → use async/await → 🔴
+
+### #6 Small Function & SOLID
+
+- Functions/components < 20 lines (ideally) → 🟡
+- SRP: one function does one thing — no "and" in function names → 🟡
+- **Page** (`*.page.tsx`): thin wrapper only — defines `getLayout`, renders PageContent → 🔴
+- **PageContent**: data fetching + orchestration, no raw service calls in page files → 🔴
+- **Component**: presentation only — receives props, no business logic → 🟡
+- Parameters ≤ 3 (use props object if more) → 🟡
+
+### #7 Elegance
+
+- Code reads like prose — clear data flow → 🟡
+- Explicit > implicit (no clever tricks) → 🟡
+- Consistent style throughout PR → 🟡
+- No dead code (unreachable branches, unused variables) → 🟡
+- Derive state with `useMemo` — no `useEffect` + `setState` for computed values → 🟡
 
 ## Developer Experience
 
@@ -36,6 +91,43 @@ For ✅/❌ code examples → [examples.md](examples.md)
 | 10 | **Type Safety** |
 | 11 | **Testability** |
 | 12 | **Debugging Friendly** |
+
+### #8 Clear Naming
+
+- Booleans: `is/has/can/should` prefix (`isLoading`, `hasError`) → 🟡
+- Event handlers: `handle` prefix (`handleSubmit`, `handleDelete`) → 🟡
+- Query hooks: `$` prefix (`$ads`, `$billboards`) → 🟡
+- Arrays: plural (`ads`, not `adList`) → 🟡
+- No abbreviations (`btn`, `cfg`, `mgr`) → 🟡
+
+### #9 Documentation
+
+- Comments explain WHY, not WHAT → 🔵
+- Non-obvious behavior documented (e.g., why `keepPreviousData: false` on filter change) → 🔵
+- No obvious comments → 🔵
+- TODO linked to Jira ticket (`// TODO BEP-XXXX: ...`) → 🔵
+
+### #10 Type Safety
+
+- No `as any` / `as unknown as T` → 🔴
+- No `!` non-null assertion without prior null check → 🔴
+- `result.isOk` checked before accessing `result.data` → 🔴
+- Discriminated unions for form/UI states (not boolean flags) → 🟡
+- Type guards for external API responses before use → 🟡
+
+### #11 Testability
+
+- Mapper functions are pure — unit-testable with Vitest → 🔴
+- Changed mapper/util files have corresponding `.test.ts` files → 🔴
+- `vi.mock()` + `vi.fn()` + `vi.clearAllMocks()` pattern used → 🔴
+- No side effects mixed into pure mapping/utility functions → 🟡
+
+### #12 Debugging Friendly
+
+- `result.isOk` always checked — no silent data access on failed response → 🔴
+- Errors shown to user via toast/alert — not swallowed silently → 🔴
+- `console.error('[ModuleName] message:', error)` for dev-time errors → 🟡
+- No unreturned promises (unhandled rejections) → 🔴
 
 ## React/Next.js Performance (#13)
 

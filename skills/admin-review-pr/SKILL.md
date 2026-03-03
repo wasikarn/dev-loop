@@ -59,7 +59,21 @@ Map each AC to file(s) in `git diff develop...HEAD`:
 
 **Scope:** `git diff develop...HEAD` — changed files only.
 
-Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: AC context from Phase 2 + checklist from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
+## Hard Rules — Include in Every Agent Prompt
+
+Flag unconditionally — no confidence filter, always report:
+
+- `as any` / `as unknown as T` → 🔴
+- `result.data` accessed without checking `result.isOk` first → 🔴
+- hardcoded route strings (`/manage/...`, `/ad/...`) → 🔴 (use `ROUTE_PATHS`)
+- hardcoded Thai status text → 🔴 (use `*_STATUS_TEXT` constants)
+- empty `catch {}` / swallowed errors → 🔴
+- nesting > 1 level → 🔴 (use early return)
+- `import { useQuery } from '@tanstack/react-query'` → 🔴 (must be `'react-query'` v3)
+- query/fetch inside loop → 🔴 (N+1)
+- `console.log` in non-test code → 🟡
+
+Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: Hard Rules above (verbatim) + AC context from Phase 2 + criteria from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
 
 | Agent |
 | ------- |
