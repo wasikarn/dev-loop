@@ -8,6 +8,17 @@ disable-model-invocation: true
 
 # PR Review — tathep-website
 
+Invoke as `/web-review-pr [pr-number] [jira-key?] [Author|Reviewer]`
+
+## References
+
+| File | Purpose |
+| --- | --- |
+| [checklist.md](references/checklist.md) | 12-point review criteria with severity levels |
+| [examples.md](references/examples.md) | Code examples for project-specific rules |
+
+---
+
 **PR:** #$0 | **Jira:** $1 | **Mode:** $2 (default: Author)
 **Today:** !`date +%Y-%m-%d`
 **Diff:** !`git diff develop...HEAD --stat 2>/dev/null | tail -10`
@@ -47,7 +58,7 @@ Map each AC to file(s) in `git diff develop...HEAD`:
 
 **Scope:** `git diff develop...HEAD` — changed files only.
 
-Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: AC context from Phase 2 + checklist from [references/checklist.md](references/checklist.md).
+Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: AC context from Phase 2 + checklist from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
 
 | Agent | Aspects |
 |-------|---------|
