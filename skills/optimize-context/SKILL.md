@@ -10,32 +10,32 @@ Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invo
 
 ## References
 
-| File | Purpose |
-| --- | --- |
-| [quality-criteria.md](references/quality-criteria.md) | 100-pt rubric with per-score breakdown |
-| [compression-guide.md](references/compression-guide.md) | 9 compression techniques + passive context patterns |
-| [templates.md](references/templates.md) | CLAUDE.md templates by project type |
-| `scripts/pre-scan.sh` | Phase 1 metadata collector — run first to save ~2-4k tokens |
+| File |
+| --- |
+| [quality-criteria.md](references/quality-criteria.md) |
+| [compression-guide.md](references/compression-guide.md) |
+| [templates.md](references/templates.md) |
+| `scripts/pre-scan.sh` |
 
 **Why passive context wins** ([Vercel research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)):
 
 > Vercel uses `AGENTS.md`; Claude Code uses `CLAUDE.md` — same concept, same results.
 
-| Config | Overall | Build | Lint | Test | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Baseline (no docs) | 53% | 84% | 95% | 63% | — |
-| Skills (default) | 53% | 84% | 89% ↓ | 58% ↓ | Ignored 56% of time |
-| Skills (instructed) | 79% | 95% | 100% | 84% | — |
-| **AGENTS.md** | **100%** | **100%** | **100%** | **100%** | — |
+| Config | Overall | Build | Lint | Test |
+| --- | --- | --- | --- | --- |
+| Baseline (no docs) | 53% | 84% | 95% | 63% |
+| Skills (default) | 53% | 84% | 89% ↓ | 58% ↓ |
+| Skills (instructed) | 79% | 95% | 100% | 84% |
+| **AGENTS.md** | **100%** | **100%** | **100%** | **100%** |
 
 Compressed context (8KB) performs identically to verbose (40KB). Passive wins: no decision point about when to retrieve, consistent every turn, no sequencing issues.
 
 **Target expectations:**
 
-| Vercel's 100% pass rate                              | Skill's quality score                                 |
-| ---------------------------------------------------- | ----------------------------------------------------- |
-| Agent completes tasks (build/lint/test) successfully | CLAUDE.md quality measured against 8-criterion rubric |
-| Achieved by having good passive context              | Scores depend on project type and complexity          |
+| Vercel's 100% pass rate |
+| ---------------------------------------------------- |
+| Agent completes tasks (build/lint/test) successfully |
+| Achieved by having good passive context |
 
 - **Grade B (70+) + no critical criterion below 10** = good baseline
 - **Grade A (90+)** = ideal for framework-heavy or complex projects
@@ -44,18 +44,18 @@ Compressed context (8KB) performs identically to verbose (40KB). Passive wins: n
 
 Critical minimum thresholds (score below these → must fix before passing):
 
-| Criterion           | Min   | Why                                          |
-| ------------------- | ----- | -------------------------------------------- |
-| Commands            | 10/15 | Agent must know how to build/test            |
-| Architecture        | 10/15 | Agent must understand project structure      |
-| Retrieval readiness | 10/15 | Key Vercel finding (framework projects only) |
-| Conciseness         | 10/15 | Noise actively hurts agent performance       |
+| Criterion | Min |
+| ------------------- | ----- |
+| Commands | 10/15 |
+| Architecture | 10/15 |
+| Retrieval readiness | 10/15 |
+| Conciseness | 10/15 |
 
 ## Workflow
 
 Copy this checklist and check off items as you complete each phase:
 
-```
+```text
 Progress:
 - [ ] Phase 1: Discovery & Classification
 - [ ] Phase 2: Quality Assessment
@@ -78,22 +78,22 @@ Output is compact JSON: `claude_files` (path + bytes), `framework` (name + versi
 
 Identify each file's type:
 
-| Type             | Location                 | Purpose                          |
-| ---------------- | ------------------------ | -------------------------------- |
-| Project root     | `./CLAUDE.md`            | Primary context (shared via git) |
-| Local overrides  | `./.claude.local.md`     | Personal settings (gitignored)   |
-| Global defaults  | `~/.claude/CLAUDE.md`    | User-wide defaults               |
-| Package-specific | `./packages/*/CLAUDE.md` | Module-level in monorepos        |
+| Type | Location |
+| ---------------- | ------------------------ |
+| Project root | `./CLAUDE.md` |
+| Local overrides | `./.claude.local.md` |
+| Global defaults | `~/.claude/CLAUDE.md` |
+| Package-specific | `./packages/*/CLAUDE.md` |
 
 Also list `agent_docs/` and `.claude/rules/` (if any) for deduplication checks.
 
 **Classify context type:**
 
-| Type       | Signal                                       | Strategy                                           |
-| ---------- | -------------------------------------------- | -------------------------------------------------- |
-| Horizontal | Uses major framework (Next.js, NestJS, etc.) | Prioritize retrieval index + docs pointer          |
-| Vertical   | Custom/internal project                      | Prioritize workflow docs + architecture            |
-| Hybrid     | Framework + complex domain logic             | Both: retrieval index + project-specific workflows |
+| Type | Signal |
+| ---------- | -------------------------------------------- |
+| Horizontal | Uses major framework (Next.js, NestJS, etc.) |
+| Vertical | Custom/internal project |
+| Hybrid | Framework + complex domain logic |
 
 Detect framework: check `package.json`, `requirements.txt`, `go.mod`, etc. If official docs index tool exists (e.g. `npx @next/codemod@canary agents-md`), recommend it.
 
@@ -116,22 +116,22 @@ Score each file using the 100-point rubric. See [references/quality-criteria.md]
 
 Quick checklist:
 
-| Criterion              | Weight | Check                                                       |
-| ---------------------- | ------ | ----------------------------------------------------------- |
-| Commands/workflows     | 15     | Build/test/deploy present and copy-paste ready?             |
-| Architecture clarity   | 15     | Can Claude understand codebase structure?                   |
-| Retrieval readiness    | 15     | Has retrieval directive, docs index, explore-first wording? |
-| Conciseness            | 15     | No verbose explanations, no noise, no obvious info?         |
-| Non-obvious patterns   | 10     | Gotchas and quirks documented?                              |
-| Novel content coverage | 10     | Post-cutoff APIs detailed, known patterns removed?          |
-| Currency               | 10     | Reflects current codebase state?                            |
-| Actionability          | 10     | Instructions executable, not vague?                         |
+| Criterion | Weight |
+| ---------------------- | ------ |
+| Commands/workflows | 15 |
+| Architecture clarity | 15 |
+| Retrieval readiness | 15 |
+| Conciseness | 15 |
+| Non-obvious patterns | 10 |
+| Novel content coverage | 10 |
+| Currency | 10 |
+| Actionability | 10 |
 
 Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29).
 
 **Output format per file** (must follow exactly):
 
-```
+```markdown
 ./CLAUDE.md — Score: XX/100 (Grade X) | Size: XX KB
 
 | Criterion | Score | Status | Notes |
@@ -156,15 +156,15 @@ The Status column is **mandatory** — compare each score against the minimum th
 
 Audit each section deeply — trace references to actual codebase files, verify commands by running them, cross-reference architecture claims against real directory structure. Surface-level checks are insufficient.
 
-| Check             | What to look for                                                                                                                  |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Stale             | References to files/patterns that no longer exist                                                                                 |
-| Gaps              | Codebase conventions not documented                                                                                               |
-| Redundant         | Duplicated with agent_docs or .claude/rules                                                                                       |
-| Outdated          | Code examples not matching current codebase                                                                                       |
-| Oversized         | Verbose sections compressible via tables/one-liners                                                                               |
-| Noise             | Content that doesn't aid agent decision-making and may distract (generic advice, obvious patterns, well-known framework defaults) |
-| Missing retrieval | Framework project lacks retrieval directive or docs index                                                                         |
+| Check |
+| ----------------- |
+| Stale |
+| Gaps |
+| Redundant |
+| Outdated |
+| Oversized |
+| Noise |
+| Missing retrieval |
 
 Categorize as `Stale (must fix)`, `Gaps (must add)`, `Redundant (can reduce)`, `Noise (should remove)`, `OK`.
 
@@ -189,7 +189,7 @@ For templates by project type: [references/templates.md](references/templates.md
 
 **Output format** (must show before editing):
 
-```
+```markdown
 ### Proposed Changes
 
 | # | Finding | Action | Size Impact |
@@ -227,7 +227,7 @@ Proceed directly to phase 5 after outputting the proposed changes table.
 
 **Verification output format** (must show all steps — do NOT stop after step 4):
 
-```
+```markdown
 ### Verification Checklist
 
 | Step | Check | Result |

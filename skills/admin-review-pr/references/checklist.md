@@ -7,35 +7,35 @@ For ✅/❌ code examples → [examples.md](examples.md)
 
 ## Correctness & Safety
 
-| # | Aspect | Check |
-|---|--------|-------|
-| 1 | **Functional Correctness** | `IFetchResult.isOk` checked before `.data` everywhere. Logic handles edge cases. |
-| 2 | **App Helpers** | Use `@/shared/` barrels · `appConfig` for env vars · `ROUTE_PATHS` for routes · `useAuth()` · No hardcoded Thai status text — use `*_STATUS_TEXT` constants |
+| # | Aspect |
+| --- | -------- |
+| 1 | **Functional Correctness** |
+| 2 | **App Helpers** |
 
 ## Performance
 
-| # | Aspect | Check |
-|---|--------|-------|
-| 3 | **N+1 Prevention** | No `.find()` inside `.map()` (O(n²)) · `keepPreviousData` disabled on filter changes · No unnecessary re-renders |
+| # | Aspect |
+| --- | -------- |
+| 3 | **N+1 Prevention** |
 
 ## Maintainability
 
-| # | Aspect | Check |
-|---|--------|-------|
-| 4 | **DRY & Simplicity** | No duplicated mapping or logic — extract to shared util · No magic numbers/strings — use named constants · If logic appears 2+ times, extract it |
-| 5 | **Flatten Structure** | Early returns / guard clauses instead of deep nesting · Max 1 level of nesting in logic blocks · **No nested conditions** (no `if` inside `if`) · Avoid `else` after `return` |
-| 6 | **Small Functions & SOLID** | Thin `*.page.tsx` → `PageContent` (data + UI) → module components · services extend `BaseFetcher` (NOT `ApiBaseService`) · Functions do ONE thing (≤20 lines) · No side effects in pure functions |
-| 7 | **Elegance** | Tailwind CSS over custom CSS · Headless UI for interactive components · idiomatic TypeScript · NO Chakra UI · No clever tricks — obvious code wins · No dead code or unused vars |
+| # | Aspect |
+| --- | -------- |
+| 4 | **DRY & Simplicity** |
+| 5 | **Flatten Structure** |
+| 6 | **Small Functions & SOLID** |
+| 7 | **Elegance** |
 
 ## Developer Experience
 
-| # | Aspect | Check |
-|---|--------|-------|
-| 8 | **Clear Naming** | `*.component.tsx` · `use-*.hook.ts` · `*.service.ts` · `*.map.ts` · `*.type.ts` conventions · `*.page.tsx` for all page files · Booleans: `is`/`has`/`can` prefix · Avoid abbreviations · Names reveal intent without comments |
-| 9 | **Documentation** | No noise comments · complex/non-obvious logic documented · Comments explain *why*, not *what* · No commented-out code |
-| 10 | **Type Safety** | No `any` · I-prefix interfaces · `*.map.ts` snake→camel with `map{Entity}()` · `IFetchResult<T>` pattern · **TypeScript Advanced Types**: Prefer generics over `any`; use discriminated unions (`\| { ok: true; data: T } \| { ok: false; error: E }`) over boolean flags; use branded types for IDs; use `unknown` for API responses then narrow with type guards; use utility types (`Partial`, `Pick`, `Omit`, `ReturnType`, `Awaited`) over manual re-declaration; avoid `as` assertions — use type guards instead |
-| 11 | **Testability** | ≥80% coverage for changed files · Vitest + RTL · Tests run in UTC (no hardcoded Thai TZ) · General solutions, not hardcoded values |
-| 12 | **Debugging Friendly** | No empty `catch {}` · 401/403 auto-redirect to `/login` respected · Errors via `react-hot-toast` · Errors surface clearly |
+| # | Aspect |
+| --- | -------- |
+| 8 | **Clear Naming** |
+| 9 | **Documentation** |
+| 10 | **Type Safety** |
+| 11 | **Testability** |
+| 12 | **Debugging Friendly** |
 
 ## React/Next.js Performance (#13)
 

@@ -30,10 +30,10 @@ router.post('/orders', validate(orderSchema), async (req, res) => {
 
 ## Trade-offs
 
-| Option | Pros | Cons | Decision |
-| --- | --- | --- | --- |
-| Option A | ... | ... | Chosen — because... |
-| Option B | ... | ... | Rejected — because... |
+| Option | Pros | Cons |
+| --- | --- | --- |
+| Option A | ... | ... |
+| Option B | ... | ... |
 
 ## Test Strategy
 

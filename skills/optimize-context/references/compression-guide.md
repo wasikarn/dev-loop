@@ -4,11 +4,11 @@ Based on [Vercel's AGENTS.md research](https://vercel.com/blog/agents-md-outperf
 
 ## Size Targets
 
-| Rating | Size | Action |
-| --- | --- | --- |
-| Optimal | < 8 KB | Maintain |
-| Acceptable | 8–15 KB | Monitor, compress if growing |
-| Needs work | > 15 KB | Must compress or split to references |
+| Rating | Size |
+| --- | --- |
+| Optimal | < 8 KB |
+| Acceptable | 8–15 KB |
+| Needs work | > 15 KB |
 
 ## Compression Techniques
 
@@ -78,27 +78,27 @@ Replace multi-line explanations with single-line rules:
 
 Use consistent shorthand within CLAUDE.md:
 
-| Long | Short |
-| --- | --- |
-| For example | e.g. |
-| Configuration | config |
-| Environment | env |
-| Development | dev |
-| Production | prod |
-| Authentication | auth |
-| Documentation | docs |
+| Long |
+| --- |
+| For example |
+| Configuration |
+| Environment |
+| Development |
+| Production |
+| Authentication |
+| Documentation |
 
 ### 6. Remove What Claude Already Knows (Training Cutoff Awareness)
 
 Claude knows standard framework patterns **up to its training cutoff**. Prioritize content by novelty:
 
-| Priority | Content Type | Action |
-| --- | --- | --- |
-| High | APIs/patterns released after training cutoff | Keep detailed, add examples |
-| High | Custom/internal APIs unique to project | Keep detailed |
-| Medium | Non-default framework configurations | Keep as one-liners |
-| Low | Standard framework behavior within training data | Remove or compress to minimal |
-| Remove | Common language syntax, general best practices | Delete entirely |
+| Priority | Content Type |
+| --- | --- |
+| High | APIs/patterns released after training cutoff |
+| High | Custom/internal APIs unique to project |
+| Medium | Non-default framework configurations |
+| Low | Standard framework behavior within training data |
+| Remove | Common language syntax, general best practices |
 
 **Rule:** If Claude would get it right without docs → remove. If Claude would guess wrong → document thoroughly.
 
@@ -110,13 +110,13 @@ Determine what the model knows vs. what it needs to be told:
 2. **Compare to training cutoff** — Claude's cutoff: August 2025. APIs released after this need full documentation
 3. **Categorize content:**
 
-| Category | Action | Example |
-| --- | --- | --- |
-| Post-cutoff APIs | Document in detail with usage examples | Next.js 16: sync `cookies()`/`headers()`/`params` fully removed, `id` now `Promise<string>` in image/sitemap generators |
-| Custom/internal APIs | Document thoroughly — model has zero knowledge | Your `createServiceClient()` wrapper |
-| Non-default configs | Keep as one-liners | Custom Webpack config, non-standard tsconfig |
-| Standard framework behavior | Compress to minimal or remove | Express middleware ordering, React useState |
-| Common language syntax | Delete entirely | JavaScript async/await, Python list comprehensions |
+| Category | Action |
+| --- | --- |
+| Post-cutoff APIs | Document in detail with usage examples |
+| Custom/internal APIs | Document thoroughly — model has zero knowledge |
+| Non-default configs | Keep as one-liners |
+| Standard framework behavior | Compress to minimal or remove |
+| Common language syntax | Delete entirely |
 
 **Rule:** If the model would get it right without docs → remove. If it would guess wrong → document thoroughly.
 
@@ -132,11 +132,11 @@ Vercel found that irrelevant context can actively hurt agent performance ("unuse
 
 ### 9. Deduplication
 
-| Situation | Action |
-| --- | --- |
-| Same info in CLAUDE.md + agent_docs | Keep in agent_docs, add pointer from CLAUDE.md |
-| Same info in CLAUDE.md + .claude/rules | Keep in rules, remove from CLAUDE.md |
-| Repeated patterns across sections | Extract to single section, reference elsewhere |
+| Situation |
+| --- |
+| Same info in CLAUDE.md + agent_docs |
+| Same info in CLAUDE.md + .claude/rules |
+| Repeated patterns across sections |
 
 ## Passive Context Design Principles
 
@@ -161,12 +161,12 @@ Consult project docs in `agent_docs/` before relying on training knowledge.
 
 Vercel found that directive wording significantly affects agent behavior:
 
-| Pattern | Effect | Example |
-| --- | --- | --- |
-| **Explore-first** ✅ | Agent builds project mental model, then consults docs | "Check project structure first, then refer to docs for API details" |
-| **Prefer X over Y** ✅ | Agent balances both sources | "Prefer project conventions over standard patterns" |
-| **Absolute MUST** ❌ | Agent anchors on docs, misses project context | "You MUST follow the documentation exactly" |
-| **Invoke-first** ❌ | Agent reads docs but skips project exploration | "Always read the docs before writing code" |
+| Pattern | Effect |
+| --- | --- |
+| **Explore-first** ✅ | Agent builds project mental model, then consults docs |
+| **Prefer X over Y** ✅ | Agent balances both sources |
+| **Absolute MUST** ❌ | Agent anchors on docs, misses project context |
+| **Invoke-first** ❌ | Agent reads docs but skips project exploration |
 
 **Rule:** Use guidance that encourages exploration + retrieval, not absolute directives that cause tunnel vision.
 
@@ -187,9 +187,9 @@ Key decisions: `agent_docs/adr/` (read specific ADR when relevant)
 
 #### Step 1: Check for official tools
 
-| Framework | Command | What it does |
-| --- | --- | --- |
-| Next.js | `npx @next/codemod@canary agents-md` | Downloads version-matched docs → `.next-docs/`, injects pipe-delimited index |
+| Framework | Command |
+| --- | --- |
+| Next.js | `npx @next/codemod@canary agents-md` |
 
 #### Step 2: If no official tool, generate manually
 

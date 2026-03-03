@@ -17,43 +17,43 @@ specify init --here --force                   # skip confirmation if dir not emp
 
 ### --ai \<agent\> options
 
-| Value | Description |
-|-------|-------------|
-| `claude` | Claude Code (creates `.claude/commands/`) |
-| `gemini` | Gemini CLI |
-| `copilot` | GitHub Copilot (`.github/copilot-instructions.md`) |
-| `cursor-agent` | Cursor agent mode |
-| `codex` | OpenAI Codex CLI |
-| `windsurf` | Windsurf IDE |
-| `qwen` | Qwen Code |
-| `opencode` | opencode |
-| `amp` | Amp |
-| `kilocode` | Kilo Code |
-| `auggie` | Auggie CLI |
-| `codebuddy` | CodeBuddy CLI |
-| `shai` | SHAI |
-| `q` | Amazon Q Developer CLI |
-| `agy` | Antigravity |
-| `bob` | IBM Bob |
-| `qodercli` | Qoder CLI |
-| `roo` | Roo Code (IDE) |
-| `generic` | Any agent — requires `--ai-commands-dir` |
+| Value |
+| ------- |
+| `claude` |
+| `gemini` |
+| `copilot` |
+| `cursor-agent` |
+| `codex` |
+| `windsurf` |
+| `qwen` |
+| `opencode` |
+| `amp` |
+| `kilocode` |
+| `auggie` |
+| `codebuddy` |
+| `shai` |
+| `q` |
+| `agy` |
+| `bob` |
+| `qodercli` |
+| `roo` |
+| `generic` |
 
 ### All flags
 
-| Flag | Purpose |
-|------|---------|
-| `--ai <agent>` | Target AI agent |
-| `--here` | Init in current directory (same as passing `.`) |
-| `--force` | Skip confirmation for non-empty directory |
-| `--no-git` | Skip git repository initialization |
-| `--ai-skills` | Install Prompt.MD templates as agent skills (requires `--ai`) |
-| `--ai-commands-dir <path>` | Custom command output dir (required with `--ai generic`) |
-| `--script sh\|ps` | Script variant: bash/zsh (`sh`) or PowerShell (`ps`) |
-| `--github-token <token>` | GitHub token (or set `GH_TOKEN` / `GITHUB_TOKEN` env var) |
-| `--skip-tls` | Skip SSL/TLS verification (not recommended) |
-| `--ignore-agent-tools` | Skip checks for AI agent tools |
-| `--debug` | Verbose diagnostic output |
+| Flag |
+| ------ |
+| `--ai <agent>` |
+| `--here` |
+| `--force` |
+| `--no-git` |
+| `--ai-skills` |
+| `--ai-commands-dir <path>` |
+| `--script sh\|ps` |
+| `--github-token <token>` |
+| `--skip-tls` |
+| `--ignore-agent-tools` |
+| `--debug` |
 
 ---
 
@@ -96,10 +96,10 @@ specify extension disable <name>          # disable without removing
 
 ## Environment Variables
 
-| Variable | Purpose |
-|----------|---------|
-| `GH_TOKEN` / `GITHUB_TOKEN` | GitHub token for API requests during init |
-| `SPECIFY_FEATURE` | Override feature detection for non-Git repos. Set to the feature directory name (e.g., `001-photo-albums`). **Must be set before `/speckit.plan` or any follow-up commands.** |
+| Variable |
+| ---------- |
+| `GH_TOKEN` / `GITHUB_TOKEN` |
+| `SPECIFY_FEATURE` |
 
 ---
 

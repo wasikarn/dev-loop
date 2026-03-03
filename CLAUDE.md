@@ -10,7 +10,7 @@ A collection of Claude Code skills (custom slash commands). Each skill is a self
 
 Each skill lives at `skills/<skill-name>/` with this layout:
 
-```
+```text
 skills/<name>/
   SKILL.md          # Main entry point — required
   references/       # Supporting docs referenced from SKILL.md
@@ -35,14 +35,14 @@ Full field reference with description rules, substitutions (`$0`/`$1`/`!`), and 
 
 ## Skills in This Repo
 
-| Skill | Purpose |
-|-------|---------|
-| `optimize-context` | Audit + score + optimize CLAUDE.md files (5-phase workflow) |
-| `deep-research-workflow` | Research → Plan → Implement for complex features |
-| `spec-kit` | Spec-Driven Development — 6-step SDD workflow (constitution → specify → clarify → plan → tasks → implement) |
-| `api-review-pr` | PR review for tathep-platform-api (AdonisJS 5.9 + Effect-TS + Clean Arch) |
-| `web-review-pr` | PR review for tathep-website (Next.js 14 Pages Router + Chakra UI) |
-| `admin-review-pr` | PR review for tathep-admin (Next.js 14 Pages Router + Tailwind + Vitest) |
+| Skill |
+| ------- |
+| `optimize-context` |
+| `deep-research-workflow` |
+| `spec-kit` |
+| `api-review-pr` |
+| `web-review-pr` |
+| `admin-review-pr` |
 
 ## PR Review Skills Pattern
 

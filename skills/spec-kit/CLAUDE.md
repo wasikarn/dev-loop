@@ -5,13 +5,13 @@ SKILL.md is the agent entry point; references/ provides supporting detail.
 
 ## Reference File Map
 
-| File | Purpose |
-|------|---------|
-| `references/workflow.md` | File formats: spec.md, plan.md, tasks.md, constitution.md |
-| `references/prerequisites.md` | Pre-command gating checks for each `/speckit.*` command |
-| `references/cli.md` | `specify` CLI commands, flags, env vars |
-| `references/spec-quality.md` | Quality review criteria for spec.md files |
-| `scripts/detect-phase.sh` | Runtime phase detection — outputs JSON with current_step + next_action |
+| File |
+| ------ |
+| `references/workflow.md` |
+| `references/prerequisites.md` |
+| `references/cli.md` |
+| `references/spec-quality.md` |
+| `scripts/detect-phase.sh` |
 
 ## Updating This Skill
 

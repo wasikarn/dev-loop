@@ -18,11 +18,11 @@ Structured 3-phase workflow: Research → Plan → Implement. All creative decis
 
 ## Quick Reference
 
-| Phase | Artifact | Complete when |
-|-------|---------|--------------|
-| 1. Research | `research.md` | All touched areas mapped, open questions resolved |
-| 2. Plan | `plan.md` | User approves after annotation cycles |
-| 3. Implement | Working code | All tasks checked, tests pass |
+| Phase | Artifact |
+| ------- | --------- |
+| 1. Research | `research.md` |
+| 2. Plan | `plan.md` |
+| 3. Implement | Working code |
 
 ## On Invocation
 
@@ -32,7 +32,7 @@ Structured 3-phase workflow: Research → Plan → Implement. All creative decis
 
 Copy this checklist and check off items as you complete each phase:
 
-```
+```text
 Progress:
 - [ ] Phase 1: Research
 - [ ] Phase 2: Plan (annotation cycles: 0)

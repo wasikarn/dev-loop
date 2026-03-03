@@ -4,17 +4,17 @@ Use only sections relevant to the project. Not all sections are needed.
 
 ## Recommended Sections
 
-| Section | When to include |
-| --- | --- |
-| Commands | Always — build, test, dev, lint, deploy |
-| Architecture | Always — directory structure, key modules |
-| Retrieval Directive | When project uses a major framework — guides agent to prefer docs over training |
-| Key Files | When entry points or config files aren't obvious |
-| Code Style | When project has conventions beyond standard linter rules |
-| Environment | When env vars or setup steps are required |
-| Testing | When testing has project-specific patterns |
-| Gotchas | When there are non-obvious quirks or workarounds |
-| Workflow | When dev process has specific ordering or prerequisites |
+| Section |
+| --- |
+| Commands |
+| Architecture |
+| Retrieval Directive |
+| Key Files |
+| Code Style |
+| Environment |
+| Testing |
+| Gotchas |
+| Workflow |
 
 ## Template: Minimal (Single Project)
 
@@ -187,12 +187,12 @@ Explore project structure first, then consult docs index for API details.
 
 ## File Types & Locations
 
-| Type | Location | Purpose |
-| --- | --- | --- |
-| Project root | `./CLAUDE.md` | Primary context (shared via git) |
-| Local overrides | `./.claude.local.md` | Personal settings (gitignored) |
-| Global defaults | `~/.claude/CLAUDE.md` | User-wide defaults |
-| Package-specific | `./packages/*/CLAUDE.md` | Module-level in monorepos |
+| Type | Location |
+| --- | --- |
+| Project root | `./CLAUDE.md` |
+| Local overrides | `./.claude.local.md` |
+| Global defaults | `~/.claude/CLAUDE.md` |
+| Package-specific | `./packages/*/CLAUDE.md` |
 
 Claude auto-discovers CLAUDE.md files in parent directories.
 
@@ -220,12 +220,12 @@ Claude auto-discovers CLAUDE.md files in parent directories.
 
 From Vercel research: agents ignored available skills 56% of the time.
 
-| Use Case | Approach |
-| --- | --- |
-| General framework knowledge | **Passive** — embed in CLAUDE.md as docs index |
-| Project conventions & architecture | **Passive** — always available, no invocation needed |
-| Action-specific workflows (migrations, upgrades) | **Skills** — user-triggered, specific workflow |
-| One-time operations (scaffolding, code generation) | **Skills** — explicit invocation makes sense |
+| Use Case |
+| --- |
+| General framework knowledge |
+| Project conventions & architecture |
+| Action-specific workflows (migrations, upgrades) |
+| One-time operations (scaffolding, code generation) |
 
 **Rule:** If the agent needs this info on every task → passive context. If only for specific user-triggered actions → skill.
 

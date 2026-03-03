@@ -5,10 +5,10 @@ SKILL.md is the agent entry point; references/ provides artifact templates.
 
 ## Reference File Map
 
-| File | Purpose |
-|------|---------|
-| `references/research-template.md` | Template for `research.md` — codebase analysis, patterns, decisions, open questions |
-| `references/plan-template.md` | Template for `plan.md` — approach, file changes, trade-offs, tasks, annotations |
+| File |
+| ------ |
+| `references/research-template.md` |
+| `references/plan-template.md` |
 
 ## Validate After Changes
 

@@ -28,10 +28,10 @@ _One paragraph TL;DR of key findings. Write last, after all sections below are c
 
 Code and patterns that can be reused or referenced as specification:
 
-| Pattern | Location | Reuse as |
-| --- | --- | --- |
-| CRUD endpoint | `src/routes/users.ts` | Template for new endpoint |
-| Validation schema | `src/schemas/user.schema.ts` | Pattern for new schemas |
+| Pattern | Location |
+| --- | --- |
+| CRUD endpoint | `src/routes/users.ts` |
+| Validation schema | `src/schemas/user.schema.ts` |
 
 ## Key Decisions
 

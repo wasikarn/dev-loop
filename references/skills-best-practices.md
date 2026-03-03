@@ -4,27 +4,27 @@ Researched 2026-03-03 from agentskills.io spec, Claude Code official docs, and I
 
 ## Supported Frontmatter Fields
 
-| Field | Required | Max | Notes |
-|-------|----------|-----|-------|
-| `name` | No* | 64 chars | Defaults to dir name. Lowercase + hyphens only. |
-| `description` | Recommended | 1024 chars | Primary auto-invoke trigger. Cover what + when + trigger keywords. |
-| `argument-hint` | No | — | Shown in `/` autocomplete. e.g. `"[pr-number] [flag?]"` |
-| `compatibility` | No | 500 chars | Document prerequisites: required CLIs, env, repo context. |
-| `disable-model-invocation` | No | — | `true` = removes description from context entirely; manual `/skill` only. |
-| `user-invocable` | No | — | `false` = hides from `/` menu but description stays in context (Claude can still auto-invoke). |
-| `license` | No | — | e.g. `"MIT"` or `"Proprietary"` |
-| `metadata` | No | — | Arbitrary string→string map. Use namespaced keys. |
+| Field | Required | Max |
+| ------- | ---------- | ----- |
+| `name` | No* | 64 chars |
+| `description` | Recommended | 1024 chars |
+| `argument-hint` | No | — |
+| `compatibility` | No | 500 chars |
+| `disable-model-invocation` | No | — |
+| `user-invocable` | No | — |
+| `license` | No | — |
+| `metadata` | No | — |
 
 **Not IDE-validated:** `context`, `agent`, `model`, `hooks` — IDE flags these as unsupported.
 Existing PR review skills have `context: fork` and work at runtime; IDE validator may be behind.
 
 ## disable-model-invocation vs user-invocable
 
-| Setting | In context? | `/` menu | Auto-invoke | Use for |
-|---------|------------|----------|-------------|---------|
-| (default) | ✅ | ✅ | ✅ | Normal skills |
-| `disable-model-invocation: true` | ❌ | ✅ | ❌ | Side-effect skills (deploy, review-pr) |
-| `user-invocable: false` | ✅ | ❌ | ✅ | Background reference skills |
+| Setting | In context? | `/` menu | Auto-invoke |
+| --------- | ------------ | ---------- | ------------- |
+| (default) | ✅ | ✅ | ✅ |
+| `disable-model-invocation: true` | ❌ | ✅ | ❌ |
+| `user-invocable: false` | ✅ | ❌ | ✅ |
 
 ## Description Rules
 
@@ -35,6 +35,7 @@ Existing PR review skills have `context: fork` and work at runtime; IDE validato
 5. No XML tags
 
 **Good pattern:**
+
 ```yaml
 description: "Summarize PR changes. Use when user asks for PR summary, code review overview, or wants to understand what changed in a PR."
 ```
@@ -47,16 +48,16 @@ description: "Summarize PR changes. Use when user asks for PR summary, code revi
 
 ## String Substitutions
 
-| Variable | Meaning |
-|----------|---------|
-| `$ARGUMENTS` | All arguments as string |
-| `$0`, `$1`, `$2` | Shorthand for `$ARGUMENTS[0]`, `[1]`, `[2]` |
-| `${CLAUDE_SESSION_ID}` | Current session ID |
-| `` !`cmd` `` | **Shell preprocessing** — runs at load time, before Claude sees content. Output replaces placeholder. |
+| Variable |
+| ---------- |
+| `$ARGUMENTS` |
+| `$0`, `$1`, `$2` |
+| `${CLAUDE_SESSION_ID}` |
+| `` !`cmd` `` |
 
 ## File Structure
 
-```
+```text
 skills/<name>/
   SKILL.md         # Entry point. Keep under ~500 lines / 5k tokens.
   CLAUDE.md        # Local maintenance context (tracked in git)
@@ -66,11 +67,11 @@ skills/<name>/
 
 **Progressive disclosure:**
 
-| Level | Content | When loaded | ~Token cost |
-|-------|---------|------------|-------------|
-| 1 — Metadata | `name` + `description` | Always, at startup | ~100/skill |
-| 2 — Instructions | SKILL.md body | On invoke | <5k tokens |
-| 3 — Resources | `references/` files | When accessed | Unlimited |
+| Level | Content | When loaded |
+| ------- | --------- | ------------ |
+| 1 — Metadata | `name` + `description` | Always, at startup |
+| 2 — Instructions | SKILL.md body | On invoke |
+| 3 — Resources | `references/` files | When accessed |
 
 ## Content Principles
 

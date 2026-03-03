@@ -119,11 +119,11 @@ Albums provide a way to group related photos for sharing and personal organizati
 
 ## Common Spec Anti-Patterns
 
-| Anti-Pattern | Example | Fix |
-|---|---|---|
-| Implementation leak | "Use a modal dialog for confirmation" | "A confirmation prompt appears" |
-| Tech stack leak | "Store in PostgreSQL" | "Persisted across sessions" |
-| Non-testable scenario | "Then: everything works correctly" | "Then: the album appears in the list with 0 photos" |
-| Infinite scope | "Users can manage all their data" | Scope to specific actions: create, rename, delete |
-| Missing actor | "When submitted" | "When the admin submits the form" |
-| Untestable SC | "SC-001: System is performant" | "SC-001: Album list loads within 300ms with up to 500 albums" |
+| Anti-Pattern | Example |
+| --- | --- |
+| Implementation leak | "Use a modal dialog for confirmation" |
+| Tech stack leak | "Store in PostgreSQL" |
+| Non-testable scenario | "Then: everything works correctly" |
+| Infinite scope | "Users can manage all their data" |
+| Missing actor | "When submitted" |
+| Untestable SC | "SC-001: System is performant" |

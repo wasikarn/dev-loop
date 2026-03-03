@@ -5,10 +5,10 @@ SKILL.md is the agent entry point; references/ provides supporting detail.
 
 ## Reference File Map
 
-| File | Purpose |
-|------|---------|
-| `references/checklist.md` | 12-point review criteria with severity levels |
-| `references/examples.md` | Code examples for project-specific rules |
+| File |
+| ------ |
+| `references/checklist.md` |
+| `references/examples.md` |
 
 ## Validate After Changes
 

@@ -19,11 +19,11 @@ ln -s "$(pwd)/skills/<name>" ~/.claude/skills/<name>
 
 Three project-specific skills sharing the same architecture. Dispatch **7 parallel agents**, verify Jira AC, then fix code (Author) or submit inline GitHub review comments in Thai (Reviewer).
 
-| Skill | Project | Tech Stack | Validate Command |
-|-------|---------|-----------|-----------------|
-| `/api-review-pr` | tathep-platform-api | AdonisJS 5.9 + Effect-TS + Japa | `npm run validate:all` |
-| `/web-review-pr` | tathep-website | Next.js 14 Pages Router + Chakra UI + React Query | `npm run ts-check && npm run lint:fix && npm test` |
-| `/admin-review-pr` | tathep-admin | Next.js 14 Pages Router + Tailwind + Vitest | `npm run ts-check && npm run lint@fix && npm run test` |
+| Skill | Project | Tech Stack |
+| ------- | --------- | ----------- |
+| `/api-review-pr` | tathep-platform-api | AdonisJS 5.9 + Effect-TS + Japa |
+| `/web-review-pr` | tathep-website | Next.js 14 Pages Router + Chakra UI + React Query |
+| `/admin-review-pr` | tathep-admin | Next.js 14 Pages Router + Tailwind + Vitest |
 
 **Usage:**
 
@@ -36,33 +36,33 @@ Three project-specific skills sharing the same architecture. Dispatch **7 parall
 
 **7 Agents dispatched in parallel (foreground, READ-ONLY):**
 
-| Agent | Aspects Covered |
-|-------|----------------|
-| `pr-review-toolkit:code-reviewer` | Correctness, Architecture, N+1, DRY, Elegance, React/Next.js (#1–4, #7, #13) |
-| `pr-review-toolkit:comment-analyzer` | Documentation quality (#9) |
-| `pr-review-toolkit:pr-test-analyzer` | Test coverage (#11) |
-| `pr-review-toolkit:silent-failure-hunter` | Error handling, debugging (#1, #12) |
-| `pr-review-toolkit:type-design-analyzer` | TypeScript type design (#10) |
-| `pr-review-toolkit:code-simplifier` | DRY, flatten, SOLID, naming (#4–6, #8) |
-| `feature-dev:code-reviewer` | Clean Code + TS advanced types (confidence ≥80 only) |
+| Agent |
+| ------- |
+| `pr-review-toolkit:code-reviewer` |
+| `pr-review-toolkit:comment-analyzer` |
+| `pr-review-toolkit:pr-test-analyzer` |
+| `pr-review-toolkit:silent-failure-hunter` |
+| `pr-review-toolkit:type-design-analyzer` |
+| `pr-review-toolkit:code-simplifier` |
+| `feature-dev:code-reviewer` |
 
 **12-Point Checklist:**
 
-| # | Aspect | Category |
-|---|--------|----------|
-| 1 | Functional Correctness | Correctness & Safety |
-| 2 | Architecture / App Helpers | Correctness & Safety |
-| 3 | N+1 Prevention | Performance |
-| 4 | DRY & Simplicity | Maintainability |
-| 5 | Flatten Structure | Maintainability |
-| 6 | SOLID & Clean Architecture | Maintainability |
-| 7 | Elegance / Effect-TS Usage | Maintainability |
-| 8 | Clear Naming | Developer Experience |
-| 9 | Documentation & Comments | Developer Experience |
-| 10 | Type Safety (TS Advanced Types) | Developer Experience |
-| 11 | Testability | Developer Experience |
-| 12 | Debugging Friendly | Developer Experience |
-| 13 | React/Next.js Performance *(web/admin only)* | Framework |
+| # | Aspect |
+| --- | -------- |
+| 1 | Functional Correctness |
+| 2 | Architecture / App Helpers |
+| 3 | N+1 Prevention |
+| 4 | DRY & Simplicity |
+| 5 | Flatten Structure |
+| 6 | SOLID & Clean Architecture |
+| 7 | Elegance / Effect-TS Usage |
+| 8 | Clear Naming |
+| 9 | Documentation & Comments |
+| 10 | Type Safety (TS Advanced Types) |
+| 11 | Testability |
+| 12 | Debugging Friendly |
+| 13 | React/Next.js Performance *(web/admin only)* |
 
 **QG Score:** starts 100 — Critical = −15, Important = −5, Suggestion = −1. Gate: 100 = PASS, 85–99 = CONDITIONAL, <85 = FAIL.
 
@@ -74,14 +74,14 @@ Full SDD workflow using [spec-kit](https://github.com/github/spec-kit). Guides t
 
 **6-Step Workflow:**
 
-| Step | Command | Output |
-|------|---------|--------|
-| 1 | `/speckit.constitution` | `.specify/memory/constitution.md` — do once |
-| 2 | `/speckit.specify <what>` | `spec.md` + `checklists/requirements.md` + git branch |
-| 3 | `/speckit.clarify` | Updates `spec.md` Clarifications (max 5 questions) |
-| 4 | `/speckit.plan <tech stack>` | `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/` |
-| 5 | `/speckit.tasks` | `tasks.md` with `[P]` parallel markers |
-| 6 | `/speckit.implement` | Marked `[X]` tasks, working code |
+| Step | Command |
+| ------ | --------- |
+| 1 | `/speckit.constitution` |
+| 2 | `/speckit.specify <what>` |
+| 3 | `/speckit.clarify` |
+| 4 | `/speckit.plan <tech stack>` |
+| 5 | `/speckit.tasks` |
+| 6 | `/speckit.implement` |
 
 **Optional quality gates** (between steps 5–6):
 
@@ -154,13 +154,13 @@ Output FEATURE_DONE only when current_step is 6_complete." \
 
 **When to use ralph-loop per step:**
 
-| Step | Ralph-loop? | Reason |
-|------|------------|--------|
-| 1–3 (constitution/specify/clarify) | ❌ | Requires human judgment / input |
-| 4 (plan) | ❌ | User must provide tech stack |
-| 5 (tasks) | ❌ | Single-shot |
-| quality gates (analyze/checklist) | ✅ | Loop until zero findings |
-| 6 (implement) | ✅✅ | Tests are natural verifiers |
+| Step | Ralph-loop? |
+| ------ | ------------ |
+| 1–3 (constitution/specify/clarify) | ❌ |
+| 4 (plan) | ❌ |
+| 5 (tasks) | ❌ |
+| quality gates (analyze/checklist) | ✅ |
+| 6 (implement) | ✅✅ |
 
 **Tips:**
 
@@ -173,7 +173,7 @@ Output FEATURE_DONE only when current_step is 6_complete." \
 
 ## Skill Structure
 
-```
+```text
 skills/<name>/
   SKILL.md          # Main entry point (YAML frontmatter + workflow)
   references/       # Supporting docs referenced from SKILL.md

@@ -5,12 +5,12 @@ SKILL.md is the agent entry point; references/ provides supporting detail.
 
 ## Reference File Map
 
-| File | Purpose |
-|------|---------|
-| `references/quality-criteria.md` | 100-pt rubric with per-score breakdown |
-| `references/compression-guide.md` | 9 compression techniques + passive context patterns |
-| `references/templates.md` | CLAUDE.md templates by project type |
-| `scripts/pre-scan.sh` | Phase 1 metadata collector — run first to save ~2-4k tokens |
+| File |
+| ------ |
+| `references/quality-criteria.md` |
+| `references/compression-guide.md` |
+| `references/templates.md` |
+| `scripts/pre-scan.sh` |
 
 ## Validate After Changes
 

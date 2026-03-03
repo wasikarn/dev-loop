@@ -11,15 +11,15 @@ SDD inverts the coding workflow: specifications are the primary artifact; code i
 
 ## Quick Reference: 6-Step Workflow
 
-| Step | Command | Output | Key Rule |
-|------|---------|--------|----------|
-| 1 | `/speckit.constitution` | `.specify/memory/constitution.md` | Do once; cover code quality, testing, UX, performance + decision governance |
-| 2 | `/speckit.specify <what>` | `spec.md` + `checklists/requirements.md` + git branch | WHAT/WHY only, no tech; be explicit about flows and out-of-scope |
-| 3 | `/speckit.clarify` | Updates `spec.md` Clarifications | Structured first → free-form after; 5 questions per invocation, 10 total across session; each question includes a **recommended answer** (accept with "yes") |
-| 4 | `/speckit.plan <tech stack>` | `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/` | NOW specify tech |
-| 4.5 | *(plan validation)* | *(refined plan files)* | Audit for missing sequences + over-engineering; research rapidly-changing tech with parallel tasks |
-| 5 | `/speckit.tasks` | `tasks.md` | Requires `plan.md` to exist |
-| 6 | `/speckit.implement` | Marked `[X]` tasks, working code | Pauses on incomplete checklists; creates/verifies ignore files for detected tech; local CLI tools must be installed |
+| Step | Command | Output |
+| ------ | --------- | -------- |
+| 1 | `/speckit.constitution` | `.specify/memory/constitution.md` |
+| 2 | `/speckit.specify <what>` | `spec.md` + `checklists/requirements.md` + git branch |
+| 3 | `/speckit.clarify` | Updates `spec.md` Clarifications |
+| 4 | `/speckit.plan <tech stack>` | `plan.md`, `research.md`, `data-model.md`, `quickstart.md`, `contracts/` |
+| 4.5 | *(plan validation)* | *(refined plan files)* |
+| 5 | `/speckit.tasks` | `tasks.md` |
+| 6 | `/speckit.implement` | Marked `[X]` tasks, working code |
 
 **Optional quality gates** (run between steps 5 and 6):
 

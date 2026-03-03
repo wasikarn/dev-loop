@@ -13,10 +13,10 @@ Invoke as `/api-review-pr [pr-number] [jira-key?] [Author|Reviewer]`
 
 ## References
 
-| File | Purpose |
-| --- | --- |
-| [checklist.md](references/checklist.md) | 12-point review criteria with severity levels |
-| [examples.md](references/examples.md) | Code examples for project-specific rules (#2–#8) |
+| File |
+| --- |
+| [checklist.md](references/checklist.md) |
+| [examples.md](references/examples.md) |
 
 ---
 
@@ -60,29 +60,29 @@ Map each AC to file(s) in `git diff develop...HEAD`:
 
 Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: AC context from Phase 2 + checklist from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
 
-| Agent | Aspects |
-|-------|---------|
-| `pr-review-toolkit:code-reviewer` | #1, #2, #3, #4, #7 |
-| `pr-review-toolkit:comment-analyzer` | #9 |
-| `pr-review-toolkit:pr-test-analyzer` | #11 |
-| `pr-review-toolkit:silent-failure-hunter` | #1, #12 |
-| `pr-review-toolkit:type-design-analyzer` | #10 |
-| `pr-review-toolkit:code-simplifier` | #4, #5, #6, #8 |
-| `feature-dev:code-reviewer` | #1, #4, #5, #6, #8, #10 (confidence ≥80 only) |
+| Agent |
+| ------- |
+| `pr-review-toolkit:code-reviewer` |
+| `pr-review-toolkit:comment-analyzer` |
+| `pr-review-toolkit:pr-test-analyzer` |
+| `pr-review-toolkit:silent-failure-hunter` |
+| `pr-review-toolkit:type-design-analyzer` |
+| `pr-review-toolkit:code-simplifier` |
+| `feature-dev:code-reviewer` |
 
 `feature-dev:code-reviewer` applies TypeScript advanced type principles (generics, branded types, discriminated unions, type guards — NO `as any`) and Clean Code principles (SRP, early returns, naming intent, function size). Confidence scoring maps: 90–100 → 🔴, 80–89 → 🟡.
 
 **⛔ CHECKPOINT** — collect ALL 7 results before proceeding. Do NOT fix until all complete.
 
-| Agent | Result |
-|-------|--------|
-| code-reviewer | [ ] |
-| comment-analyzer | [ ] |
-| pr-test-analyzer | [ ] |
-| silent-failure-hunter | [ ] |
-| type-design-analyzer | [ ] |
-| code-simplifier | [ ] |
-| feature-dev:code-reviewer | [ ] |
+| Agent |
+| ------- |
+| code-reviewer |
+| comment-analyzer |
+| pr-test-analyzer |
+| silent-failure-hunter |
+| type-design-analyzer |
+| code-simplifier |
+| feature-dev:code-reviewer |
 
 Deduplicate → verify severity → remove false positives → proceed.
 

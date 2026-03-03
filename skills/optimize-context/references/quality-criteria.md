@@ -2,16 +2,16 @@
 
 ## Scoring Rubric (100 points)
 
-| Criterion | Weight | What to check |
-| --- | --- | --- |
-| Commands/workflows | 15 | Build, test, lint, deploy commands present and copy-paste ready |
-| Architecture clarity | 15 | Key directories, module relationships, entry points documented |
-| Retrieval readiness | 15 | Retrieval directive present, docs index for framework projects, explore-first wording |
-| Conciseness | 15 | No filler, no obvious info, no noise, each line adds value |
-| Non-obvious patterns | 10 | Gotchas, quirks, workarounds, "why we do it this way" |
-| Novel content coverage | 10 | Post-cutoff APIs documented in detail, well-known patterns compressed/removed |
-| Currency | 10 | Commands work, file references accurate, tech stack current |
-| Actionability | 10 | Instructions executable, paths real, steps concrete |
+| Criterion | Weight |
+| --- | --- |
+| Commands/workflows | 15 |
+| Architecture clarity | 15 |
+| Retrieval readiness | 15 |
+| Conciseness | 15 |
+| Non-obvious patterns | 10 |
+| Novel content coverage | 10 |
+| Currency | 10 |
+| Actionability | 10 |
 
 ## Score Breakdown
 
@@ -57,13 +57,13 @@
 
 ## Grades
 
-| Grade | Score | Meaning |
-| --- | --- | --- |
-| A | 90–100 | Comprehensive, current, actionable |
-| B | 70–89 | Good coverage, minor gaps |
-| C | 50–69 | Basic info, missing key sections |
-| D | 30–49 | Sparse or outdated |
-| F | 0–29 | Missing or severely outdated |
+| Grade | Score |
+| --- | --- |
+| A | 90–100 |
+| B | 70–89 |
+| C | 50–69 |
+| D | 30–49 |
+| F | 0–29 |
 
 ## Red Flags
 
@@ -79,14 +79,14 @@
 
 These patterns are now scored within the main rubric (Retrieval readiness + Novel content criteria). Use this as a quick pass/fail checklist:
 
-| Check | Pass | Fail |
-| --- | --- | --- |
-| Retrieval directive | Has "Prefer retrieval-led reasoning" or equivalent | No retrieval guidance |
-| Wording style | Explore-first / "Prefer X" framing | Absolute "MUST" → causes tunnel vision |
-| Novel content | Post-cutoff APIs detailed, known patterns compressed | Equal space for all content |
-| Docs index | Pointer to retrievable docs (if framework project) | Full docs embedded inline |
-| Self-invocation | Reminder to run `/optimize-context` when stale | No maintenance guidance |
-| Noise-free | No generic advice, no obvious patterns | Filler content that may distract agent |
+| Check | Pass |
+| --- | --- |
+| Retrieval directive | Has "Prefer retrieval-led reasoning" or equivalent |
+| Wording style | Explore-first / "Prefer X" framing |
+| Novel content | Post-cutoff APIs detailed, known patterns compressed |
+| Docs index | Pointer to retrievable docs (if framework project) |
+| Self-invocation | Reminder to run `/optimize-context` when stale |
+| Noise-free | No generic advice, no obvious patterns |
 
 ## Assessment Process
 
