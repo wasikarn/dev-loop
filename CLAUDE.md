@@ -81,8 +81,9 @@ Validate commands per project:
 3. Add `references/` docs if the skill needs supporting material
 4. Keep `description:` trigger-complete (what + when + keywords) — max 1024 chars
 5. Use `disable-model-invocation: true` for side-effect skills (deploy, PR review)
-6. Install symlink: `bash scripts/link-skill.sh <name>` (or `--list` to check, no args to link all)
-7. Lint: `npx markdownlint-cli2 "skills/<name>/**/*.md"` — pre-commit hook auto-fixes staged `.md` files
+6. Create `skills/<name>/CLAUDE.md` with contributor context: architecture overview, validate commands, gotchas specific to this skill
+7. Install symlink: `bash scripts/link-skill.sh <name>` (or `--list` to check, no args to link all)
+8. Lint: `npx markdownlint-cli2 "skills/<name>/**/*.md"` — pre-commit hook auto-fixes staged `.md` files
 
 ## Repo Commands
 

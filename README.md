@@ -7,8 +7,9 @@ Personal collection of Claude Code skills (custom slash commands) for structured
 Skills are symlinked from `~/.claude/skills/` — changes here take effect immediately in all Claude Code sessions.
 
 ```bash
-# Link a skill to Claude Code
-ln -s "$(pwd)/skills/<name>" ~/.claude/skills/<name>
+bash scripts/link-skill.sh <name>   # link one skill
+bash scripts/link-skill.sh          # link all skills
+bash scripts/link-skill.sh --list   # check all symlinks
 ```
 
 ---
@@ -110,7 +111,7 @@ Structured workflow for complex features requiring research before implementatio
 
 ### `/optimize-context` — CLAUDE.md Optimizer
 
-Audit, score, and optimize CLAUDE.md files across a project. 5-phase workflow: discover → assess → score → propose → apply.
+Audit, score, and optimize CLAUDE.md files across a project. 5-phase workflow: Discovery → Quality Assessment → Audit → Generate Update → Apply & Verify.
 
 ---
 
@@ -176,6 +177,7 @@ Output FEATURE_DONE only when current_step is 6_complete." \
 ```text
 skills/<name>/
   SKILL.md          # Main entry point (YAML frontmatter + workflow)
+  CLAUDE.md         # Contributor context (architecture, validate commands, gotchas)
   references/       # Supporting docs referenced from SKILL.md
   scripts/          # Helper scripts
 ```
@@ -184,8 +186,9 @@ skills/<name>/
 
 ```yaml
 name: skill-name
-description: "When to invoke (Claude uses this to match intent)"
+description: "What it does. Use when: X, Y, Z."  # max 1024 chars — primary trigger
 argument-hint: "[pr-number] [jira-key?] [Author|Reviewer]"
-context: fork                       # Isolate in fork context
-disable-model-invocation: true      # Prevent nested model calls
+compatibility: "Requires gh CLI and git"          # optional: prerequisites
+context: fork                       # Isolate in fork context (unsupported — test before use)
+disable-model-invocation: true      # Remove from context; skill never auto-triggers
 ```
