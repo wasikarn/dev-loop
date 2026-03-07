@@ -80,6 +80,7 @@ CLAUDE.md            # Agent instructions (varies by --ai flag)
 - **Re-running `/speckit.constitution` carelessly** — it silently overwrites existing principles; export content you want to keep before re-running, overwrites are irreversible
 - **Missing local CLI tools for `/speckit.implement`** — the agent runs tool commands (npm, dotnet, etc.); have them installed and at the correct version before starting
 - **Only checking CLI output after implement** — runtime errors (e.g., browser console errors) may not appear in the terminal; test the running app and paste any errors back to the agent
+- **Using spec-kit for throwaway spikes** — the workflow is designed for features worth keeping; for quick proof-of-concept experiments, skip spec-kit entirely and run `/speckit.specify` only after you decide to commit to the feature; forcing the full workflow on a spike wastes clarification budget on something you may discard
 
 ## Intelligence Features
 

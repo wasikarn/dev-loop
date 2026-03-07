@@ -24,7 +24,7 @@ Structured 3-phase workflow: Research → Plan → Implement. All creative decis
 
 1. **Check for existing artifacts** — if `research.md` or `plan.md` exist at the project root, this is a resume. Read them and identify the last incomplete phase.
 2. **If starting fresh** — ask: "What feature are we building? Describe it in 1–2 sentences."
-3. Begin at Phase 1 unless the user directs otherwise.
+3. Begin at Phase 1 unless the user directs otherwise. If the user wants to skip research, briefly note the risk — skipping Phase 1 means assumptions go unverified until Phase 3 surfaces contradictions that require reverting — then proceed as directed and document skipped phases in plan.md.
 
 Copy this checklist and check off items as you complete each phase:
 

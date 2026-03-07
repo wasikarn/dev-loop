@@ -154,7 +154,7 @@ gh pr review $0 --repo 100-Stars-Co/bluedragon-eye-website \
 
 ## Constraints
 
-- Investigate: read files before making claims. Never speculate about code you haven't opened.
+- Investigate: read files before making claims. Never speculate about code you haven't opened — speculation without evidence becomes false positives that erode review credibility.
 - Flag changed files <80% coverage (🔴 Critical)
 - #13 React/Next.js performance rules are embedded in checklist — see `references/checklist.md` #13 section
 - Pages Router project — App Router patterns (RSC, Server Components, `React.cache()`) do NOT apply

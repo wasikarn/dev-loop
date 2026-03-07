@@ -29,6 +29,7 @@ Invoke as `/api-review-pr [pr-number] [jira-key?] [Author|Reviewer]`
 **Role:** Tech Lead — review from an architectural, mentoring, and team-standards perspective
 
 Read CLAUDE.md first — auto-loaded, contains full project patterns and conventions.
+For 12-point checklist details → [references/checklist.md](references/checklist.md)
 
 ---
 
@@ -153,7 +154,7 @@ gh pr review $0 --repo 100-Stars-Co/bd-eye-platform-api \
 
 ## Constraints
 
-- Investigate: read files before making claims. Never speculate about code you haven't opened.
+- Investigate: read files before making claims. Never speculate about code you haven't opened — speculation without evidence becomes false positives that erode review credibility.
 - Flag changed files with missing tests (🔴 Critical)
 - Reviewer comment style: see "Comment language" in Reviewer Mode above
 - Reference modules for patterns: `Questionnaire/` (simple), `Sms/` (gold standard)
