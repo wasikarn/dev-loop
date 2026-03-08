@@ -108,6 +108,26 @@ case "${1:-}" in
       echo "[$type]"
       link_asset_type "$type" "$dst_dir"
     done
+
+    # Report docs cache staleness (informational only — does not auto-fetch)
+    echo ""
+    echo "[docs]"
+    sync_file="$HOME/.claude/docs/claude-code/.last-sync"
+    if [ -f "$sync_file" ]; then
+      last_sync=$(cat "$sync_file")
+      last_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_sync" "+%s" 2>/dev/null) \
+        || last_epoch=$(date -d "$last_sync" "+%s" 2>/dev/null) \
+        || last_epoch=0
+      now_epoch=$(date "+%s")
+      age_days=$(( (now_epoch - last_epoch) / 86400 ))
+      if [ "$age_days" -ge 14 ]; then
+        echo "  ⚠ Docs cache is ${age_days} days old — run: bash scripts/sync-docs.sh"
+      else
+        echo "  ✓ Docs cache is ${age_days} days old (last: $last_sync)"
+      fi
+    else
+      echo "  ⚠ No docs cache — run: bash scripts/sync-docs.sh"
+    fi
     ;;
   *)
     link_one_skill "$1"

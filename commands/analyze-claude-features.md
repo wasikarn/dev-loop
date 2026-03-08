@@ -2,45 +2,47 @@
 
 Read and analyze each documentation source below, then assess what can be concretely applied or improved in this project.
 
-Before starting, check if the following sources are already available in your context or cache.
-Fetch only what is missing — do not re-fetch sources already loaded.
+**Sources — cache-first loading:**
 
-**Sources:**
+Local cache: `~/.claude/docs/claude-code/` — read files from here first using the Read tool.
+If a cached file is missing, fetch from the fallback URL instead.
+If `~/.claude/docs/claude-code/.last-sync` is older than 14 days, warn: "Docs cache is stale. Run `bash scripts/sync-docs.sh` to refresh."
+If no cache exists at all, fetch all URLs below directly.
 
 Extensibility:
 
-- <https://code.claude.com/docs/en/features-overview.md>
-- <https://code.claude.com/docs/en/skills.md>
-- <https://code.claude.com/docs/en/sub-agents.md>
-- <https://code.claude.com/docs/en/output-styles.md>
+- `features-overview.md` — <https://code.claude.com/docs/en/features-overview.md>
+- `skills.md` — <https://code.claude.com/docs/en/skills.md>
+- `sub-agents.md` — <https://code.claude.com/docs/en/sub-agents.md>
+- `output-styles.md` — <https://code.claude.com/docs/en/output-styles.md>
 
 Memory & Rules:
 
-- <https://code.claude.com/docs/en/memory.md>
+- `memory.md` — <https://code.claude.com/docs/en/memory.md>
 
 Configuration:
 
-- <https://code.claude.com/docs/en/settings.md>
-- <https://code.claude.com/docs/en/permissions.md>
+- `settings.md` — <https://code.claude.com/docs/en/settings.md>
+- `permissions.md` — <https://code.claude.com/docs/en/permissions.md>
 
 Automation:
 
-- <https://code.claude.com/docs/en/hooks-guide.md>
-- <https://code.claude.com/docs/en/hooks.md>
-- <https://code.claude.com/docs/en/scheduled-tasks.md>
+- `hooks-guide.md` — <https://code.claude.com/docs/en/hooks-guide.md>
+- `hooks.md` — <https://code.claude.com/docs/en/hooks.md>
+- `scheduled-tasks.md` — <https://code.claude.com/docs/en/scheduled-tasks.md>
 
 Distribution:
 
-- <https://code.claude.com/docs/en/plugins.md>
-- <https://code.claude.com/docs/en/mcp.md>
+- `plugins.md` — <https://code.claude.com/docs/en/plugins.md>
+- `mcp.md` — <https://code.claude.com/docs/en/mcp.md>
 
 Coordination:
 
-- <https://code.claude.com/docs/en/agent-teams.md>
+- `agent-teams.md` — <https://code.claude.com/docs/en/agent-teams.md>
 
 Best Practices:
 
-- <https://www.notion.so/Skill-Claude-BestPractice-31cff5ab8d4680429ecbc56504c6293c>
+- `skill-creation-guide.md` — <https://www.notion.so/Skill-Claude-BestPractice-31cff5ab8d4680429ecbc56504c6293c>
 
 ---
 

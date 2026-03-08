@@ -146,6 +146,7 @@ Current styles: `thai-tech-lead` (Thai language tech lead mode), `coding-mentor`
 | Link one skill | `bash scripts/link-skill.sh <name>` |
 | Link everything | `bash scripts/link-skill.sh` (skills, agents, hooks, output-styles) |
 | Check all links | `bash scripts/link-skill.sh --list` |
+| Sync docs cache | `bash scripts/sync-docs.sh` (fetches Claude Code official docs to `~/.claude/docs/`) |
 
 ## Gotchas
 
