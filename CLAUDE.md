@@ -38,11 +38,17 @@ description: "What it does. Use when: X, Y, Z."  # Max 1024 chars — cover what
 argument-hint: "[arg1] [arg2?]"    # Optional: shown in /autocomplete
 compatibility: "Requires gh CLI"   # Optional: prerequisites (CLIs, env, repo context)
 disable-model-invocation: true      # Optional: removes description from context; manual-only
+allowed-tools: Read, Grep, Glob    # Optional: auto-approve these tools when skill is active
+model: sonnet                       # Optional: override model (sonnet/opus/haiku/inherit)
+context: fork                       # Optional: run in isolated subagent context
+agent: Explore                      # Optional: subagent type when context: fork (default: general-purpose)
+hooks: {}                           # Optional: lifecycle hooks scoped to this skill
 ---
 ```
 
-Full field reference with description rules, substitutions (`$0`/`$1`/`!`), and context budget:
-[references/skills-best-practices.md](references/skills-best-practices.md)
+**Substitutions:** `$ARGUMENTS` (all args), `$0`/`$1` (positional), `${CLAUDE_SKILL_DIR}` (skill directory path), `` !`command` `` (shell injection)
+
+Full field reference: [references/skills-best-practices.md](references/skills-best-practices.md)
 
 ## Skills in This Repo
 
@@ -74,6 +80,52 @@ Validate commands per project:
 - web: `npm run ts-check && npm run lint:fix && npm test`
 - admin: `npm run ts-check && npm run lint@fix && npm run test` (`lint@fix` uses `@`, not `:`)
 
+## Agents
+
+Custom subagents live at `agents/<name>.md` with YAML frontmatter. Symlinked to `~/.claude/agents/` via `link-skill.sh`.
+
+| Field | Purpose |
+| --- | --- |
+| `name` | Unique identifier (lowercase + hyphens) |
+| `description` | When Claude should delegate to this agent (include "proactively" to auto-trigger) |
+| `tools` | Allowlist: `Read, Grep, Glob, Bash` etc. Inherits all if omitted |
+| `disallowedTools` | Denylist: removed from inherited/specified tools |
+| `model` | `sonnet`, `opus`, `haiku`, or `inherit` (default) |
+| `skills` | Skills to preload into agent context at startup |
+| `memory` | `user`, `project`, or `local` — persistent cross-session memory |
+| `hooks` | Lifecycle hooks scoped to this agent |
+| `permissionMode` | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan` |
+| `maxTurns` | Max agentic turns before stop |
+| `background` | `true` to always run as background task |
+| `isolation` | `worktree` for isolated git worktree copy |
+
+Current agents: `tathep-reviewer` (code reviewer with persistent memory, preloads `next-best-practices` + `clean-code` skills)
+
+## Hooks
+
+Lifecycle hooks automate actions at specific points. Configured in `.claude/settings.json` or `~/.claude/settings.json`.
+
+| Event | Matcher | Common use |
+| --- | --- | --- |
+| `SessionStart` | `compact` | Re-inject context after compaction |
+| `PostToolUse` | `Edit\|Write` | Auto-format/lint after file edits |
+| `PreToolUse` | `Bash` | Validate commands before execution |
+| `Notification` | `*` | Desktop alerts when Claude needs input |
+| `Stop` | — | Verify tasks complete before stopping |
+| `SubagentStart/Stop` | agent name | Setup/cleanup for specific agents |
+
+Hook types: `command` (shell), `prompt` (single LLM call), `agent` (multi-turn with tools), `http` (POST to URL)
+
+Hook scripts live at `hooks/` and are symlinked to `~/.claude/hooks/` via `link-skill.sh`.
+
+## Output Styles
+
+Custom output styles live at `output-styles/<name>.md` with frontmatter (`name`, `description`, `keep-coding-instructions`). Symlinked to `~/.claude/output-styles/` via `link-skill.sh`.
+
+Output styles replace the default system prompt's coding instructions unless `keep-coding-instructions: true`. Use for consistent formatting/tone across sessions.
+
+Current styles: `thai-tech-lead` (Thai language tech lead mode with architecture focus)
+
 ## Adding a New Skill
 
 1. Create `skills/<name>/SKILL.md` with YAML frontmatter
@@ -90,13 +142,13 @@ Validate commands per project:
 | Task | Command |
 | --- | --- |
 | Lint all markdown | `npx markdownlint-cli2 "skills/**/*.md"` |
-| Link new skill | `bash scripts/link-skill.sh <name>` |
-| Link all skills | `bash scripts/link-skill.sh` |
+| Link one skill | `bash scripts/link-skill.sh <name>` |
+| Link everything | `bash scripts/link-skill.sh` (skills, agents, hooks, output-styles) |
 | Check all links | `bash scripts/link-skill.sh --list` |
 
 ## Gotchas
 
-- `context: fork` in SKILL.md frontmatter — works in PR review skills but attribute is officially unsupported; don't add to new skills without testing
+- `context: fork` in SKILL.md frontmatter — officially supported; use with `agent` field to pick execution environment (`Explore`, `Plan`, `general-purpose`, or custom agent name)
 - Pre-commit hook auto-fixes staged `.md` files — runs `scripts/fix-tables.py` + `markdownlint-cli2 --fix`; no manual fix needed before commit
 - `disable-model-invocation: true` removes description from context entirely (skill never auto-triggers); `user-invocable: false` hides from menu but keeps context — different effects
 - Run `/optimize-context` when this file feels stale
