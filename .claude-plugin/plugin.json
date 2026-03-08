@@ -1,0 +1,9 @@
+{
+  "name": "claude-code-skills",
+  "description": "A collection of Claude Code skills for PR review, context optimization, spec-driven development, and deep research workflows.",
+  "version": "1.0.0",
+  "author": {
+    "name": "kobig"
+  },
+  "repository": "https://github.com/kobig/claude-code-skills"
+}

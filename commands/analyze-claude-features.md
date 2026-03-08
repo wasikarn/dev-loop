@@ -2,6 +2,8 @@
 
 Read and analyze each documentation source below, then assess what can be concretely applied or improved in this project.
 
+**Goal:** Score how well this project uses Claude Code features relative to what's applicable. 100/100 means all relevant features are properly adopted — not that every feature is used. A simple script repo shouldn't need agent-teams to score 100.
+
 **Sources — cache-first loading:**
 
 Local cache: `~/.claude/docs/claude-code/` — read files from here first using the Read tool.
@@ -46,7 +48,11 @@ Best Practices:
 
 ---
 
-## Scoring Rubric (100 points)
+## Scoring
+
+Two scores are produced: **Analysis Quality** (how rigorous was this analysis) and **Project Coverage** (how well the project uses Claude Code features).
+
+### Analysis Quality (100 points)
 
 | Criterion | Weight | Min |
 | --- | --- | --- |
@@ -58,7 +64,7 @@ Best Practices:
 | Actionability | 15 | — |
 | Prioritization quality | 10 | — |
 
-Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29). Target: **100/100**.
+Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29).
 
 Score breakdown:
 
@@ -85,6 +91,60 @@ Critical minimum thresholds — any criterion below its min → must fix before 
 | Context verification | 10/15 |
 | Gap analysis depth | 10/15 |
 | Decision matrix accuracy | 10/15 |
+
+### Project Coverage (100 points)
+
+Measures how well the project adopts Claude Code features **relative to what's applicable**. A project only loses points for features it should use but doesn't — never for features that don't apply.
+
+**Step 1 — Relevance Assessment:** For each feature category, determine applicability:
+
+| Category | Applicable When | Not Applicable When |
+| --- | --- | --- |
+| CLAUDE.md | Always | — |
+| `.claude/rules/` | Project has path-specific conventions | Single-purpose project, no path variance |
+| Skills | Repeatable workflows exist | No repeatable workflows |
+| Subagents | Tasks benefit from delegation | Simple project, no delegation needs |
+| Output styles | Consistent tone/format needed | Default output sufficient |
+| Hooks | Deterministic automation needed | No automation benefits |
+| Permissions | Security-sensitive operations | Personal project, all tools trusted |
+| Settings | Custom env vars or config needed | Defaults work fine |
+| Scheduled tasks | Recurring monitoring needed | No recurring needs |
+| Plugins | Distribution to others needed | Personal/single-project use |
+| MCP | External tool integration needed | No external tools |
+| Agent teams | Complex parallel coordination needed | Sequential or simple tasks |
+
+**Step 2 — Score applicable features only:**
+
+For each applicable category, score adoption (0-3):
+
+- **3 — Fully adopted:** Feature used correctly, follows best practices, no gaps
+- **2 — Partially adopted:** Feature used but with gaps or misconfigurations
+- **1 — Minimal:** Feature exists but underutilized or poorly configured
+- **0 — Missing:** Applicable feature not used at all
+
+**Step 3 — Calculate:**
+
+```text
+Project Coverage = (sum of scores / (applicable categories × 3)) × 100
+```
+
+Example: 8 applicable categories, scores sum to 22 → 22/24 × 100 = 92/100
+
+**Step 4 — Output format:**
+
+```markdown
+| Category | Applicable? | Score | Evidence |
+| --- | --- | --- | --- |
+| CLAUDE.md | ✅ | 3/3 | Well-structured, <200 lines, imports used |
+| .claude/rules/ | ✅ | 2/3 | Exists but missing path for X |
+| Skills | ✅ | 3/3 | Proper frontmatter, descriptions trigger-complete |
+| Subagents | ❌ N/A | — | No delegation needs |
+| ... | ... | ... | ... |
+
+Project Coverage: XX/100
+```
+
+Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29). Target: **100/100** (all applicable features fully adopted).
 
 ---
 
@@ -245,7 +305,7 @@ Checklist:
 ---
 
 **Step 9 — Verify & Score**
-Validate the final output, then score.
+Validate the final output, then produce both scores.
 
 Verification checklist:
 
@@ -256,7 +316,7 @@ Verification checklist:
 - [ ] **No stale references** — URLs, file paths, config keys all current
 - [ ] **Completeness** — no source silently dropped between steps
 
-Score each criterion (mandatory output format):
+**9a — Analysis Quality Score** (mandatory output format):
 
 ```markdown
 | Criterion | Score | Status | Notes |
@@ -269,16 +329,40 @@ Score each criterion (mandatory output format):
 | Actionability | XX/15 | ✅ | ... |
 | Prioritization quality | XX/10 | ✅ | ... |
 
-Total: XX/100 (Grade X)
+Analysis Quality: XX/100 (Grade X)
 Critical check: PASS ✅ — all criteria above minimums
-— or —
-Critical check: FAIL ⚠️ — [Criterion] at X/15 (min 10)
 ```
 
 If FAIL → go back to the failing step and fix before re-scoring.
+
+**9b — Project Coverage Score** (mandatory output format):
+
+Run the Project Coverage scoring from the Scoring section:
+
+1. Assess each category's applicability based on project context
+2. Score each applicable category 0-3
+3. Calculate percentage
+4. Output the coverage table with evidence
+
+```markdown
+| Category | Applicable? | Score | Evidence |
+| --- | --- | --- | --- |
+| CLAUDE.md | ✅/❌ | X/3 | ... |
+| ... | ... | ... | ... |
+
+Project Coverage: XX/100 (Grade X)
+Applicable: X/12 categories
+```
+
+If project coverage < target → list specific gaps that need fixing to reach target.
 
 ---
 
 ## Output
 
-Per-source summary (Step 1), gap analysis table (Step 4), decision matrix validation (Step 5), top improvements with rationale, recommended adoption sequence with dependencies, and verification + score (Step 9) with per-criterion breakdown. Target: 100/100.
+Per-source summary (Step 1), gap analysis table (Step 4), decision matrix validation (Step 5), top improvements with rationale, recommended adoption sequence with dependencies, and two scores (Step 9):
+
+1. **Analysis Quality:** XX/100 — how thorough was this analysis
+2. **Project Coverage:** XX/100 — how well the project uses applicable Claude Code features
+
+When `$ARGUMENTS` includes "expect coverage project score 100/100": list every gap preventing 100/100 and provide concrete steps to close each one.

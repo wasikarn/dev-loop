@@ -20,6 +20,17 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/hooks/protect-files.sh"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -36,7 +47,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Check if the assistant's response completed all tasks the user requested. Look at the todo list if present — are there pending or in-progress items? Did the assistant leave any work unfinished or promise to do something it didn't do? If everything is done, respond {\"ok\": true}. If work remains, respond {\"ok\": false, \"reason\": \"Brief description of what's incomplete\"}."
+            "prompt": "If stop_hook_active is true in the input, respond {\"ok\": true} immediately. Otherwise: Check if the assistant's response completed all tasks the user requested. Look at the todo list if present — are there pending or in-progress items? Did the assistant leave any work unfinished or promise to do something it didn't do? If everything is done, respond {\"ok\": true}. If work remains, respond {\"ok\": false, \"reason\": \"Brief description of what's incomplete\"}."
           }
         ]
       }

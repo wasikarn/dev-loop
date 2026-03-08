@@ -65,22 +65,7 @@ Commands live at `commands/<name>.md` (symlinked to `~/.claude/commands/`). Curr
 
 ## PR Review Skills Pattern
 
-All three `*-review-pr` skills share the same structure:
-
-- **Args:** `[pr-number] [jira-key?] [Author|Reviewer]`
-- **Scope:** `git diff develop...HEAD`
-- **Phase 1-2:** Jira ticket fetch + AC verification (skipped if no Jira key)
-- **Phase 3:** 7 agents dispatched in foreground parallel (READ-ONLY checkpoint before fixes)
-- **Phase 4:** Author mode = fix code + `validate`; Reviewer mode = submit GitHub review in Thai
-- **Agents used:** `pr-review-toolkit:{code-reviewer,comment-analyzer,pr-test-analyzer,silent-failure-hunter,type-design-analyzer,code-simplifier}` + `feature-dev:code-reviewer`
-- **Reviewer language:** Thai mixed with English technical terms (casual Slack/PR tone)
-- **GitHub repos:** `100-Stars-Co/bd-eye-platform-api` (api), `100-Stars-Co/bluedragon-eye-website` (web), `100-Stars-Co/bluedragon-eye-admin` (admin)
-
-Validate commands per project:
-
-- api: `npm run validate:all`
-- web: `npm run ts-check && npm run lint:fix && npm test`
-- admin: `npm run ts-check && npm run lint@fix && npm run test` (`lint@fix` uses `@`, not `:`)
+Shared structure and validate commands are in [`.claude/rules/review-skills.md`](.claude/rules/review-skills.md) (auto-loaded when editing `skills/*-review-pr/`).
 
 ## Agents
 
@@ -109,11 +94,12 @@ Active hooks (in `.claude/settings.json`):
 | --- | --- | --- |
 | `SessionStart` | `startup` | Inject git state on fresh session |
 | `SessionStart` | `compact` | Re-inject context after compaction |
+| `PreToolUse` | `Edit\|Write` | Block edits to `.claude/settings.json` |
 | `PostToolUse` | `Edit\|Write` | Auto-lint `.md` files after edits |
-| `Stop` | — | Verify tasks complete before stopping |
+| `Stop` | — | Verify tasks complete before stopping (with `stop_hook_active` guard) |
 | `Notification` | `*` | macOS desktop alert when input needed |
 
-Other available events: `PreToolUse`, `SubagentStart/Stop`, `PreCompact`, `SessionEnd`.
+Other available events: `SubagentStart/Stop`, `PreCompact`, `SessionEnd`, `InstructionsLoaded`.
 
 Hook types: `command` (shell), `prompt` (single LLM call), `agent` (multi-turn with tools), `http` (POST to URL)
 
