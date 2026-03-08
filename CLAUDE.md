@@ -99,7 +99,7 @@ Custom subagents live at `agents/<name>.md` with YAML frontmatter. Symlinked to 
 | `background` | `true` to always run as background task |
 | `isolation` | `worktree` for isolated git worktree copy |
 
-Current agents: `tathep-reviewer` (code reviewer with persistent memory, preloads `next-best-practices` + `clean-code` skills)
+Current agents: `tathep-reviewer` (code reviewer with persistent memory), `skill-validator` (checks SKILL.md against best practices)
 
 ## Hooks
 
@@ -124,7 +124,7 @@ Custom output styles live at `output-styles/<name>.md` with frontmatter (`name`,
 
 Output styles replace the default system prompt's coding instructions unless `keep-coding-instructions: true`. Use for consistent formatting/tone across sessions.
 
-Current styles: `thai-tech-lead` (Thai language tech lead mode with architecture focus)
+Current styles: `thai-tech-lead` (Thai language tech lead mode), `coding-mentor` (explains architecture decisions inline while coding)
 
 ## Adding a New Skill
 

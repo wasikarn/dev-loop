@@ -8,7 +8,7 @@ Skills are symlinked from `~/.claude/skills/` — changes here take effect immed
 
 ```bash
 bash scripts/link-skill.sh <name>   # link one skill
-bash scripts/link-skill.sh          # link all skills
+bash scripts/link-skill.sh          # link all (skills, agents, hooks, output-styles)
 bash scripts/link-skill.sh --list   # check all symlinks
 ```
 
@@ -146,7 +146,7 @@ Output SPEC_CLEAN only when analyze reports zero CRITICAL/HIGH issues." \
 
 ```bash
 /ralph-loop:ralph-loop "Check current spec-kit phase:
-bash ~/.claude/skills/spec-kit/scripts/detect-phase.sh
+bash ${CLAUDE_SKILL_DIR}/scripts/detect-phase.sh
 Execute the recommended next_action.
 Output FEATURE_DONE only when current_step is 6_complete." \
   --completion-promise "FEATURE_DONE" \
@@ -189,6 +189,42 @@ name: skill-name
 description: "What it does. Use when: X, Y, Z."  # max 1024 chars — primary trigger
 argument-hint: "[pr-number] [jira-key?] [Author|Reviewer]"
 compatibility: "Requires gh CLI and git"          # optional: prerequisites
-context: fork                       # Isolate in fork context (unsupported — test before use)
+context: fork                       # Run in isolated subagent context
+agent: general-purpose              # Subagent type when context: fork
 disable-model-invocation: true      # Remove from context; skill never auto-triggers
+allowed-tools: Read, Grep, Glob     # Auto-approve these tools when skill is active
 ```
+
+---
+
+## Agents
+
+Custom subagents at `agents/<name>.md`. Symlinked to `~/.claude/agents/`.
+
+| Agent | Purpose |
+| --- | --- |
+| `tathep-reviewer` | Code reviewer with persistent memory, preloads `next-best-practices` + `clean-code` skills |
+| `skill-validator` | Validates SKILL.md against best practices checklist |
+
+---
+
+## Hooks
+
+Lifecycle hooks configured in `.claude/settings.json`.
+
+| Hook | Event | What it does |
+| --- | --- | --- |
+| Post-compact | `SessionStart[compact]` | Re-injects project context after compaction |
+| Auto-lint | `PostToolUse[Edit\|Write]` | Runs markdownlint on `.md` files after edits |
+| Notification | `Notification` | macOS desktop alert when Claude needs input |
+
+---
+
+## Output Styles
+
+Custom output styles at `output-styles/<name>.md`. Symlinked to `~/.claude/output-styles/`.
+
+| Style | Description |
+| --- | --- |
+| `thai-tech-lead` | Thai language tech lead mode with architecture focus |
+| `coding-mentor` | Explains architectural decisions inline while coding |
