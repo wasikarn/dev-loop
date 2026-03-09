@@ -2,6 +2,7 @@
 name: optimize-context
 description: "Audit, score, and optimize CLAUDE.md files. Use when CLAUDE.md is outdated, too large (>15KB), or needs initial setup. Triggers: 'optimize context', 'audit context', 'improve CLAUDE.md', 'init claude.md', 'bootstrap claude.md', 'setup context'."
 argument-hint: "[--dry-run?]"
+disable-model-invocation: true
 ---
 
 # /optimize-context
