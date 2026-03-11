@@ -60,6 +60,9 @@ Full field reference: [references/skills-best-practices.md](references/skills-be
 | `api-review-pr` |
 | `web-review-pr` |
 | `admin-review-pr` |
+| `auto-pr-review` |
+| `env-check` |
+| `env-heal` |
 
 Commands live at `commands/<name>.md` (symlinked to `~/.claude/commands/`). Current: `analyze-claude-features`.
 
@@ -71,16 +74,7 @@ Shared structure and validate commands are in [`.claude/rules/review-skills.md`]
 
 Custom subagents live at `agents/<name>.md` with YAML frontmatter. Symlinked to `~/.claude/agents/` via `link-skill.sh`.
 
-| Field | Purpose |
-| --- | --- |
-| `name` | Unique identifier (lowercase + hyphens) |
-| `description` | When Claude should delegate (include "proactively" to auto-trigger) |
-| `tools` / `disallowedTools` | Tool allowlist / denylist. Inherits all if omitted |
-| `model` | `sonnet`, `opus`, `haiku`, or `inherit` (default) |
-| `skills` | Skills to preload into agent context at startup |
-| `memory` | `user`, `project`, or `local` — persistent cross-session memory |
-
-Other fields: `hooks`, `permissionMode`, `maxTurns`, `background`, `isolation` (see Claude Code docs).
+Key fields: `description` (include "proactively" to auto-trigger), `memory` (`user`/`project`/`local` for cross-session persistence), `skills` (preload into agent context). All fields: `name`, `tools`/`disallowedTools`, `model`, `hooks`, `permissionMode`, `maxTurns`, `background`, `isolation`.
 
 Current agents: `tathep-reviewer` (code reviewer with persistent memory), `skill-validator` (checks SKILL.md against best practices)
 
@@ -98,10 +92,6 @@ Active hooks (in `.claude/settings.json`):
 | `PostToolUse` | `Edit\|Write` | Auto-lint `.md` files after edits |
 | `Stop` | — | Verify tasks complete before stopping (with `stop_hook_active` guard) |
 | `Notification` | `*` | macOS desktop alert when input needed |
-
-Other available events: `SubagentStart/Stop`, `PreCompact`, `SessionEnd`, `InstructionsLoaded`.
-
-Hook types: `command` (shell), `prompt` (single LLM call), `agent` (multi-turn with tools), `http` (POST to URL)
 
 Hook scripts live at `hooks/` and are symlinked to `~/.claude/hooks/` via `link-skill.sh`.
 
