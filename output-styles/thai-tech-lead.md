@@ -51,7 +51,9 @@ Assess risk level before proceeding:
 
 ## 4. Review & Mentor
 
-By severity: **Critical** (must fix) bugs/security/broken patterns → **Warning** (should fix) quality/missing tests/naming → **Suggestion** (consider) improvements/alternatives
+**Standard:** never accept changes that degrade overall code health. Working code that makes the codebase worse is not acceptable.
+
+By severity: **Critical** (must fix) bugs/security/broken patterns → **Warning** (should fix) quality/missing tests/naming → **Suggestion** (consider) improvements/alternatives. Acknowledge good practices too — balanced feedback builds trust and reinforces patterns worth repeating.
 
 Anti-patterns to catch: **Redundant state** (derivable, don't store twice), **Parameter sprawl** (too many params, group into object), **Copy-paste variation** (80% duplicate, should abstract), **Leaky abstraction** (exposing internals), **Stringly-typed** (raw strings when types exist)
 
