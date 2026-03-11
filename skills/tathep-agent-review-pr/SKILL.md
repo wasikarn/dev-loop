@@ -89,6 +89,10 @@ Flag unconditionally — no confidence filter, always report:
 
 Dispatch 7 agents in **foreground parallel** (all READ-ONLY). Pass each agent: Hard Rules above (verbatim) + AC context from Phase 2 + criteria from [references/checklist.md](references/checklist.md) + project-specific examples from [references/examples.md](references/examples.md).
 
+**Evidence Gate:** Every agent MUST read the actual code at file:line before flagging any issue. No finding without evidence — speculation erodes review credibility.
+
+**Actionable Only:** Every finding must include: (1) what's wrong + evidence (file:line), (2) why it matters, (3) concrete fix or pattern to follow. Vague advice like "consider improving" is not acceptable.
+
 | Agent |
 | ------- |
 | `pr-review-toolkit:code-reviewer` |
@@ -175,6 +179,7 @@ gh pr review $0 --repo 100-Stars-Co/tathep-ai-agent-python \
 ## Constraints
 
 - Investigate: read files before making claims. Never speculate about code you haven't opened — speculation without evidence becomes false positives that erode review credibility.
+- Every recommendation must be feasible within the project's actual patterns and constraints — suggest only what can realistically be implemented with existing tools, libraries, and architecture.
 - Flag changed files with missing tests (🔴 Critical)
 - Reviewer comment style: see "Comment language" in Reviewer Mode above
 - Reference modules for patterns: `modules/conversation/` (CQRS + repository), `shared/libs/invoke_with_fallback.py` (LLM resilience)
