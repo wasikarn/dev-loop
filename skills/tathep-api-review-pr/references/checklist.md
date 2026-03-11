@@ -23,7 +23,7 @@ For ✅/❌ code examples → [examples.md](examples.md)
 ### #2 App Helpers & Util Functions
 
 - `Logger` from `App/Helpers/Logger` used — not `console.log` → 🔴
-- `tryCatch()` from `App/Helpers/TryCatch` for controller-level external calls → 🟡
+- `tryCatch()` from `App/Helpers/TryCatch` for external/IO calls — see `.claude/rules/conditional-logic.md` §4 for full decision tree → 🟡
 - `DatabaseErrorUtil.isDuplicateKeyError(error)` for detecting duplicate key errors → 🟡
 - `SafeDispatch` for BullMQ job dispatch — not raw `Bull.add` → 🟡
 - Existing `ArrayHelper`, `StringHelper`, `DateTimeFrame`, `DateTimeParsing` used where applicable → 🟡
@@ -59,12 +59,12 @@ For ✅/❌ code examples → [examples.md](examples.md)
 
 ### #5 Flatten Structure
 
-- Max 1 nesting level — use early returns for all guard clauses → 🔴
+- Max 2 nesting levels (try/catch = level 0) — see `.claude/rules/conditional-logic.md` §1-2 → 🔴
 - No nested ternaries (`a ? b ? c : d : e`) → 🔴
 - No callback hell → use async/await → 🔴
 - Use `continue` for loop filtering instead of nested `if` → 🟡
-- Replace 4+ branch `if-else` chains with lookup object/map → 🟡
-- Extract complex conditional blocks into named functions → 🟡
+- Replace 4+ branch `if-else` chains with lookup object/map (see rule §5) → 🟡
+- Extract complex conditional blocks into named booleans/functions (see rule §3) → 🟡
 
 ### #6 Small Function & SOLID
 

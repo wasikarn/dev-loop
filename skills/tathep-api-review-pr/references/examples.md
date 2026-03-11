@@ -42,21 +42,17 @@ console.error('Failed:', error)
 ```
 
 ```ts
-// ✅ tryCatch helper for controller-level external calls
+// ✅ tryCatch helper for external/IO calls
 import { tryCatch } from 'App/Helpers/TryCatch'
 const { error, data } = await tryCatch(externalPaymentService.charge(amount))
 if (error) {
   Logger.error({ error }, 'Payment charge failed')
   return
 }
-
-// ❌ Raw try/catch scattered everywhere — no consistency
-try {
-  const result = await externalPaymentService.charge(amount)
-} catch (e) {
-  // each caller handles differently
-}
+// data is narrowed to non-null here
 ```
+
+For full tryCatch vs try/catch decision tree → `.claude/rules/conditional-logic.md` §4
 
 ```ts
 // ✅ DatabaseErrorUtil for duplicate detection
@@ -168,68 +164,11 @@ async execute(userId: string) {
 }
 ```
 
-### Lookup table for multi-branch conditions
+For detailed patterns and examples:
 
-❌ Bad:
-
-```typescript
-function getStatusColor(status: string): string {
-  if (status === 'active') {
-    return 'green'
-  } else if (status === 'pending') {
-    return 'yellow'
-  } else if (status === 'error') {
-    return 'red'
-  } else if (status === 'cancelled') {
-    return 'gray'
-  } else {
-    return 'black'
-  }
-}
-```
-
-✅ Good:
-
-```typescript
-const STATUS_COLORS: Record<string, string> = {
-  active: 'green',
-  pending: 'yellow',
-  error: 'red',
-  cancelled: 'gray',
-}
-
-function getStatusColor(status: string): string {
-  return STATUS_COLORS[status] ?? 'black'
-}
-```
-
-### Extract complex conditional blocks
-
-❌ Bad:
-
-```typescript
-async execute(input: CreateOrderInputDTO) {
-  if (input.items.length > 0) {
-    if (input.payment) {
-      if (input.payment.isVerified) {
-        // ... 20 lines of processing
-      }
-    }
-  }
-}
-```
-
-✅ Good:
-
-```typescript
-async execute(input: CreateOrderInputDTO) {
-  if (input.items.length === 0) return this.error('EMPTY_ITEMS')
-  if (!input.payment) return this.error('NO_PAYMENT')
-  if (!input.payment.isVerified) return this.error('UNVERIFIED_PAYMENT')
-
-  return this.processOrder(input)
-}
-```
+- Lookup tables / Strategy pattern → `.claude/rules/conditional-logic.md` §5
+- Extract complex conditions to named booleans → `.claude/rules/conditional-logic.md` §3
+- Guard clauses (all styles: throw, return, boolean) → `.claude/rules/conditional-logic.md` §1
 
 ---
 
