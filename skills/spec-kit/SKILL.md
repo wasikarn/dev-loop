@@ -1,6 +1,6 @@
 ---
 name: spec-kit
-description: "Spec-Driven Development (SDD) using spec-kit (github/spec-kit). Use when user mentions speckit, SDD, /speckit.* commands, 'write a spec', or 'start a spec'. Six-step workflow: constitution → specify → clarify → plan → tasks → implement."
+description: "Implements Spec-Driven Development (SDD) using spec-kit (github/spec-kit). Use when user mentions speckit, SDD, /speckit.* commands, 'write a spec', 'start a spec', 'spec this out', 'spec-first development', 'create a specification', or wants a structured planning-before-coding workflow for a new feature or service. Always trigger when the user wants formal requirements before implementation. Six-step workflow: constitution → specify → clarify → plan → tasks → implement."
 argument-hint: "[feature-name]"
 compatibility: "Requires specify CLI: npm install -g spec-kit"
 ---

@@ -11,12 +11,12 @@ Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invo
 
 ## References
 
-| File |
-| --- |
-| [quality-criteria.md](references/quality-criteria.md) |
-| [compression-guide.md](references/compression-guide.md) |
-| [templates.md](references/templates.md) |
-| `scripts/pre-scan.sh` |
+| File | Content |
+| --- | --- |
+| [quality-criteria.md](references/quality-criteria.md) | CLAUDE.md Quality rubric (8 criteria, 100 pts) + Project Coverage rubric (12 categories) — load in Phase 2 |
+| [compression-guide.md](references/compression-guide.md) | Compression techniques: tables, one-liners, pointer-to-docs patterns — load in Phase 4 |
+| [templates.md](references/templates.md) | CLAUDE.md templates by project type (horizontal/vertical/hybrid) — load in Phase 4 when creating from scratch |
+| `scripts/pre-scan.sh` | Detects framework, npm scripts, dir structure in ~30ms — run first in Phase 1 |
 
 **Why passive context wins** ([Vercel research](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)):
 
