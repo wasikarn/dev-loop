@@ -16,6 +16,8 @@ Prefer reading source before editing — key references:
 | [`references/skill-creation-guide.md`](references/skill-creation-guide.md) | 5 golden rules, creation workflow, skill brief template, anti-patterns |
 | `skills/<name>/references/checklist.md` | Per-skill review criteria with severity markers (review-pr skills) |
 | `skills/<name>/references/examples.md` | Per-skill ✅/❌ code examples for all 12 rules (review-pr skills) |
+| [`references/review-workflow.md`](references/review-workflow.md) | Shared phase orchestration for all 5 tathep-*-review-pr skills |
+| [`references/review-conventions.md`](references/review-conventions.md) | Comment labels, dedup protocol, strengths, PR size thresholds |
 
 ## Skill Structure
 
@@ -31,25 +33,9 @@ skills/<name>/
 
 ### SKILL.md Frontmatter
 
-```yaml
----
-name: skill-name                    # Slash command trigger: /skill-name
-description: "What it does. Use when: X, Y, Z."  # Max 1024 chars — cover what + when + triggers
-argument-hint: "[arg1] [arg2?]"    # Optional: shown in /autocomplete
-disable-model-invocation: true      # Optional: removes description from context; manual-only
-user-invocable: false               # Optional: hides from / menu; Claude can still auto-invoke
-allowed-tools: Read, Grep, Glob    # Optional: auto-approve tools when skill is active
-model: sonnet                       # Optional: override model (sonnet/opus/haiku)
-context: fork                       # Optional: run in isolated subagent context
-agent: Explore                      # Optional: subagent type when context: fork
-hooks: {}                           # Optional: lifecycle hooks scoped to this skill
-compatibility: "Requires gh CLI"   # Optional: prerequisites (agentskills.io spec)
----
-```
+Required: `name`, `description` (max 1024 chars, cover what + when + triggers). Optional: `argument-hint`, `disable-model-invocation`, `user-invocable`, `allowed-tools`, `model`, `context`, `agent`, `hooks`, `compatibility`. Substitutions: `$ARGUMENTS`, `$N`, `${CLAUDE_SKILL_DIR}`, `` !`command` ``.
 
-**Substitutions:** `$ARGUMENTS` (all args), `$ARGUMENTS[N]`/`$N` (positional), `${CLAUDE_SESSION_ID}`, `${CLAUDE_SKILL_DIR}` (skill directory), `` !`command` `` (shell injection)
-
-Full field reference: [references/skills-best-practices.md](references/skills-best-practices.md)
+Full spec + examples: [references/skills-best-practices.md](references/skills-best-practices.md)
 
 ## Skills in This Repo
 

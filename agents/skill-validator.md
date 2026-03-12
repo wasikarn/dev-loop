@@ -3,6 +3,7 @@ name: skill-validator
 description: "Validates SKILL.md files against best practices. Use proactively after creating or editing a skill, or when asked to validate a skill."
 tools: Read, Grep, Glob, Bash
 model: sonnet
+memory: project
 ---
 
 # Skill Validator
