@@ -35,14 +35,6 @@ ls -la ~/.claude/skills/deep-research-workflow
 # Re-read research.md Summary + plan.md Annotations to restore phase context
 ```
 
-## Skill System
-
-SKILL.md frontmatter controls how Claude invokes this skill:
-
-- `description:` — Claude matches user intent; prefer trigger-complete descriptions — wrong description = skill never auto-triggers
-- `name:` — the slash command name (`/deep-research-workflow`)
-- `argument-hint:` — shown in autocomplete as `[feature-description]`
-
 ## Gotchas
 
 - This CLAUDE.md is **tracked in git** — changes here are shared with the team

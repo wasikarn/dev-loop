@@ -39,14 +39,6 @@ Also check `spec-driven.md` for workflow philosophy updates:
 curl -s https://raw.githubusercontent.com/github/spec-kit/main/spec-driven.md
 ```
 
-## Skill System
-
-SKILL.md frontmatter controls how Claude invokes this skill:
-
-- `description:` — Claude matches user intent; prefer trigger-complete descriptions — wrong description = skill never fires; include trigger phrases like "start a spec", "speckit"
-- `name:` — the slash command name (`/spec-kit`)
-- Runs inline (no `context: fork`) for real-time progress visibility
-
 ## Validate After Changes
 
 ```bash

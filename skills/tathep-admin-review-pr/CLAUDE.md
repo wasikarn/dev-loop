@@ -34,14 +34,6 @@ ls -la ~/.claude/skills/tathep-admin-review-pr
 # npm run ts-check && npm run lint@fix && npm run test
 ```
 
-## Skill System
-
-SKILL.md frontmatter controls how Claude invokes this skill:
-
-- `description:` — Claude matches user intent; prefer trigger-complete descriptions — wrong description = skill never auto-triggers
-- `name:` — the slash command name (`/tathep-admin-review-pr`)
-- `disable-model-invocation: true` — manual invocation only (heavy 7-agent dispatch)
-
 ## Project Context
 
 - **GitHub repo:** `100-Stars-Co/bluedragon-eye-admin`

@@ -1,11 +1,10 @@
 ---
 name: env-check
-description: Validate environment variable consistency between .env.example and env.ts schema
+description: "Validate environment variable consistency between .env.example and env.ts schema. Use when env vars drift out of sync or after adding new config. Triggers: env check, validate env, check env consistency."
 context: fork
 agent: general-purpose
-argument-hints:
-  - "check env consistency"
-  - "validate env vars"
+argument-hint: "[--dry-run?]"
+compatibility: "Run from within the tathep-platform-api repo"
 ---
 
 # Env Check

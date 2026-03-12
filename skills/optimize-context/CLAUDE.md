@@ -38,13 +38,6 @@ bash skills/optimize-context/scripts/pre-scan.sh . | jq -c '.'
 # /optimize-context --dry-run  → phases 1-3 only (report, no edits)
 ```
 
-## Skill System
-
-SKILL.md frontmatter controls how Claude invokes this skill:
-
-- `description:` — Claude matches user intent; prefer trigger-complete descriptions — wrong description = skill never auto-triggers
-- `name:` — the slash command name (`/optimize-context`)
-
 ## Gotchas
 
 - This CLAUDE.md is **tracked in git** — changes here are shared with the team

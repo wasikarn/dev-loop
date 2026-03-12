@@ -1,11 +1,10 @@
 ---
 name: env-heal
-description: Scan codebase for env var references, cross-reference with validation schema, auto-fix and test
+description: "Scan codebase for env var references, cross-reference with validation schema, auto-fix and test. Use when env vars are missing from schema or .env.example. Triggers: heal env, fix env, env heal."
 context: fork
 agent: general-purpose
-argument-hints:
-  - "heal env vars"
-  - "fix missing env validations"
+argument-hint: "[--dry-run?]"
+compatibility: "Run from within the tathep-platform-api repo"
 ---
 
 # Self-Healing Env Validation
