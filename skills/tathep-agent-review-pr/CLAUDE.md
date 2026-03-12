@@ -11,10 +11,12 @@ Prefer reading before editing — key references:
 | --- | --- |
 | `references/checklist.md` | Adding/updating review criteria for a rule |
 | `references/examples.md` | Adding ✅/❌ code examples for a rule |
+| `../../references/review-workflow.md` | Updating shared review phases or agent dispatch logic |
 
 ## Skill Architecture
 
-- `SKILL.md` — agent entry point; defines phase workflow, Hard Rules, and 7-agent dispatch
+- `SKILL.md` — agent entry point; defines project-specific Hard Rules, config, and constraints; references shared workflow
+- `../../references/review-workflow.md` — shared phase orchestration (Phase 0-4, agent dispatch, consolidation, GitHub submission)
 - `references/checklist.md` — 12-rule criteria with 🔴/🟡/🔵 severity markers; loaded by Phase 3 agents
 - `references/examples.md` — ✅/❌ code examples per rule; evidence agents use when flagging issues
 

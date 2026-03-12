@@ -1,7 +1,7 @@
 ---
 name: optimize-context
 description: "Audit, score, and optimize CLAUDE.md files. Use when CLAUDE.md is outdated, too large (>15KB), or needs initial setup. Triggers: 'optimize context', 'audit context', 'improve CLAUDE.md', 'init claude.md', 'bootstrap claude.md', 'setup context'."
-argument-hint: "[--dry-run?]"
+argument-hint: "[--dry-run?] [--coverage?]"
 disable-model-invocation: true
 ---
 
@@ -51,44 +51,11 @@ Critical minimum thresholds (score below these → must fix before passing):
 | Retrieval readiness | 10/15 |
 | Conciseness | 10/15 |
 
-### Project Coverage (100 points)
+### Project Coverage (optional — `--coverage` flag)
 
-Measures how well the project adopts Claude Code features **relative to what's applicable**. 100/100 means all relevant features properly adopted — not every feature used. A simple script repo shouldn't need agent-teams to score 100.
-
-**Relevance assessment** — determine applicability per project:
-
-| Category | Applicable When | Not Applicable When |
-| --- | --- | --- |
-| CLAUDE.md | Always | — |
-| `.claude/rules/` | Path-specific conventions exist | Single-purpose project, no path variance |
-| Skills | Repeatable workflows exist | No repeatable workflows |
-| Subagents | Tasks benefit from delegation | Simple project, no delegation needs |
-| Output styles | Consistent tone/format needed | Default output sufficient |
-| Hooks | Deterministic automation needed | No automation benefits |
-| Permissions | Security-sensitive operations | Personal project, all tools trusted |
-| Settings | Custom env vars or config needed | Defaults work fine |
-| Scheduled tasks | Recurring monitoring needed | No recurring needs |
-| Plugins | Distribution to others needed | Personal/single-project use |
-| MCP | External tool integration needed | No external tools |
-| Agent teams | Complex parallel coordination needed | Sequential or simple tasks |
-
-**Score each applicable category (0-3):**
-
-- **3 — Fully adopted:** Feature used correctly, follows best practices, no gaps
-- **2 — Partially adopted:** Feature used but with gaps or misconfigurations
-- **1 — Minimal:** Feature exists but underutilized or poorly configured
-- **0 — Missing:** Applicable feature not used at all
-
-**Calculate:** `Project Coverage = (sum of scores / (applicable categories × 3)) × 100`
-
-When `$ARGUMENTS` includes "expect" + "score 100/100": list every gap preventing 100/100 and provide concrete steps to close each one.
+When `$ARGUMENTS` includes `--coverage`: also assess how well the project adopts Claude Code features (12 categories, scored 0-3 per applicable category, normalized to 100). See [references/quality-criteria.md](references/quality-criteria.md) for the full rubric and relevance table. When args include "expect" + "score 100/100": list every gap and concrete steps to close each one.
 
 ## Workflow
-
-Two scores are produced:
-
-1. **CLAUDE.md Quality** (100 pts) — how effective is the CLAUDE.md content
-2. **Project Coverage** (100 pts) — how well does the project use applicable Claude Code features
 
 Copy this checklist and check off items as you complete each phase:
 
@@ -141,8 +108,6 @@ Detect framework: check `package.json`, `requirements.txt`, `go.mod`, etc. If of
 3. List APIs/features that are post-cutoff → these need detailed documentation
 4. List well-known patterns within training data → candidates for compression/removal
 
-Example post-cutoff APIs (Next.js 16, released late 2025): sync access to `cookies()`/`headers()`/`draftMode()`/`params`/`searchParams` **fully removed** (all must be awaited), `id` in image/sitemap generators now `Promise<string>`; within-cutoff Next.js 15 APIs (`connection()`, `'use cache'`, `cacheLife()`, `cacheTag()`, `forbidden()`, `unauthorized()`, `after()`) the model likely knows
-
 **Output:** State classification explicitly — e.g. "Classification: Hybrid (Next.js 14 + custom domain). Next.js 14 within training cutoff — no post-cutoff docs needed."
 
 **No CLAUDE.md found?** → Create one using the appropriate template from [references/templates.md](references/templates.md), then continue to phase 2.
@@ -189,32 +154,7 @@ Critical check: FAIL ⚠️ — [Criterion] at X/15 (min 10), [Criterion] at X/1
 
 The Status column is **mandatory** — compare each score against the minimum thresholds table and mark `⚠️ CRITICAL` if below. Any `FAIL` criteria must be addressed in phase 4 before the file can pass.
 
-Then assess Project Coverage (100 points). Scan the project for Claude Code feature usage. Check for each category:
-
-- `.claude/rules/` — any `.md` files with `paths` frontmatter?
-- `skills/` or `.claude/commands/` — any skill/command files?
-- `agents/` or `.claude/agents/` — any agent definitions?
-- `output-styles/` — any style files?
-- `.claude/settings.json` — hooks, permissions, env vars configured?
-- `.mcp.json` or MCP in settings — any MCP servers?
-- `.claude-plugin/plugin.json` — plugin manifest?
-
-Determine applicability using the relevance table above, then score each applicable category 0-3.
-
-**Output format:**
-
-```markdown
-### Project Coverage: XX/100 (Grade X)
-
-| Category | Applicable? | Score | Evidence |
-| --- | --- | --- | --- |
-| CLAUDE.md | ✅ | X/3 | ... |
-| .claude/rules/ | ✅/❌ | X/3 or — | ... |
-| Skills | ✅/❌ | X/3 or — | ... |
-| ... | ... | ... | ... |
-
-Applicable: X/12 categories
-```
+If `--coverage` flag: also assess Project Coverage using the rubric in [references/quality-criteria.md](references/quality-criteria.md). Scan for `.claude/rules/`, `skills/`, `agents/`, `output-styles/`, `.claude/settings.json`, `.mcp.json`, `.claude-plugin/`. Score each applicable category 0-3, normalize to 100.
 
 ### 3. Audit
 
@@ -270,80 +210,13 @@ Proceed directly to phase 5 after outputting the proposed changes table.
 ### 5. Apply & Verify
 
 1. Edit CLAUDE.md files using Edit tool
-2. **Completeness check:** Verify all proposed changes from phase 4 were applied — list each change with ✅/❌ status
-3. **Size verification:** Run `wc -c <file>` for each edited file — report actual byte count
-4. **Section integrity:** Read the final file and confirm all original sections are present (list them)
-5. **Command & path validation:**
-   - Run 2-3 commands documented in CLAUDE.md → confirm they still work
-   - Verify file paths referenced → `ls` each critical path
-6. **Retrieval & wording validation:**
-   - Check retrieval directive present (if project uses a framework)
-   - Confirm wording uses explore-first framing (not absolute "MUST" directives)
-   - Verify docs index points to files that exist and are retrievable
-7. **Behavior-based eval** (for framework projects with post-cutoff APIs):
-   - Pick 2-3 post-cutoff APIs documented in CLAUDE.md
-   - Ask: "Can the agent find the right docs file for this API from the index?"
-   - Verify the index entry leads to correct, readable documentation
-   - If project has no post-cutoff APIs, verify novel project patterns are documented instead
-8. **Re-score both scores** — show before/after for each CLAUDE.md Quality criterion, confirm all critical thresholds now pass. Re-assess Project Coverage if phase 4 changes affected feature adoption (e.g. added `.claude/rules/`, created hooks). Scores in the re-score tables must be **final** — no post-hoc adjustments outside the table.
+2. **Verify completeness:** List each proposed change with ✅/❌ status. Run `wc -c` for size. Read final file to confirm all sections intact.
+3. **Validate:** Run 2-3 commands from CLAUDE.md, verify referenced paths exist, check retrieval directive present (framework projects), confirm explore-first wording (no absolute "MUST" directives)
+4. **Re-score:** Show before/after for each criterion, confirm critical thresholds pass. If `--coverage`: re-assess Project Coverage too.
 
-**Verification output format** (must show all steps — do NOT stop after step 4):
+**If verification fails:** revert (`git checkout`), return to Phase 4, re-apply cleanly.
 
-```markdown
-### Verification Checklist
-
-| Step | Check | Result |
-| --- | --- | --- |
-| 1 | Changes applied | ✅ N/N applied (list each) |
-| 2 | Size (wc -c) | ✅ XX bytes (was XX bytes) |
-| 3 | Sections intact | ✅ N sections preserved (list) |
-| 4 | Commands work | ✅ Ran: `cmd1` ✅, `cmd2` ✅ |
-| 5 | Paths verified | ✅ N/N paths exist |
-| 6 | Wording check | ✅ No absolute "MUST" directives / retrieval directive present (if framework) |
-| 7 | Behavior eval | ✅ Tested N post-cutoff APIs (or novel patterns): [result] / N/A (non-framework) |
-| 8a | CLAUDE.md Quality re-score | ✅ XX → XX (Grade X → X) |
-| 8b | Project Coverage re-score | ✅ XX → XX (Grade X → X) |
-```
-
-Every row must have an actual result — do NOT skip rows or mark as N/A without explanation.
-
-**If verification fails** (commands broken, paths missing, score decreased):
-
-1. Revert the edit (`git checkout` the file)
-2. Return to Phase 4 — re-scope the changes that caused failure
-3. Do NOT incrementally patch — revert and re-apply cleanly
-
-Report: `CLAUDE.md Quality: XX → XX | Project Coverage: XX → XX | Fixed N stale | Added N gaps | Removed N redundant | Size: XX KB → XX KB`
-
-**Example output (phases 2-3):**
-
-```markdown
-## Audit Report
-
-### ./CLAUDE.md — Score: 50/100 (Grade C) | Size: 18.2 KB
-
-| Criterion           | Score | Status      | Issue                                |
-| ------------------- | ----- | ----------- | ------------------------------------ |
-| Commands            | 12/15 | ✅          | Missing deploy command               |
-| Architecture        | 8/15  | ⚠️ CRITICAL | No module relationships              |
-| Retrieval readiness | 0/15  | ⚠️ CRITICAL | No retrieval directive or docs index |
-| Conciseness         | 5/15  | ⚠️ CRITICAL | 3 verbose sections + noise           |
-| Non-obvious         | 8/10  | ✅          | —                                    |
-| Novel content       | 3/10  | ✅          | Post-cutoff APIs not identified      |
-| Currency            | 7/10  | ✅          | `src/legacy/` no longer exists       |
-| Actionability       | 7/10  | ✅          | Vague "see docs" references          |
-
-Critical check: FAIL ⚠️ — Architecture at 8/15 (min 10), Retrieval readiness at 0/15 (min 10), Conciseness at 5/15 (min 10)
-
-### Findings
-
-| #   | Type                   | Detail                                           |
-| --- | ---------------------- | ------------------------------------------------ |
-| 1   | Stale (must fix)       | `src/legacy/` removed in v3                      |
-| 2   | Gaps (must add)        | No env setup instructions                        |
-| 3   | Redundant (can reduce) | API docs duplicated in agent_docs/               |
-| 4   | Oversized              | Architecture section 4KB → compressible to 0.8KB |
-```
+Report: `CLAUDE.md Quality: XX → XX | Fixed N stale | Added N gaps | Removed N redundant | Size: XX KB → XX KB`
 
 ## Key Rules
 

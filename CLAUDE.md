@@ -63,7 +63,6 @@ Full field reference: [references/skills-best-practices.md](references/skills-be
 | `tathep-admin-review-pr` |
 | `tathep-agent-review-pr` |
 | `tathep-video-review-pr` |
-| `env-check` |
 | `env-heal` |
 | `team-review-pr` |
 | `team-dev-loop` |
