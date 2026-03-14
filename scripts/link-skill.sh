@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # link-skill.sh — Create ~/.claude/ symlinks for all assets in this repo.
 # Usage:
-#   bash scripts/link-skill.sh            # link everything (skills, agents, hooks, output-styles, commands)
+#   bash scripts/link-skill.sh            # link everything
 #   bash scripts/link-skill.sh spec-kit   # link one skill by name
 #   bash scripts/link-skill.sh --list     # show current link status
 
@@ -9,8 +9,11 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-# Asset types: repo_subdir:claude_target
-ASSET_TYPES="skills:$HOME/.claude/skills agents:$HOME/.claude/agents output-styles:$HOME/.claude/output-styles hooks:$HOME/.claude/hooks commands:$HOME/.claude/commands"
+# Asset types: repo_subdir:claude_target (each item in subdir gets symlinked individually)
+ASSET_TYPES="skills:$HOME/.claude/skills agents:$HOME/.claude/agents output-styles:$HOME/.claude/output-styles hooks:$HOME/.claude/hooks commands:$HOME/.claude/commands scripts:$HOME/.claude/scripts"
+
+# Dotfiles: individual repo_file:claude_target pairs (space-separated, pipe-delimited entries)
+DOTFILES="statusline.sh:$HOME/.claude/statusline.sh|global-CLAUDE.md:$HOME/.claude/CLAUDE.md"
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 link_item() {
@@ -57,6 +60,17 @@ link_asset_type() {
   fi
 }
 
+link_dotfiles() {
+  IFS='|' read -ra PAIRS <<< "$DOTFILES"
+  for pair in "${PAIRS[@]}"; do
+    local src_rel="${pair%%:*}"
+    local dst="${pair#*:}"
+    local src="$REPO_ROOT/$src_rel"
+    [ -f "$src" ] || continue
+    link_item "$src" "$dst"
+  done
+}
+
 list_status() {
   for entry in $ASSET_TYPES; do
     local type="${entry%%:*}"
@@ -77,6 +91,18 @@ list_status() {
         && echo "  ✓ $name → $target" \
         || echo "  ✗ $name (not linked)"
     done
+  done
+
+  echo ""
+  echo "dotfiles:"
+  IFS='|' read -ra PAIRS <<< "$DOTFILES"
+  for pair in "${PAIRS[@]}"; do
+    local src_rel="${pair%%:*}"
+    local dst="${pair#*:}"
+    local target
+    target=$(readlink "$dst" 2>/dev/null) \
+      && echo "  ✓ $src_rel → $target" \
+      || echo "  ✗ $src_rel (not linked at $dst)"
   done
 }
 
@@ -108,6 +134,11 @@ case "${1:-}" in
       echo "[$type]"
       link_asset_type "$type" "$dst_dir"
     done
+
+    # Dotfiles: individual file symlinks
+    echo ""
+    echo "[dotfiles]"
+    link_dotfiles
 
     # Report docs cache staleness (informational only — does not auto-fetch)
     echo ""

@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "cleanupPeriodDays": 365,
+  "env": {
+    "AGENT_BROWSER_CONTENT_BOUNDARIES": "1",
+    "AGENT_BROWSER_ALLOWED_DOMAINS": "{{ALLOWED_DOMAINS}}",
+    "ENABLE_TOOL_SEARCH": "true",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS": "10000",
+    "MAX_THINKING_TOKENS": "8000",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet",
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "32000"
+  },
+  "includeGitInstructions": false,
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read",
+      "Edit",
+      "Write",
+      "WebFetch",
+      "WebSearch",
+      "Skill",
+      "mcp__github",
+      "mcp__context7",
+      "mcp__figma",
+      "mcp__postman-api",
+      "mcp__sequential-thinking",
+      "mcp__tathep-db",
+      "mcp__jira-cache-server",
+      "mcp__mcp-atlassian",
+      "mcp__claude_ai_Notion",
+      "mcp__claude-vscode",
+      "mcp__ide",
+      "mcp__plugin_claude-mem_mcp-search",
+      "mcp__plugin_playwright_playwright",
+      "Read(//{{USERNAME}}/**)",
+      "mcp__plugin_Notion_notion__notion",
+      "mcp__plugin_qmd_qmd"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~*)",
+      "Bash(sudo rm -rf *)",
+      "Bash(dd if=/dev/zero of=/dev/*)",
+      "Bash(dd if=/dev/random of=/dev/*)",
+      "Bash(mkfs*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/.ssh/id_*)",
+      "Read(**/.aws/credentials)",
+      "Read(**/.aws/config)",
+      "Read(**/credentials.json)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Bash(cat ~/.ssh/*)",
+      "Bash(cat ~/.aws/*)",
+      "Bash(env | base64*)",
+      "Bash(printenv | base64*)",
+      "Bash(git push --force origin main*)",
+      "Bash(git push --force origin master*)",
+      "Bash(git push -f origin main*)",
+      "Bash(git push -f origin master*)",
+      "Bash(git reset --hard origin/main*)",
+      "Bash(git reset --hard origin/master*)",
+      "Bash(curl * | sh*)",
+      "Bash(curl * | bash*)",
+      "Bash(wget * | sh*)",
+      "Bash(wget * | bash*)",
+      "Bash(curl http://169.254.169.254/*)",
+      "Bash(wget http://169.254.169.254/*)",
+      "Bash(bash -i >& /dev/tcp/*)",
+      "Bash(sh -i >& /dev/tcp/*)",
+      "Bash(nc -l*)",
+      "Bash(netcat -l*)",
+      "Bash(shutdown*)",
+      "Bash(reboot*)",
+      "Bash(halt*)",
+      "Bash(poweroff*)",
+      "Bash(docker run --privileged *)",
+      "Bash(docker run -v /:/host *)",
+      "Bash(docker run -v /var/run/docker.sock:*)",
+      "Bash(sudo chmod 777 /*)",
+      "Bash(chmod -R 777 /*)",
+      "Bash(sudo rm /etc/*)",
+      "Bash(sudo rm /bin/*)",
+      "Bash(sudo rm /usr/*)"
+    ],
+    "additionalDirectories": [
+      "~/Codes/*"
+    ]
+  },
+  "model": "sonnet",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/post-compact-context.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [],
+    "PreToolUse": [
+      {
+        "matcher": "Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/qmd-pre-search.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/auto-test-env.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/session-summary-hook.sh",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/play-sound.sh hint.wav",
+            "async": true
+          },
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude needs your attention\" with title \"Claude Code\"'",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/play-sound.sh all_clear_here.wav",
+            "async": true
+          },
+          {
+            "type": "prompt",
+            "prompt": "If this is a subagent session or stop_hook_active is true, respond {\"ok\": true} immediately. Otherwise check if all tasks the user requested are complete — look for pending items, unfinished implementations, or untested changes. Skip check if session only involved .md/.json/.yaml files. Respond {\"ok\": true} if done, {\"ok\": false, \"reason\": \"<what remains>\"} if not."
+          }
+        ]
+      }
+    ],
+    "ConfigChange": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -c '{timestamp: (now | todate), source: .source, file: .file_path}' >> $HOME/.claude/config-audit.log"
+          }
+        ]
+      }
+    ]
+  },
+  "worktree": {
+    "symlinkDirectories": [
+      "node_modules",
+      ".next",
+      ".cache",
+      "dist"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$HOME/.claude/statusline.sh"
+  },
+  "enabledPlugins": {
+    "feature-dev@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
+    "claude-mem@thedotmack": true,
+    "playwright@claude-plugins-official": true,
+    "qmd@qmd": true,
+    "document-skills@anthropic-agent-skills": false,
+    "typescript-lsp@claude-plugins-official": true,
+    "hookify@claude-plugins-official": false,
+    "playground@claude-plugins-official": false,
+    "claude-code-setup@claude-plugins-official": false,
+    "superpowers@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
+  },
+  "outputStyle": "Thai Tech Lead",
+  "feedbackSurveyRate": 0,
+  "autoUpdatesChannel": "stable",
+  "autoMemoryDirectory": "~/.claude/memory",
+  "skipDangerousModePermissionPrompt": true
+}

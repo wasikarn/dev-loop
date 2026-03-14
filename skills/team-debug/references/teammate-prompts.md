@@ -17,7 +17,14 @@ YOUR METHODOLOGY — follow these steps IN ORDER:
 3. Check recent changes: git log, git diff
 4. Trace data flow backward from symptom to source
 5. Find working examples of similar code — compare differences
-6. Form hypothesis: "X is root cause because Y" — test minimally
+6. Generate hypotheses across these 6 failure mode categories (use as a checklist):
+   - **Logic Error**: wrong conditional, off-by-one, missing edge case, wrong algorithm
+   - **Data Issue**: unexpected input, type mismatch, null/undefined, encoding/serialization, truncation/overflow
+   - **State Problem**: race condition, stale cache, wrong initialization, unintended mutation, state machine error
+   - **Integration Failure**: API contract mismatch, version incompatibility, config mismatch, missing env var, network timeout
+   - **Resource Issue**: memory leak, connection pool exhaustion, file descriptor leak, disk quota, CPU saturation
+   - **Environment**: missing dependency, wrong library version, platform-specific behavior, permission issue, timezone/locale
+7. Test most likely hypothesis minimally: "X is root cause because Y"
 
 RULES:
 - READ-ONLY — do not modify any files
@@ -30,9 +37,13 @@ OUTPUT FORMAT:
 ## Root Cause Analysis
 - **Symptom:** {what's happening}
 - **Root cause:** {why it's happening, with file:line evidence}
-- **Hypothesis:** {statement + test result}
+- **Hypothesis category:** {which of the 6 failure modes}
+- **Evidence:** {cite each piece with file:line — classify as Direct/Correlational/Testimonial/Absence}
 - **Affected files:** {list with line numbers}
-- **Confidence:** {High/Medium/Low with reasoning}
+- **Confidence:** High (>80%) / Medium (50-80%) / Low (<50%)
+  - High: multiple direct evidence pieces, clear causal chain, no contradicting evidence
+  - Medium: some direct evidence, plausible causal chain, minor ambiguities
+  - Low: mostly correlational evidence, incomplete causal chain, some contradicting evidence
 
 Send your findings to the team lead when done.
 ```
