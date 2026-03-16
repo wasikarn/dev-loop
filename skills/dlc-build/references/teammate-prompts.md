@@ -79,8 +79,7 @@ TASK: {current_task_description}
 PROJECT: {project_name}
 RESEARCH: Read research.md for codebase patterns (if exists).
 
-Note: Your task details are provided above — you do not need to read {plan_file} for your assigned tasks.
-Read it only for broader project context if needed.
+Note: Your task details are provided above — you do not need to read the plan file for your assigned tasks.
 
 RULES:
 1. Follow the plan exactly — no scope creep
@@ -97,7 +96,6 @@ CONVENTIONS:
 HARD RULES:
 {hard_rules}
 
-Mark each task complete in {plan_file} as you finish it.
 Message the team lead when all assigned tasks are done.
 ```
 
@@ -235,5 +233,5 @@ When constructing prompts:
 2. Insert project-specific Hard Rules from `.claude/skills/review-rules/hard-rules.md` (if exists) or use Generic Hard Rules
 3. Insert validate command from [phase-gates.md](phase-gates.md) project detection
 4. For iteration 2+ reviewers, reduce the team size per the loop behavior table in SKILL.md
-5. Worker prompts should reference {plan_file} tasks by number for trackability
-6. **Copy full task text** into each worker prompt — workers should not need to read {plan_file} independently
+5. Worker prompts should reference the plan tasks by number for trackability
+6. **Copy full task text** into each worker prompt — workers should not need to read the plan independently

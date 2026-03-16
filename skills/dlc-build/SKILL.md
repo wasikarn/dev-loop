@@ -55,14 +55,6 @@ If TeamCreate tool is not available → check graceful degradation:
 
 Use the `Project` JSON from the header (output of `detect-project.sh`). It contains: `project`, `repo`, `validate`, `base_branch`, `branch`.
 
-**Set plan filename** — used throughout all phases:
-
-```text
-$ARGUMENTS contains Jira key (BEP-\d+)?
-├→ Yes: plan_file = .claude/plans/plan-{jira-key}.md   (e.g. plan-BEP-1234.md)
-└→ No:  plan_file = .claude/plans/plan-{branch}.md     (e.g. plan-feat-add-health-check.md)
-```
-
 Check for project-specific Hard Rules at `{project_root}/.claude/skills/review-rules/hard-rules.md`:
 
 ```text
@@ -216,19 +208,15 @@ Lead merges all explorer findings into `research.md` at project root. Structure:
 
 ## Phase 2: Plan (Lead Only)
 
-### Step 1: Enter Plan Mode (Full mode only)
+**All modes:** Call `EnterPlanMode` — Claude switches to Opus, plan file created automatically at `~/.claude/plans/{random}.md`.
 
-**Full mode:** Call `EnterPlanMode` — uses Opus model for higher-quality planning.
-**Quick/Hotfix mode:** Skip — write `{plan_file}` directly without entering plan mode.
-
-### Step 2: Write Plan
-
-Create `{plan_file}` in the target project directory. Source material:
+Source material:
 
 - Full mode: `research.md` findings
 - Quick mode: task description + CLAUDE.md conventions
+- Hotfix mode: broken code path only — minimal scope
 
-Plan structure:
+### Plan Structure
 
 1. Problem statement
 2. Approach with rationale
@@ -239,13 +227,7 @@ Plan structure:
 7. Task list — tag each task `[P]` (parallelizable) or `[S]` (sequential)
 8. Task granularity — each task must specify: exact file(s) to modify, what to change (specific — not "update the logic"), expected behavior after change, how to verify (test to run or output to check). Each task must be completable in one worker turn — if not, split further.
 
-### Step 3: Annotation Cycle
-
-Present plan to user. User may correct, reject, add constraints, or redirect.
-Write all corrections into `{plan_file}` `## Annotations` section.
-Repeat until user approves.
-
-**Full mode:** After user approves — call `ExitPlanMode` before proceeding.
+Present plan to user — iterate via annotations until approved. Call `ExitPlanMode` after user approves.
 
 **GATE:** User approves plan → proceed to Implement-Review Loop.
 
@@ -273,7 +255,7 @@ Create 1-2 worker teammates using prompts from [teammate-prompts.md](references/
 - `[S]` tasks: 1 worker, sequential
 - `[P]` tasks: 2 workers with non-overlapping file assignments
 
-**Controller provides full task text** to each worker — copy the relevant task descriptions from {plan_file} into the worker creation prompt. Workers should NOT need to read {plan_file} themselves for their assigned tasks.
+**Controller provides full task text** to each worker — copy the relevant task descriptions from the plan into the worker creation prompt. Workers should NOT need to read the plan themselves for their assigned tasks.
 
 Workers follow TDD: failing test → implement → green → commit.
 Lead validates each commit against plan.
@@ -435,19 +417,19 @@ Present options to user:
 
 #### PR Template (option 1)
 
-**Title:** English, under 70 chars, start with verb — derived from {plan_file} problem statement.
+**Title:** English, under 70 chars, start with verb — derived from the plan problem statement.
 
 **Description (Thai):**
 
 ```markdown
 ## สิ่งที่เปลี่ยนแปลง
-{สรุปสิ่งที่แก้/เพิ่ม จาก {plan_file} problem statement — 2-3 ประโยค}
+{สรุปสิ่งที่แก้/เพิ่ม จาก plan problem statement — 2-3 ประโยค}
 
 ## เหตุผล
-{ทำไมต้องทำ และ approach ที่เลือก จาก {plan_file} rationale}
+{ทำไมต้องทำ และ approach ที่เลือก จาก plan rationale}
 
 ## วิธีทดสอบ
-{test strategy จาก {plan_file} — unit/integration/manual steps}
+{test strategy จาก plan — unit/integration/manual steps}
 
 ## Jira
 {BEP-XXXX หรือ N/A}
@@ -483,7 +465,7 @@ If cherry-pick conflicts → note the conflict in backport PR description, assig
 
 1. Shut down all remaining teammates
 2. Clean up the team
-3. Optionally archive artifacts (`dev-loop-context.md`, `{plan_file}`, `research.md`, `review-findings-*.md`)
+3. Optionally archive artifacts (`dev-loop-context.md`, plan file, `research.md`, `review-findings-*.md`)
 
 ---
 
@@ -496,7 +478,7 @@ If cherry-pick conflicts → note the conflict in backport PR description, assig
 - **Reviewers are READ-ONLY always** — no file modifications during review
 - **Hard Rules cannot be dropped** — only reclassified with evidence
 - **Commit per task** — enables clean revert if fix introduces regressions
-- **Artifacts persist on disk** — `dev-loop-context.md`, `{plan_file}`, `research.md`, `review-findings-*.md` survive context compression
+- **Artifacts persist on disk** — `dev-loop-context.md`, plan file (`~/.claude/plans/`), `research.md`, `review-findings-*.md` survive context compression
 - **YAGNI** — implement only what the task requires; speculative abstractions and "just in case" code are review findings
 - **Hotfix scope** — `--hotfix` touches only the broken code path; no refactoring, no unrelated improvements
 - **Hotfix backport** — every hotfix to `main` MUST have a backport PR to `develop`; skip only if `develop` already has the fix

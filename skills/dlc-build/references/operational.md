@@ -15,7 +15,7 @@ Detect at Phase 0 and inform user of mode.
 If session compacts mid-workflow, re-read in order:
 
 1. `dev-loop-context.md` — task, mode, project, Hard Rules
-2. `plan.md` — task list with checkmarks showing progress
+2. Plan file — `~/.claude/plans/` — open the most recently modified `.md` file (all modes use native plan)
 3. Latest `review-findings-*.md` — current iteration findings (if in loop)
 4. Progress tracker in conversation — iteration count and phase
 
