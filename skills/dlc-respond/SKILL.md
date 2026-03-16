@@ -1,6 +1,6 @@
 ---
-name: team-respond-review
-description: "Respond to PR review comments — reads all open GitHub review threads, fixes each issue, commits, replies to threads, and re-requests review. Use when: you received PR review feedback and need to address reviewer comments. Triggers: respond to review, fix review comments, resolve review threads, address PR feedback, reply to reviewer, /team-respond-review."
+name: dlc-respond
+description: "Respond to PR review comments — reads all open GitHub review threads, fixes each issue, commits, replies to threads, and re-requests review. Use when: you received PR review feedback and need to address reviewer comments. Triggers: respond to review, fix review comments, resolve review threads, address PR feedback, reply to reviewer, /dlc-respond."
 argument-hint: "[pr-number] [jira-key?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
 disable-model-invocation: true
@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, Bash(git *), Bash(gh *)
 
 # Team Respond Review — Address PR Review Comments
 
-Invoke as `/team-respond-review [pr-number] [jira-key?]`
+Invoke as `/dlc-respond [pr-number] [jira-key?]`
 
 ---
 

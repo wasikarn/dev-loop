@@ -1,6 +1,6 @@
 ---
-name: team-debug
-description: "Agent Teams debugging with parallel DX analysis — Investigator traces root cause while DX Analyst audits observability, error handling, and test coverage. Pass a Jira key (BEP-XXXX) to enrich bug context from ticket details. Use when: debugging complex bugs, production incidents, or when you want to harden the affected area. Triggers: debug, team debug, investigate bug, /team-debug."
+name: dlc-debug
+description: "Agent Teams debugging with parallel DX analysis — Investigator traces root cause while DX Analyst audits observability, error handling, and test coverage. Pass a Jira key (BEP-XXXX) to enrich bug context from ticket details. Use when: debugging complex bugs, production incidents, or when you want to harden the affected area. Triggers: debug, team debug, investigate bug, /dlc-debug."
 argument-hint: "[bug-description-or-jira-key] [--quick?]"
 compatibility: "Requires gh CLI, git, and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
 disable-model-invocation: true
@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, Bash(git *), Bash(gh *)
 
 # Team Debug — Systematic Debugging with DX
 
-Invoke as `/team-debug [bug-description-or-jira-key] [--quick?]`
+Invoke as `/dlc-debug [bug-description-or-jira-key] [--quick?]`
 
 ## References
 

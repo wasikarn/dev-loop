@@ -120,12 +120,12 @@ Never commit secrets/credentials, never skip tests, never suppress errors silent
 
 | Task | Command |
 | --- | --- |
-| Feature / bug fix | `/team-dev-loop BEP-XXXX` |
-| Urgent production fix | `/team-dev-loop BEP-XXXX --hotfix` |
-| PR review (as reviewer) | `/team-review-pr {pr} Reviewer` |
-| PR review (as author) | `/team-review-pr {pr} Author` |
-| Address review comments | `/team-respond-review {pr}` |
-| Debug production issue | `/team-debug` |
+| Feature / bug fix | `/dlc-build BEP-XXXX` |
+| Urgent production fix | `/dlc-build BEP-XXXX --hotfix` |
+| PR review (as reviewer) | `/dlc-review {pr} Reviewer` |
+| PR review (as author) | `/dlc-review {pr} Author` |
+| Address review comments | `/dlc-respond {pr}` |
+| Debug production issue | `/dlc-debug` |
 
 ## PR Reviews
 

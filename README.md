@@ -24,7 +24,7 @@ bash scripts/link-skill.sh --list
 
 | Category | Skills | Description |
 | --- | --- | --- |
-| **Team Workflows** | `team-debug`, `team-dev-loop`, `team-review-pr`, `team-respond-review` | Full DLC — debug, feature dev (`--quick`/`--hotfix`), adversarial PR review, respond to review comments |
+| **DLC Workflows** | `dlc-build`, `dlc-review`, `dlc-respond`, `dlc-debug` | Full DLC — feature dev (`--quick`/`--hotfix`), adversarial PR review, respond to review comments, debug |
 | **Thinking** | `systems-thinking` | Causal Loop Diagram analysis for architecture decisions and bottleneck diagnosis |
 | **Database** | `postgresql-schema-design` | Schema design, data types, indexing strategies, FK gotchas |
 | **Utilities** | `optimize-context`, `env-heal` | CLAUDE.md optimizer, env var healing |

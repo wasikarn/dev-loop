@@ -1,6 +1,6 @@
 ---
-name: team-review-pr
-description: "Agent Teams PR review with adversarial debate — 3 reviewer teammates review independently then challenge each other's findings to reduce false positives. Supports optional Jira ticket (BEP-XXXX) for AC verification. Use when: reviewing complex PRs, high-stakes changes, or multi-perspective review. Triggers: team review, debate review, /team-review-pr."
+name: dlc-review
+description: "Agent Teams PR review with adversarial debate — 3 reviewer teammates review independently then challenge each other's findings to reduce false positives. Supports optional Jira ticket (BEP-XXXX) for AC verification. Use when: reviewing complex PRs, high-stakes changes, or multi-perspective review. Triggers: team review, debate review, /dlc-review."
 argument-hint: "[pr-number] [jira-key?] [Author|Reviewer?]"
 compatibility: "Requires gh CLI, git, and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 enabled in settings"
 disable-model-invocation: true
@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, Bash(gh *), Bash(git *)
 
 # Team PR Review — Adversarial Debate
 
-Invoke as `/team-review-pr [pr-number] [jira-key?] [Author|Reviewer]`
+Invoke as `/dlc-review [pr-number] [jira-key?] [Author|Reviewer]`
 
 ## References
 

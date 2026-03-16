@@ -1,6 +1,6 @@
 ---
-name: team-dev-loop
-description: "Full development loop with Agent Teams — Research → Plan → Implement → Review → Ship with iterative fix-review loop. Pass a Jira key (BEP-XXXX) to auto-extract AC into plan tasks. Use when: building features, refactoring code, implementing tickets, or any multi-step development task. Use --hotfix for urgent production fixes that branch from main and auto-create backport PR. Triggers: dev loop, build feature, implement ticket, hotfix, /team-dev-loop."
+name: dlc-build
+description: "Full development loop with Agent Teams — Research → Plan → Implement → Review → Ship with iterative fix-review loop. Pass a Jira key (BEP-XXXX) to auto-extract AC into plan tasks. Use when: building features, refactoring code, implementing tickets, or any multi-step development task. Use --hotfix for urgent production fixes that branch from main and auto-create backport PR. Triggers: dev loop, build feature, implement ticket, hotfix, /dlc-build."
 argument-hint: "[task-description-or-jira-key] [--quick?] [--hotfix?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
 disable-model-invocation: true
@@ -9,7 +9,7 @@ allowed-tools: Read, Grep, Glob, Bash(git *), Bash(gh *)
 
 # Team Dev Loop — Full Development Workflow
 
-Invoke as `/team-dev-loop [task-description-or-jira-key] [--quick?] [--hotfix?]`
+Invoke as `/dlc-build [task-description-or-jira-key] [--quick?] [--hotfix?]`
 
 ## References
 
