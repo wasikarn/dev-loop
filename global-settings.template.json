@@ -89,8 +89,20 @@
       "~/Codes/*"
     ]
   },
-  "model": "sonnet[1m]",
+  "model": "opusplan",
+  "language": "thai",
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/skill-routing.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "compact",
@@ -229,5 +241,7 @@
   "feedbackSurveyRate": 0,
   "autoUpdatesChannel": "latest",
   "autoMemoryDirectory": "~/.claude/memory",
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "showTurnDuration": true,
+  "spinnerTipsEnabled": false
 }
