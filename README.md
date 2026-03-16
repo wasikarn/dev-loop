@@ -20,11 +20,10 @@ bash scripts/link-skill.sh --list
 
 ## Contents
 
-### Skills (13)
+### Skills (8)
 
 | Category | Skills | Description |
 | --- | --- | --- |
-| **PR Review** | `tathep-api-review-pr`, `tathep-web-review-pr`, `tathep-admin-review-pr`, `tathep-video-review-pr`, `tathep-agent-review-pr` | Project-specific Hard Rules source — auto-loaded by `team-review-pr` via `detect-project.sh` |
 | **Team Workflows** | `team-debug`, `team-dev-loop`, `team-review-pr`, `team-respond-review` | Full DLC — debug, feature dev (`--quick`/`--hotfix`), adversarial PR review, respond to review comments |
 | **Thinking** | `systems-thinking` | Causal Loop Diagram analysis for architecture decisions and bottleneck diagnosis |
 | **Database** | `postgresql-schema-design` | Schema design, data types, indexing strategies, FK gotchas |
