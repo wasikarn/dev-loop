@@ -87,6 +87,8 @@ Scale review intensity by diff size to avoid over-spending tokens on small chang
 
 Hotfix mode is always capped at 2 reviewers (Correctness + Architecture) regardless of diff size.
 
+**Quick mode override:** In Quick mode, use lead self-review (Solo Self-Review Checklist from operational.md) for diffs ≤100 lines — no teammate spawning. Only spawn reviewers for Quick mode diffs >100 lines.
+
 ## Hotfix Constraints
 
 - Branch from `main` (not `develop`) — `git checkout main && git pull`
