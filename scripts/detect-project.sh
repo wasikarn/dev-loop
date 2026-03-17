@@ -79,7 +79,7 @@ if [ "$PROJECT" = "unknown" ] && [ -z "$VALIDATE" ]; then
     fi
     # Detect package manager (bun preferred if bun.lockb exists)
     if [ -f "bun.lockb" ] || [ -f "bun.lock" ]; then
-      VALIDATE=$(echo "$VALIDATE" | sed 's/^npm/bun/')
+      VALIDATE="${VALIDATE/npm/bun}"
     fi
   # Try pyproject.toml (Python/uv)
   elif [ -f "pyproject.toml" ]; then

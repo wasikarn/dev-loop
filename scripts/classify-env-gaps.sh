@@ -48,7 +48,6 @@ CODE_VARS=$(sort -u "$CODE_TMPFILE" | grep -E '^[A-Z_][A-Z0-9_]*$' || true)
 # --- Phase 2: Parse schema file ---
 SCHEMA_TMPFILE=$(mktemp)
 if [ -f "$SCHEMA_PATH" ]; then
-  # Match patterns like: VAR_NAME: Env.schema.xxx or 'VAR_NAME': Env.schema.xxx
   grep -oE "['\"]?[A-Z_][A-Z0-9_]*['\"]?\s*:" "$SCHEMA_PATH" 2>/dev/null \
     | sed "s/['\": ]//g" \
     | grep -E '^[A-Z_][A-Z0-9_]*$' \
@@ -59,97 +58,52 @@ SCHEMA_VARS=$(cat "$SCHEMA_TMPFILE")
 # --- Phase 3: Parse .env.example ---
 EXAMPLE_TMPFILE=$(mktemp)
 if [ -f "$EXAMPLE_PATH" ]; then
-  # Match lines like: VAR_NAME=value or VAR_NAME= (skip comments and empty lines)
   grep -E '^[A-Z_][A-Z0-9_]*=' "$EXAMPLE_PATH" 2>/dev/null \
     | sed 's/=.*//' \
     | sort -u >> "$EXAMPLE_TMPFILE" || true
 fi
 EXAMPLE_VARS=$(cat "$EXAMPLE_TMPFILE")
 
-# --- Phase 4: Compute gaps ---
-# Helper: check if var is in a list (one var per line)
-var_in_list() {
-  echo "$2" | grep -qx "$1" 2>/dev/null
-}
+# --- Phase 4: Compute gaps using comm (O(N+M) vs O(N*M) fork-per-call) ---
+# comm -23: lines only in file1 (not file2); both inputs must be sorted
+sorted_lines() { echo "$1" | grep -v '^$' | sort; }
 
-# Build gap arrays
-IN_CODE_NOT_SCHEMA=""
-IN_CODE_NOT_EXAMPLE=""
-IN_SCHEMA_NOT_CODE=""
-IN_EXAMPLE_NOT_CODE=""
-GAP_COUNT=0
+IN_CODE_NOT_SCHEMA=$(comm -23 <(sorted_lines "$CODE_VARS") <(sorted_lines "$SCHEMA_VARS") 2>/dev/null || true)
+IN_CODE_NOT_EXAMPLE=$(comm -23 <(sorted_lines "$CODE_VARS") <(sorted_lines "$EXAMPLE_VARS") 2>/dev/null || true)
+IN_SCHEMA_NOT_CODE=$(comm -23 <(sorted_lines "$SCHEMA_VARS") <(sorted_lines "$CODE_VARS") 2>/dev/null || true)
+IN_EXAMPLE_NOT_CODE=$(comm -23 <(sorted_lines "$EXAMPLE_VARS") <(sorted_lines "$CODE_VARS") 2>/dev/null || true)
 
-# Code vars not in schema/example
-if [ -n "$CODE_VARS" ]; then
-  while IFS= read -r var; do
-    [ -z "$var" ] && continue
-    if [ -n "$SCHEMA_VARS" ]; then
-      if ! var_in_list "$var" "$SCHEMA_VARS"; then
-        IN_CODE_NOT_SCHEMA="${IN_CODE_NOT_SCHEMA:+${IN_CODE_NOT_SCHEMA}, }\"${var}\""
-        GAP_COUNT=$((GAP_COUNT + 1))
-      fi
-    fi
-    if [ -n "$EXAMPLE_VARS" ]; then
-      if ! var_in_list "$var" "$EXAMPLE_VARS"; then
-        IN_CODE_NOT_EXAMPLE="${IN_CODE_NOT_EXAMPLE:+${IN_CODE_NOT_EXAMPLE}, }\"${var}\""
-        GAP_COUNT=$((GAP_COUNT + 1))
-      fi
-    fi
-  done <<EOF
-$CODE_VARS
-EOF
-fi
+count_lines() { echo "$1" | grep -c '.' 2>/dev/null || echo 0; }
+GAP_COUNT=$(( $(count_lines "$IN_CODE_NOT_SCHEMA") + $(count_lines "$IN_CODE_NOT_EXAMPLE") + $(count_lines "$IN_SCHEMA_NOT_CODE") + $(count_lines "$IN_EXAMPLE_NOT_CODE") ))
 
-# Schema vars not in code
-if [ -n "$SCHEMA_VARS" ]; then
-  while IFS= read -r var; do
-    [ -z "$var" ] && continue
-    if [ -n "$CODE_VARS" ]; then
-      if ! var_in_list "$var" "$CODE_VARS"; then
-        IN_SCHEMA_NOT_CODE="${IN_SCHEMA_NOT_CODE:+${IN_SCHEMA_NOT_CODE}, }\"${var}\""
-        GAP_COUNT=$((GAP_COUNT + 1))
-      fi
-    fi
-  done <<EOF
-$SCHEMA_VARS
-EOF
-fi
-
-# Example vars not in code
-if [ -n "$EXAMPLE_VARS" ]; then
-  while IFS= read -r var; do
-    [ -z "$var" ] && continue
-    if [ -n "$CODE_VARS" ]; then
-      if ! var_in_list "$var" "$CODE_VARS"; then
-        IN_EXAMPLE_NOT_CODE="${IN_EXAMPLE_NOT_CODE:+${IN_EXAMPLE_NOT_CODE}, }\"${var}\""
-        GAP_COUNT=$((GAP_COUNT + 1))
-      fi
-    fi
-  done <<EOF
-$EXAMPLE_VARS
-EOF
-fi
-
-# --- Build JSON arrays for var lists ---
+# --- Build JSON arrays ---
 build_json_array() {
   local vars="$1"
-  local result=""
-  if [ -z "$vars" ]; then
-    echo "[]"
-    return
-  fi
-  while IFS= read -r var; do
-    [ -z "$var" ] && continue
-    result="${result:+${result}, }\"${var}\""
-  done <<EOF
-$vars
-EOF
-  echo "[${result}]"
+  if [ -z "$vars" ]; then echo "[]"; return; fi
+  echo "$vars" | grep -v '^$' | jq -R -s 'split("\n") | map(select(. != ""))'
+}
+gaps_array_from() {
+  local vars="$1"
+  if [ -z "$vars" ]; then echo "[]"; return; fi
+  echo "$vars" | grep -v '^$' | jq -R -s 'split("\n") | map(select(. != ""))'
 }
 
 SCHEMA_JSON=$(build_json_array "$SCHEMA_VARS")
 EXAMPLE_JSON=$(build_json_array "$EXAMPLE_VARS")
 CODE_JSON=$(build_json_array "$CODE_VARS")
+GAPS_CODE_SCHEMA=$(gaps_array_from "$IN_CODE_NOT_SCHEMA")
+GAPS_CODE_EXAMPLE=$(gaps_array_from "$IN_CODE_NOT_EXAMPLE")
+GAPS_SCHEMA_CODE=$(gaps_array_from "$IN_SCHEMA_NOT_CODE")
+GAPS_EXAMPLE_CODE=$(gaps_array_from "$IN_EXAMPLE_NOT_CODE")
 
 # --- Output ---
-echo "{\"schema_vars\":${SCHEMA_JSON},\"example_vars\":${EXAMPLE_JSON},\"code_vars\":${CODE_JSON},\"gaps\":{\"in_code_not_schema\":[${IN_CODE_NOT_SCHEMA}],\"in_code_not_example\":[${IN_CODE_NOT_EXAMPLE}],\"in_schema_not_code\":[${IN_SCHEMA_NOT_CODE}],\"in_example_not_code\":[${IN_EXAMPLE_NOT_CODE}]},\"gap_count\":${GAP_COUNT}}"
+jq -n \
+  --argjson schema_vars "$SCHEMA_JSON" \
+  --argjson example_vars "$EXAMPLE_JSON" \
+  --argjson code_vars "$CODE_JSON" \
+  --argjson in_code_not_schema "$GAPS_CODE_SCHEMA" \
+  --argjson in_code_not_example "$GAPS_CODE_EXAMPLE" \
+  --argjson in_schema_not_code "$GAPS_SCHEMA_CODE" \
+  --argjson in_example_not_code "$GAPS_EXAMPLE_CODE" \
+  --argjson gap_count "$GAP_COUNT" \
+  '{schema_vars:$schema_vars,example_vars:$example_vars,code_vars:$code_vars,gaps:{in_code_not_schema:$in_code_not_schema,in_code_not_example:$in_code_not_example,in_schema_not_code:$in_schema_not_code,in_example_not_code:$in_example_not_code},gap_count:$gap_count}'

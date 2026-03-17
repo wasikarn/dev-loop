@@ -9,19 +9,14 @@ BASE="${2:-develop}"
 
 # PR metadata (1 API call)
 PR_JSON=$(gh pr view "$PR" --json title,body,labels,author,comments 2>/dev/null || echo '{}')
-TITLE=$(echo "$PR_JSON" | grep -o '"title":"[^"]*"' | head -1 | sed 's/"title":"//;s/"$//' || echo "")
-AUTHOR=$(echo "$PR_JSON" | grep -o '"login":"[^"]*"' | head -1 | sed 's/"login":"//;s/"$//' || echo "")
-BODY=$(echo "$PR_JSON" | grep -o '"body":"[^"]*"' | head -1 | sed 's/"body":"//;s/"$//' | cut -c1-200 || echo "")
-# Labels — extract array
-LABELS_RAW=$(echo "$PR_JSON" | grep -o '"name":"[^"]*"' | sed 's/"name":"//;s/"$//' | tr '\n' ',' | sed 's/,$//' || echo "")
-# Comments — count only
-COMMENT_COUNT=$(echo "$PR_JSON" | grep -c '"body"' || true)
-# Subtract 1 for PR body itself
-COMMENT_COUNT=$((COMMENT_COUNT > 0 ? COMMENT_COUNT - 1 : 0))
+TITLE=$(echo "$PR_JSON" | jq -r '.title // empty')
+AUTHOR=$(echo "$PR_JSON" | jq -r '.author.login // empty')
+BODY_PREVIEW=$(echo "$PR_JSON" | jq -r '.body // empty' | head -c 200)
+LABELS_JSON=$(echo "$PR_JSON" | jq -c '[.labels[].name]' 2>/dev/null || echo '[]')
+COMMENT_COUNT=$(echo "$PR_JSON" | jq '.comments | length' 2>/dev/null || echo "0")
 
 # Diff stats
 DIFF_STAT=$(gh pr diff "$PR" --stat 2>/dev/null || git diff "${BASE}...HEAD" --stat 2>/dev/null || echo "")
-# Parse total line: " N files changed, N insertions(+), N deletions(-)"
 TOTAL_LINE=$(echo "$DIFF_STAT" | tail -1)
 FILES_CHANGED=$(echo "$TOTAL_LINE" | grep -o '[0-9]* file' | grep -o '[0-9]*' || echo "0")
 INSERTIONS=$(echo "$TOTAL_LINE" | grep -o '[0-9]* insertion' | grep -o '[0-9]*' || echo "0")
@@ -37,28 +32,20 @@ else
   SIZE="massive"
 fi
 
-# Changed files list
+# Changed files → JSON array
 CHANGED_FILES=$(gh pr diff "$PR" --name-only 2>/dev/null || git diff "${BASE}...HEAD" --name-only 2>/dev/null || echo "")
-FILES_JSON=""
-while IFS= read -r f; do
-  [ -z "$f" ] && continue
-  [ -n "$FILES_JSON" ] && FILES_JSON="${FILES_JSON},"
-  FILES_JSON="${FILES_JSON}\"${f}\""
-done <<EOF
-$CHANGED_FILES
-EOF
+FILES_JSON=$(echo "$CHANGED_FILES" | jq -Rs '[split("\n") | .[] | select(. != "")]')
 
-# Escape body for JSON (basic: replace newlines, quotes, backslashes)
-BODY=$(echo "$BODY" | tr '\n' ' ' | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/ /g')
-
-# Build labels JSON array
-LABELS_JSON=""
-if [ -n "$LABELS_RAW" ]; then
-  IFS=',' read -r -a LABEL_ARR <<< "$LABELS_RAW" 2>/dev/null || LABEL_ARR=()
-  for l in "${LABEL_ARR[@]}"; do
-    [ -n "$LABELS_JSON" ] && LABELS_JSON="${LABELS_JSON},"
-    LABELS_JSON="${LABELS_JSON}\"${l}\""
-  done
-fi
-
-echo "{\"pr\":${PR},\"title\":\"${TITLE}\",\"author\":\"${AUTHOR}\",\"labels\":[${LABELS_JSON}],\"base\":\"${BASE}\",\"lines_changed\":${LINES_CHANGED},\"files_changed\":${FILES_CHANGED},\"size\":\"${SIZE}\",\"comments\":${COMMENT_COUNT},\"changed_files\":[${FILES_JSON}],\"body_preview\":\"${BODY}\"}"
+jq -n \
+  --argjson pr_num "${PR}" \
+  --arg title "${TITLE}" \
+  --arg author "${AUTHOR}" \
+  --argjson labels "${LABELS_JSON}" \
+  --arg base "${BASE}" \
+  --argjson lines_changed "${LINES_CHANGED}" \
+  --argjson files_changed "${FILES_CHANGED}" \
+  --arg size "${SIZE}" \
+  --argjson comments "${COMMENT_COUNT}" \
+  --argjson changed_files "${FILES_JSON}" \
+  --arg body_preview "${BODY_PREVIEW}" \
+  '{pr:$pr_num,title:$title,author:$author,labels:$labels,base:$base,lines_changed:$lines_changed,files_changed:$files_changed,size:$size,comments:$comments,changed_files:$changed_files,body_preview:$body_preview}'
