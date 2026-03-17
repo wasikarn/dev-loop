@@ -11,7 +11,8 @@ Loaded by Phase 0 after Full mode is confirmed.
 ```text
 git checkout develop && git pull
 git checkout -b feature/BEP-XXX-{slug}   # Jira key present
-git checkout -b feature/{slug}            # No Jira key — ask user for name
+# No Jira key → ask user: "Branch name? (e.g. feature/short-description)"
+# Then: git checkout -b feature/{slug}
 ```
 
 Slug rules: lowercase, hyphens only, max 40 chars.
