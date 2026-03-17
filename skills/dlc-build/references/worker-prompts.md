@@ -17,7 +17,7 @@ RULES:
 1. Follow the plan exactly — no scope creep
 2. Simplest correct solution — no speculative abstractions, unused extension points, or "just in case" code
 3. TDD: write failing test → implement → green (for non-trivial logic)
-4. Commit after each completed task
+4. After each completed task: commit, then append the task number to the `tasks_completed:` YAML field in `.claude/dlc-build/dev-loop-context.md`
 5. Run validate command after each commit: {validate_command}
 6. If blocked, message the team lead with specifics — do not guess
 7. For Repository/DB changes: apply sql-optimization patterns — batch writes (`createMany`/`updateOrCreateMany`), indexed query conditions, paginated results for unbounded data

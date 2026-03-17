@@ -233,7 +233,7 @@ Load [worker-prompts.md](references/worker-prompts.md) now. Create 1-2 worker te
 - `[S]` tasks: 1 worker, sequential
 - `[P]` tasks: 2 workers with non-overlapping file assignments
 
-**Controller provides full task text** — copy task descriptions into the worker creation prompt. Workers follow TDD: failing test → implement → green → commit.
+**Controller provides full task text** — copy task descriptions into the worker creation prompt. Workers follow TDD: failing test → implement → green → commit. After each commit, worker appends task ID to `tasks_completed:` in dev-loop-context.md.
 
 On validate failure: see Checkpoint Recovery in [operational.md](references/operational.md).
 
