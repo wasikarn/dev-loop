@@ -46,34 +46,17 @@ refactor(domain): extract user validation to separate service
 test(orders): add edge cases for concurrent order creation
 ```
 
-### 4. Commit
+### 4. Commit & Push
 
 ```bash
 git add [files]
 git commit -m "[message]"
 ```
 
-### 5. Push (only if asked)
+If "push" in input: `git push origin HEAD`
 
-If input contains "push" or "push and PR":
-
-```bash
-git push origin HEAD
-```
-
-If input contains "PR" or "pull request", output the command for the user to run:
-
-```bash
-gh pr create --title "[commit title]" --body ""
-```
+If "PR" in input, output for user: `gh pr create --title "[commit title]" --body ""`
 
 ## Output
 
-One line confirmation:
-
-```text
-✓ Committed: [full commit message]
-[branch] → [short hash]
-```
-
-Nothing else unless push/PR was requested.
+`✓ Committed: [message] / [branch] → [hash]` — nothing else unless push/PR requested.

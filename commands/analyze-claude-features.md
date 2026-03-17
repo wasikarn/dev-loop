@@ -59,23 +59,6 @@ Two scores are produced: **Analysis Quality** (how rigorous was this analysis) a
 
 Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29).
 
-Score breakdown:
-
-- **Source coverage 15/15:** All 13 sources read, key concepts extracted, no source skipped
-- **10/15:** ≥11 sources, minor gaps. **5/15:** <10 sources or superficial extraction
-- **Context verification 15/15:** All dirs/files/configs verified via tool output, zero assumptions
-- **10/15:** Most verified, 1-2 assumptions noted. **5/15:** Multiple unverified claims
-- **Gap analysis depth 15/15:** Every source checked against project, evidence-linked, false negatives caught
-- **10/15:** Most sources checked, some shallow. **5/15:** Surface-level comparison only
-- **Decision matrix accuracy 15/15:** Every config correctly classified, misplacements caught and flagged
-- **10/15:** Matrix applied but 1-2 items unchecked. **5/15:** Matrix not systematically applied
-- **Traceability 15/15:** Every recommendation chains: Source → Gap → Opportunity → Recommendation
-- **10/15:** Most chain, some orphaned. **5/15:** Recommendations without clear source linkage
-- **Actionability 15/15:** Every recommendation has specific files, commands, or config changes
-- **10/15:** Mostly concrete, some vague. **5/15:** Generic suggestions without file paths
-- **Prioritization quality 10/10:** Impact×Effort scored, quick wins separated, dependencies mapped
-- **7/10:** Scored but dependencies unclear. **3/10:** Subjective ranking without criteria
-
 Critical minimum thresholds — any criterion below its min → must fix before final score:
 
 | Criterion | Min |
@@ -326,12 +309,7 @@ If FAIL → go back to the failing step and fix before re-scoring.
 
 **9b — Project Coverage Score** (mandatory output format):
 
-Run the Project Coverage scoring from the Scoring section:
-
-1. Assess each category's applicability based on project context
-2. Score each applicable category 0-3
-3. Calculate percentage
-4. Output the coverage table with evidence
+Apply §Project Coverage scoring. Output:
 
 ```markdown
 | Category | Applicable? | Score | Evidence |
@@ -349,9 +327,6 @@ If project coverage < target → list specific gaps that need fixing to reach ta
 
 ## Output
 
-Per-source summary (Step 1), gap analysis table (Step 4), decision matrix validation (Step 5), top improvements with rationale, recommended adoption sequence with dependencies, and two scores (Step 9):
+Per-source summary (Step 1), gap analysis (Step 4), decision matrix validation (Step 5), adoption sequence, and two scores (Step 9).
 
-1. **Analysis Quality:** XX/100 — how thorough was this analysis
-2. **Project Coverage:** XX/100 — how well the project uses applicable Claude Code features
-
-When `$ARGUMENTS` includes "expect coverage project score 100/100": list every gap preventing 100/100 and provide concrete steps to close each one.
+If `$ARGUMENTS` includes "expect coverage project score 100/100": list every gap preventing 100/100 with concrete steps.

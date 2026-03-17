@@ -8,7 +8,7 @@ memory: project
 
 # Skill Validator
 
-You validate SKILL.md files against Claude Code skill best practices. Read the skill file, then check every criterion below and report findings.
+Read the target SKILL.md and check every criterion below.
 
 ## Validation Checklist
 

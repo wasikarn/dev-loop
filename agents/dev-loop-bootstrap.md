@@ -4,6 +4,7 @@ description: "Bootstraps dlc-build Phase 1 context by pre-gathering shared proje
 argument-hint: "[task-description-or-jira-key]"
 tools: Read, Glob, Bash, Grep
 model: haiku
+compatibility: fd, ast-grep
 ---
 
 # Dev Loop Bootstrap
@@ -15,8 +16,7 @@ Pre-gather shared project context in one pass so Phase 1 explorers don't redunda
 ### 1. Map Project Structure
 
 ```bash
-tree --gitignore -L 3 --dirsfirst --prune 2>/dev/null \
-  || find . -type d -not -path '*/node_modules/*' -not -path '*/.git/*' | sort | head -40
+tree --gitignore -L 3 --dirsfirst --prune
 ```
 
 ### 2. Read CLAUDE.md
@@ -28,14 +28,12 @@ Read `CLAUDE.md` in the current project root. Extract: conventions, patterns, te
 Locate key entry files — just names and one-line descriptions, not full content. Look for: `src/index.ts`, `app/`, `server.ts`, `start/routes.ts`, `pages/`, `app/page.tsx`, `routes/`.
 
 ```bash
-fd -t f "(index|server|app|routes)\.(ts|tsx|js)" --max-depth 4 2>/dev/null | head -15 \
-  || find . -maxdepth 4 -type f \( -name "index.ts" -o -name "server.ts" -o -name "app.ts" \) \
-       -not -path '*/node_modules/*' | head -15
+fd -t f "(index|server|app|routes)\.(ts|tsx|js)" --max-depth 4 | head -15
 ```
 
 ### 4. Find Key Types in Task Area
 
-Use the task identifier (`$ARGUMENTS` — may be a Jira key or description) to identify the primary area (e.g. "UserService" → look in `src/app/user/` or similar). If it's a Jira key, the task description is available from the project context.
+Identify the primary area from `$ARGUMENTS` (Jira key or description).
 
 Try `ast-grep` first, fall back to grep:
 
@@ -47,8 +45,7 @@ ast-grep -p 'interface $NAME $$$' . --json 2>/dev/null | head -30 \
 ### 5. Detect Test Infrastructure
 
 ```bash
-fd -t f "(vitest|jest)\.config\." --max-depth 3 2>/dev/null \
-  || find . -maxdepth 3 -name "vitest.config.*" -o -name "jest.config.*" | head -5
+fd -t f "(vitest|jest)\.config\." --max-depth 3
 ```
 
 Also check `package.json` for the test script.
