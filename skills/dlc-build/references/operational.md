@@ -33,10 +33,14 @@ If worker completes a task but validate fails:
 
 ### 3-Fix Rule
 
-If fixer fails the same finding 3 times → lead stops and presents options:
+If fixer fails the same finding 3 times → lead stops. Before escalating:
 
-1. Switch to diagnosis mode — analyze root cause before fixing
-2. Revert to last clean checkpoint — try a different approach
+**Step 1: Check alternative hypothesis** — review the plan for alternative approaches to the same problem. If the plan has alternatives, try the next one before escalating.
+
+**Step 2: If no alternatives remain, present options:**
+
+1. Diagnosis mode — analyze root cause before attempting another fix
+2. Revert to checkpoint — redesign the approach from scratch
 3. Accept with known issue — document and ship
 
 ### Verification Gate (before Phase 4)
