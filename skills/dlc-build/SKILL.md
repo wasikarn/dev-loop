@@ -291,7 +291,7 @@ Write findings to `.claude/dlc-build/review-findings-{iteration}.md` per [review
 
 ### Phase 5: Assess (Lead Only)
 
-Count findings from `.claude/dlc-build/review-findings-{N}.md`. If Jira: verify each AC has implementation + test (unverified AC = Critical). Apply decision tree from [phase-gates.md](references/phase-gates.md) §Assess→Loop Decision. Update progress tracker checkboxes (iteration N: Implement tasks, Review Critical/Warning, Assess outcome).
+Count findings from `.claude/dlc-build/review-findings-{N}.md`. If Jira: verify each AC has implementation + test (unverified AC = Critical). Apply decision tree from [phase-gates.md](references/phase-gates.md) §Assess→Loop Decision. Update progress tracker checkboxes (iteration N: Implement tasks, Review Critical/Warning, Assess outcome). When dropping a finding (false positive, accepted risk), append it to a `## Dismissed` section in `review-findings-{N}.md` with a one-line reason — prevents re-raising in subsequent iterations.
 
 **GATE:** Loop decision made → update `Phase: assess` (or `Phase: ship` if exiting) in dev-loop-context.md → proceed accordingly.
 

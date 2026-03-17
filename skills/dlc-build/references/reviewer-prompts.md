@@ -99,6 +99,12 @@ Send findings to team lead when done.
 | 2 | Fix commits only | "SCOPE: Only review commits after {last_review_commit_sha}. Do NOT re-review previously approved code." |
 | 3 | Specific fix commits | "SCOPE: Only verify these specific fixes: {fix_list}. Spot-check only, no full review." |
 
+## Dismissed Findings
+
+When the lead drops a finding during Phase 5 assessment (false positive, accepted risk, or out-of-scope), it should be logged in the current `review-findings-{N}.md` under a `## Dismissed` section with reason.
+
+For iteration 2+ reviewers: before submitting findings, check the `## Dismissed` section of `review-findings-{N-1}.md`. Do NOT re-raise any finding already dismissed unless you have NEW evidence (different file:line, different root cause).
+
 ## Lead Notes
 
 When constructing reviewer prompts:
