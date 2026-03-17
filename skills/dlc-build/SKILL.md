@@ -13,16 +13,24 @@ Invoke as `/dlc-build [task-description-or-jira-key] [--quick?] [--full?] [--hot
 
 ## References
 
-| File |
-| --- |
-| [phase-gates.md](references/phase-gates.md) |
-| [teammate-prompts.md](references/teammate-prompts.md) |
-| [workflow-modes.md](references/workflow-modes.md) |
-| [../../references/review-conventions.md](../../references/review-conventions.md) |
-| [../../references/review-output-format.md](../../references/review-output-format.md) |
-| [../dlc-review/references/debate-protocol.md](../dlc-review/references/debate-protocol.md) |
-| [jira-integration.md](../../references/jira-integration.md) — Jira detection, MCP fetch, AC extraction (loaded when Jira key detected) |
-| [references/operational.md](references/operational.md) — Graceful Degradation, Context Compression Recovery, Success Criteria |
+**Always loaded:**
+
+| File | Purpose |
+| --- | --- |
+| [phase-gates.md](references/phase-gates.md) | Gate conditions for every phase transition |
+| [workflow-modes.md](references/workflow-modes.md) | Full/Quick/Hotfix classification criteria |
+| [operational.md](references/operational.md) | Graceful Degradation, Crash Recovery, Solo Checklist, Success Criteria |
+
+**Load on demand (note when to load each):**
+
+| File | Load when |
+| --- | --- |
+| [teammate-prompts.md](references/teammate-prompts.md) | Entering Phase 1, 3, or 4 — contains all prompt templates |
+| [../../references/review-conventions.md](../../references/review-conventions.md) | Entering Phase 4 — dedup, signal check, strengths |
+| [../../references/review-output-format.md](../../references/review-output-format.md) | Entering Phase 4 — findings table format |
+| [../dlc-review/references/debate-protocol.md](../dlc-review/references/debate-protocol.md) | Entering Phase 4 iteration 1 debate only |
+| [../../references/jira-integration.md](../../references/jira-integration.md) | Jira key detected in `$ARGUMENTS` |
+| [references/pr-template.md](references/pr-template.md) | Entering Phase 6 option 1 (Create PR) |
 
 ---
 
@@ -51,38 +59,53 @@ If TeamCreate tool is not available → check graceful degradation:
 
 ## Phase 0: Triage (Lead Only)
 
-### Step 1: Detect Project
+### Step 0: Resume Check
 
-Use the `Project` JSON from the header (output of `detect-project.sh`). It contains: `project`, `repo`, `validate`, `base_branch`, `branch`.
-
-Check for project-specific Hard Rules at `{project_root}/.claude/skills/review-rules/hard-rules.md`:
+Check if `.claude/dlc-build/dev-loop-context.md` exists in the current project:
 
 ```text
-.claude/skills/review-rules/hard-rules.md exists?
-├→ Yes: load it + note checklist.md and examples.md paths
-└→ No:  use Generic Hard Rules (as defined in dlc-review Phase 1)
+.claude/dlc-build/dev-loop-context.md exists AND Phase != "complete"?
+├→ Yes: Show context summary and ask:
+│   "Resume from Phase {N} — {task_description}? (Y/N)"
+│   ├→ Yes: Skip to the recorded phase. Re-read artifacts in order:
+│   │       1. .claude/dlc-build/dev-loop-context.md
+│   │       2. ~/.claude/plans/ — most recently modified .md
+│   │       3. .claude/dlc-build/review-findings-*.md (if exists)
+│   └→ No: Overwrite context file with new task.
+└→ No: Proceed with triage normally.
 ```
 
-### Step 1.5: Pending PRs Check
+### Step 1: Parallel Triage
+
+Run steps 1a, 1b, 1c concurrently — all are read-only and independent:
+
+**1a — Detect Project:** Use the `Project` JSON from the header (output of `detect-project.sh`). It contains: `project`, `repo`, `validate`, `base_branch`, `branch`.
+
+- If `validate` is empty → add to confirmation prompt: "No validate command detected. What should I run to verify? (e.g. `npm test`)"
+- Check for project-specific Hard Rules at `{project_root}/.claude/skills/review-rules/hard-rules.md`:
+  - Exists → load it + note checklist.md and examples.md paths
+  - Not exists → use Generic Hard Rules (as defined in dlc-review Phase 1)
+
+**1b — Pending PRs Check:**
 
 ```bash
 gh pr list --author @me --state open --json number,title,headRefName,createdAt \
   --jq '.[] | "#\(.number) \(.headRefName) — \(.title)"'
 ```
 
-If open PRs exist from current user:
-
-```text
-Open PRs found:
-  #1941 feature/BEP-3407 — feat: billboard visibility override
-  #1938 fix/BEP-3210 — fix: coupon double-decrement
-
-Continue with new task, or switch to one of these?
-```
-
-- User picks existing PR → stop, suggest `/dlc-respond {pr}` or `/dlc-review {pr} Author` instead
-- User confirms new task → proceed (note: stale PRs may need cleanup later)
+- If Jira key in `$ARGUMENTS` (e.g. `BEP-1234`) → check if any open PR branch contains that key
+  - Match found: "PR #1941 already targets BEP-1234. Use `/dlc-respond 1941` or `/dlc-review 1941 Author` instead?"
+  - User confirms → stop. User declines → proceed.
+- No match / no Jira key: list open PRs briefly, ask if user wants to switch to one
 - No open PRs → proceed silently
+
+**1c — Jira Context** (skip if no Jira key in `$ARGUMENTS`):
+
+Follow [../../references/jira-integration.md](../../references/jira-integration.md) §dlc-build:
+
+1. Fetch ticket → extract AC and subtasks
+2. AC items become plan task constraints (Phase 2)
+3. Jira context staged for `dev-loop-context.md` (Step 3)
 
 ### Step 2: Classify Mode
 
@@ -93,17 +116,9 @@ Per [workflow-modes.md](references/workflow-modes.md):
 - Multi-file feature, architectural change → **Full mode**
 - Ambiguous → ask user
 
-### Step 2.5: Jira Context (skip if no Jira)
+**GATE:** User confirms mode (and validate command if empty) → proceed.
 
-Scan `$ARGUMENTS` for Jira key (`BEP-\d+`). If found, follow [jira-integration.md](../../references/jira-integration.md) §dlc-build:
-
-1. Fetch ticket → extract AC and subtasks
-2. AC items become plan task constraints (Phase 2)
-3. Add Jira context to `dev-loop-context.md` (Step 3)
-
-If no Jira key → skip to Step 3.
-
-### Step 2.7: Branch Setup
+### Step 2.5: Branch Setup
 
 Check `branch` from the Project JSON against `base_branch`:
 
@@ -133,7 +148,11 @@ Run: `git checkout -b {branch_name}`
 
 ### Step 3: Create Context Artifact
 
-Write `dev-loop-context.md` at project root:
+Create `.claude/dlc-build/` directory (if not exists) and write `dev-loop-context.md` there:
+
+```bash
+mkdir -p .claude/dlc-build
+```
 
 ```markdown
 # Dev Loop Context
@@ -144,6 +163,7 @@ Project: {project_name}
 Validate: {validate_command}
 Started: {date}
 Branch: {branch_name}
+Phase: triage
 
 ## Hard Rules
 {project_hard_rules}
@@ -151,6 +171,8 @@ Branch: {branch_name}
 ## Jira Ticket (if provided)
 {jira_context_or_empty}
 ```
+
+Update the `Phase:` field at each gate transition — enables session resume (Step 0).
 
 ### Step 4: Initialize Progress Tracker
 
@@ -200,9 +222,11 @@ All explorers must complete before proceeding. Track:
 
 ### Step 3: Merge Findings
 
-Lead merges all explorer findings into `research.md` at project root. Structure: trace execution paths, map data flow, document conventions, identify reusable code, note constraints. Every section must cite file:line references.
+Lead merges all explorer findings into `.claude/dlc-build/research.md`. Structure: trace execution paths, map data flow, document conventions, identify reusable code, note constraints. Every section must cite file:line references.
 
-**GATE:** `research.md` complete with file:line evidence → proceed.
+Update `Phase: research` in dev-loop-context.md.
+
+**GATE:** `.claude/dlc-build/research.md` complete with file:line evidence → proceed.
 
 ---
 
@@ -270,7 +294,7 @@ Lead validates each commit against plan.
 #### Iteration 2+: Fix Findings
 
 Create 1 fixer teammate with the fixer prompt from [teammate-prompts.md](references/teammate-prompts.md).
-Fixer receives ONLY unresolved findings from `review-findings-{N-1}.md`.
+Fixer receives ONLY unresolved findings from `.claude/dlc-build/review-findings-{N-1}.md`.
 Fix order: Critical → Warning. Each fix = separate commit.
 
 **If a fix introduces a NEW Critical:** fixer reverts the commit and messages lead.
@@ -282,7 +306,7 @@ Lead decides: try different approach or escalate.
 2. Revert to last clean checkpoint — try a different approach
 3. Accept with known issue — document and ship
 
-**GATE:** All tasks done + validate command passes → proceed to Review.
+**GATE:** All tasks done + validate command passes → update `Phase: implement` in dev-loop-context.md → proceed to Review.
 
 ### Verification Gate (before proceeding to Phase 4)
 
@@ -299,34 +323,38 @@ If worker claims "done" but verify fails → send back with the specific failing
 
 ### Phase 4: Review
 
-#### Iteration 1: Full Review + Debate
+Load [teammate-prompts.md](references/teammate-prompts.md), [review-conventions.md](../../references/review-conventions.md), [review-output-format.md](../../references/review-output-format.md) before starting.
 
-Reuse dlc-review pattern (see [teammate-prompts.md](references/teammate-prompts.md) for reviewer prompts):
+#### Review Scale (Iteration 1)
 
-1. Create 3 reviewer teammates (Correctness, Architecture, DX)
-2. Independent review of full diff
-3. Adversarial debate per [debate-protocol.md](../dlc-review/references/debate-protocol.md)
-4. Consolidate findings per [review-conventions.md](../../references/review-conventions.md)
+Determine diff size first: `git diff {base_branch}...HEAD --stat | tail -1`
 
-**Confidence filter:** Drop any finding with confidence < 80 before consolidation (Hard Rule violations bypass this filter — always report).
+| Diff size | Reviewers | Debate | Notes |
+| --- | --- | --- | --- |
+| ≤50 lines | 1 (lead self-review) | None | Use Solo Self-Review Checklist from operational.md |
+| 51–200 | 2 (Correctness + Architecture) | 1 round | Skip DX reviewer |
+| 201–400 | 3 (full set) | Full (2 rounds max) | Standard review |
+| 400+ | 3 (full set) | Full (2 rounds max) | Flag PR size to user |
+
+Load [debate-protocol.md](../dlc-review/references/debate-protocol.md) only for 2-round debate cases.
 
 #### Iteration 2: Focused Review
 
 - 2 reviewers (Correctness + Architecture)
 - Review ONLY commits after last review point
 - 1 debate round max
-- No DX review (scope too narrow)
 
 #### Iteration 3: Spot-Check
 
 - 1 reviewer (Correctness)
-- Verify specific fixes only — no full review
-- No debate
+- Verify specific fixes only — no full review, no debate
 - Binary output: pass or fail with specific issues
+
+**Confidence filter (all iterations):** Drop any finding with confidence < 80 before consolidation. Hard Rule violations bypass this filter — always report.
 
 ### Review Output
 
-Write findings to `review-findings-{iteration}.md`:
+Write findings to `.claude/dlc-build/review-findings-{iteration}.md`:
 
 ```markdown
 # Review Findings — Iteration {N}
@@ -340,13 +368,13 @@ Critical: X | Warning: Y | Info: Z
 | 1 | Critical | ... | ... | ... | ... | ... |
 ```
 
-**GATE:** Findings consolidated → proceed to Assess.
+**GATE:** Findings consolidated → update `Phase: review` in dev-loop-context.md → proceed to Assess.
 
 ---
 
 ### Phase 5: Assess (Lead Only)
 
-Count findings from `review-findings-{N}.md`. If Jira ticket was provided, also verify AC coverage — each AC must have corresponding implementation + test. Unverified AC = Critical finding.
+Count findings from `.claude/dlc-build/review-findings-{N}.md`. If Jira ticket was provided, also verify AC coverage — each AC must have corresponding implementation + test. Unverified AC = Critical finding.
 
 ### Independent VCS Verification
 
@@ -381,7 +409,7 @@ Update progress tracker with iteration results:
   - [x] Phase 5: Assess — {LOOP|EXIT|STOP}
 ```
 
-**GATE:** Loop decision made → proceed accordingly.
+**GATE:** Loop decision made → update `Phase: assess` (or `Phase: ship` if exiting) in dev-loop-context.md → proceed accordingly.
 
 ---
 
@@ -413,73 +441,24 @@ Present options to user:
 3. **Keep branch** — leave as-is for manual review
 4. **Restart loop** — return to Phase 3 with additional changes
 
-#### PR Template (option 1)
-
-**Title:** English, under 70 chars, start with verb — derived from the plan problem statement.
-
-**Description (Thai):**
-
-```markdown
-## สิ่งที่เปลี่ยนแปลง
-{สรุปสิ่งที่แก้/เพิ่ม จาก plan problem statement — 2-3 ประโยค}
-
-## เหตุผล
-{ทำไมต้องทำ และ approach ที่เลือก จาก plan rationale}
-
-## วิธีทดสอบ
-{test strategy จาก plan — unit/integration/manual steps}
-
-## Jira
-{BEP-XXXX หรือ N/A}
-
-## AC Checklist
-{แสดงก็ต่อเมื่อมี Jira key — ดึงจาก dev-loop-context.md}
-- [x] {AC1 description}
-- [x] {AC2 description}
-```
-
-Run: `gh pr create --title "{title}" --body "{description}" --base {base_branch}`
-
-#### Hotfix Backport (--hotfix mode only)
-
-After the hotfix PR is created (targeting `main`), create a backport PR to `develop`:
-
-```bash
-# Create backport branch from develop
-git checkout develop && git pull
-git checkout -b backport/{hotfix-branch-name}
-git cherry-pick {fix_commit_sha(s)}
-
-# Push and open backport PR
-gh pr create \
-  --title "backport: {original_hotfix_title}" \
-  --body "Backport of #{hotfix_pr_number} to develop.\n\nOriginal: #{hotfix_pr_number}" \
-  --base develop
-```
-
-If cherry-pick conflicts → note the conflict in backport PR description, assign to author.
+Load [references/pr-template.md](references/pr-template.md) for PR title format, description template (Thai), `gh pr create` command, and Hotfix Backport steps.
 
 ### Step 3: Cleanup
 
-1. Shut down all remaining teammates
-2. Clean up the team
-3. Optionally archive artifacts (`dev-loop-context.md`, plan file, `research.md`, `review-findings-*.md`)
+1. Shut down all remaining teammates and clean up the team
+2. Update `Phase: complete` in `.claude/dlc-build/dev-loop-context.md`
+3. Clean up artifacts (choose one):
+   - **Auto-cleanup:** `rm -f .claude/dlc-build/dev-loop-context.md .claude/dlc-build/research.md .claude/dlc-build/review-findings-*.md`
+   - **Archive:** leave in `.claude/dlc-build/` for reference (add `.claude/dlc-build/` to `.gitignore` if not already)
 
 ---
 
 ## Constraints
 
 - **Max 3 teammates concurrent** — more adds coordination overhead without proportional value
-- **Max 3 loop iterations** — beyond 3 = architectural problem, not fixable by iteration
-- **Max 2 debate rounds** per [debate-protocol.md](../dlc-review/references/debate-protocol.md)
-- **Workers are READ-ONLY during review** — no workers alive during Phase 4
-- **Reviewers are READ-ONLY always** — no file modifications during review
-- **Hard Rules cannot be dropped** — only reclassified with evidence
-- **Commit per task** — enables clean revert if fix introduces regressions
-- **Artifacts persist on disk** — `dev-loop-context.md`, plan file (`~/.claude/plans/`), `research.md`, `review-findings-*.md` survive context compression
+- **Workers READ-ONLY during review** — no workers alive during Phase 4; reviewers never modify files
+- **Artifacts persist on disk** — `.claude/dlc-build/dev-loop-context.md`, plan file (`~/.claude/plans/`), `.claude/dlc-build/research.md`, `.claude/dlc-build/review-findings-*.md` survive context compression
 - **YAGNI** — implement only what the task requires; speculative abstractions and "just in case" code are review findings
-- **Hotfix scope** — `--hotfix` touches only the broken code path; no refactoring, no unrelated improvements
-- **Hotfix backport** — every hotfix to `main` MUST have a backport PR to `develop`; skip only if `develop` already has the fix
 
 ---
 

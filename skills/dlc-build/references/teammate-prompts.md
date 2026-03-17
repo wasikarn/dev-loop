@@ -11,6 +11,7 @@ You are exploring the codebase for a development task.
 
 TASK: {task_description}
 PROJECT: {project_name}
+PROJECT HINTS: {project_hints}
 
 YOUR FOCUS: Trace execution paths in the primary area this task will touch.
 
@@ -32,6 +33,7 @@ You are exploring the codebase for a development task.
 
 TASK: {task_description}
 PROJECT: {project_name}
+PROJECT HINTS: {project_hints}
 
 YOUR FOCUS: Data model, dependencies, and coupling in the area this task touches.
 
@@ -54,6 +56,7 @@ You are exploring the codebase for a development task.
 
 TASK: {task_description}
 PROJECT: {project_name}
+PROJECT HINTS: {project_hints}
 
 YOUR FOCUS: Find similar implementations in the codebase that can serve as reference.
 
@@ -106,6 +109,13 @@ You are fixing review findings from iteration {iteration_number}.
 
 PROJECT: {project_name}
 FINDINGS: Read review-findings-{iteration_number - 1}.md for the list of issues to fix.
+PLAN CONTEXT: Read .claude/dlc-build/dev-loop-context.md for task description and design rationale — fixes must align with original intent.
+
+CONVENTIONS:
+{project_conventions}
+
+HARD RULES:
+{hard_rules}
 
 RULES:
 1. Fix Critical findings first, then Warning

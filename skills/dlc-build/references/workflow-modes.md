@@ -43,10 +43,23 @@ Classification criteria for Full, Quick, and Hotfix mode. Lead auto-classifies a
 | Phase 1 (Research) | 2-3 explorer teammates | Skipped | Skipped |
 | Phase 2 (Plan) | From research.md | From task description | Minimal — broken path only |
 | Phase 3 (Implement) | May use parallel workers | Usually 1 worker | 1 worker, minimal scope |
-| Phase 4 (Review) | Full 3-reviewer debate | Full 3-reviewer debate | 2 reviewers max (no DX) |
+| Phase 4 (Review) | Scaled by diff size (see below) | Scaled by diff size (see below) | 2 reviewers max (no DX) |
 | Branch | `feature/` or `fix/` from `develop` | `fix/` from `develop` | `hotfix/` from `main` |
 | PR target | `develop` | `develop` | `main` + backport to `develop` |
 | Artifacts | research.md + plan.md | plan.md only | plan.md only |
+
+## Review Scale (Iteration 1)
+
+Scale review intensity by diff size to avoid over-spending tokens on small changes:
+
+| Diff size | Reviewers | Debate | Notes |
+| --- | --- | --- | --- |
+| ≤50 lines | 1 (lead self-review) | None | Use Solo Self-Review Checklist in operational.md |
+| 51–200 | 2 (Correctness + Architecture) | 1 round | Skip DX reviewer |
+| 201–400 | 3 (full set) | Full (2 rounds max) | Standard review |
+| 400+ | 3 (full set) | Full (2 rounds max) | Flag PR size to user |
+
+Hotfix mode is always capped at 2 reviewers (Correctness + Architecture) regardless of diff size.
 
 ## Hotfix Constraints
 
