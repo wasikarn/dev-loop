@@ -46,41 +46,8 @@ Otherwise → AMBIGUOUS: ask user
 
 | Aspect | Full | Quick | Hotfix |
 | --- | --- | --- | --- |
-| Phase 1 (Research) | 2-3 explorer teammates | Skipped | Skipped |
-| Phase 2 (Plan) | From research.md | From task description | Minimal — broken path only |
-| Phase 3 (Implement) | May use parallel workers | Usually 1 worker | 1 worker, minimal scope |
 | Phase 4 (Review) | Scaled by diff size (see below) | Scaled by diff size (see below) | 2 reviewers max (no DX) |
-| Branch | `feature/` or `fix/` from `develop` | `fix/` from `develop` | `hotfix/` from `main` |
-| PR target | `develop` | `develop` | `main` + backport to `develop` |
 | Artifacts | research.md + plan.md | plan.md only | plan.md only |
-
-## Branch Setup (Phase 0 Step 2.5)
-
-> **base_branch note:** This skill assumes `develop` as the default base for feature/fix branches (PR target). If `detect-project.sh` returns `base_branch: main` and mode is not Hotfix, inform the user: "base_branch detected as `main`. Feature branches will target `main` directly. Is that correct, or should I use `develop`?"
-
-Check `branch` from Project JSON against `base_branch`:
-
-```text
---hotfix mode?
-├→ Switch to main first: git checkout main && git pull
-├→ Jira key found? → create: hotfix/BEP-XXX-{slug}
-└→ No Jira key?   → create: hotfix/{slug}
-
-Already on a feature/fix/hotfix branch (not base)?
-└→ Proceed as-is — assume intentional
-
-On base branch (main/develop)?
-├→ Jira key found?
-│   ├→ Full mode  → create: feature/BEP-XXX-{slug}
-│   └→ Quick mode → create: fix/BEP-XXX-{slug}
-└→ No Jira key?
-    └→ Ask user: "Branch name? (e.g. feature/short-description)"
-```
-
-**Slug rules:** lowercase, hyphens only, max 40 chars. Run: `git checkout -b {branch_name}`
-
-**GATE (Hotfix):** On `hotfix/*` branch from `main` → proceed.
-**GATE (Normal):** Branch is a non-base branch → proceed.
 
 ## Review Scale (Iteration 1)
 
