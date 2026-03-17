@@ -18,7 +18,10 @@ Uses dynamic team roster (explorers, workers, reviewers) with iterative implemen
 | Reference | When to use |
 | --- | --- |
 | `references/phase-gates.md` | Modifying gate conditions or escalation protocol |
-| `references/teammate-prompts.md` | Modifying explorer, worker, reviewer, or fixer prompts |
+| `references/explorer-prompts.md` | Modifying explorer prompts (Phase 1) |
+| `references/worker-prompts.md` | Modifying worker implementation prompt (Phase 3 iter 1) |
+| `references/fixer-prompts.md` | Modifying fixer prompt (Phase 3 iter 2+) |
+| `references/reviewer-prompts.md` | Modifying reviewer prompts (Phase 4) |
 | `references/workflow-modes.md` | Modifying Full/Quick/Hotfix classification criteria |
 | `../../references/review-conventions.md` | Shared review conventions (labels, dedup, strengths) |
 | `references/operational.md` | Graceful Degradation, Context Compression Recovery, Success Criteria |
@@ -29,7 +32,7 @@ Uses dynamic team roster (explorers, workers, reviewers) with iterative implemen
 
 - `SKILL.md` — lead orchestration playbook; phases, team creation, loop flow
 - `references/phase-gates.md` — gate conditions for every phase transition
-- `references/teammate-prompts.md` — self-contained prompt templates for all teammate roles
+- `references/explorer-prompts.md`, `references/worker-prompts.md`, `references/fixer-prompts.md`, `references/reviewer-prompts.md` — role-specific prompt templates
 - `references/workflow-modes.md` — Full/Quick/Hotfix classification criteria
 - Reuses `dlc-review` pattern for Phase 4 (review + debate)
 - Project-specific Hard Rules loaded from `.claude/skills/review-rules/hard-rules.md` in the target project

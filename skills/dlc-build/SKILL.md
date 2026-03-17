@@ -25,7 +25,10 @@ Invoke as `/dlc-build [task-description-or-jira-key] [--quick?] [--full?] [--hot
 
 | File | Load when |
 | --- | --- |
-| [teammate-prompts.md](references/teammate-prompts.md) | Entering Phase 1, 3, or 4 — contains all prompt templates |
+| [explorer-prompts.md](references/explorer-prompts.md) | Entering Phase 1 — explorer prompt templates |
+| [worker-prompts.md](references/worker-prompts.md) | Entering Phase 3 iter 1 — worker implementation template |
+| [fixer-prompts.md](references/fixer-prompts.md) | Entering Phase 3 iter 2+ — fixer template |
+| [reviewer-prompts.md](references/reviewer-prompts.md) | Entering Phase 4 — reviewer prompt templates |
 | [../../references/review-conventions.md](../../references/review-conventions.md) | Entering Phase 4 — dedup, signal check, strengths |
 | [../../references/review-output-format.md](../../references/review-output-format.md) | Entering Phase 4 — findings table format |
 | [../dlc-review/references/debate-protocol.md](../dlc-review/references/debate-protocol.md) | Entering Phase 4 iteration 1 debate only |
@@ -140,7 +143,7 @@ Skip this phase entirely in Quick mode → go to Phase 2.
 
 ### Step 1: Create Explorer Team
 
-Load [teammate-prompts.md](references/teammate-prompts.md) now. Create team `dev-loop-{branch}` with 2-3 explorer teammates:
+Load [explorer-prompts.md](references/explorer-prompts.md) now. Create team `dev-loop-{branch}` with 2-3 explorer teammates:
 
 - **Explorer 1:** Execution paths + patterns in primary area
 - **Explorer 2:** Data model + dependencies + coupling
@@ -204,7 +207,7 @@ Review scope narrows each iteration. See [phase-gates.md](references/phase-gates
 
 #### Iteration 1: Full Implementation
 
-Load [teammate-prompts.md](references/teammate-prompts.md) now. Create 1-2 worker teammates:
+Load [worker-prompts.md](references/worker-prompts.md) now. Create 1-2 worker teammates:
 
 - `[S]` tasks: 1 worker, sequential
 - `[P]` tasks: 2 workers with non-overlapping file assignments
@@ -215,7 +218,7 @@ On validate failure: see Checkpoint Recovery in [operational.md](references/oper
 
 #### Iteration 2+: Fix Findings
 
-Create 1 fixer (prompt in teammate-prompts.md). Fixer receives ONLY unresolved findings from `.claude/dlc-build/review-findings-{N-1}.md`. Fix order: Critical → Warning. Each fix = separate commit.
+Load [fixer-prompts.md](references/fixer-prompts.md) now. Create 1 fixer. Fixer receives ONLY unresolved findings from `.claude/dlc-build/review-findings-{N-1}.md`. Fix order: Critical → Warning. Each fix = separate commit.
 
 If fixer introduces a NEW Critical: revert + message lead.
 If same finding fails 3× → see 3-Fix Rule in [operational.md](references/operational.md).
@@ -226,7 +229,7 @@ If same finding fails 3× → see 3-Fix Rule in [operational.md](references/oper
 
 ### Phase 4: Review
 
-Load [teammate-prompts.md](references/teammate-prompts.md), [review-conventions.md](../../references/review-conventions.md), [review-output-format.md](../../references/review-output-format.md) before starting.
+Load [reviewer-prompts.md](references/reviewer-prompts.md), [review-conventions.md](../../references/review-conventions.md), [review-output-format.md](../../references/review-output-format.md) before starting.
 
 #### Review Scale (Iteration 1)
 
