@@ -15,7 +15,7 @@ Gather all context needed for a PR review in one pass. Output a structured block
 
 ```bash
 gh pr view --json number,title,body,headRefName,baseRefName,url
-gh pr diff
+rtk gh pr diff
 git diff --name-only origin/main...HEAD
 ```
 

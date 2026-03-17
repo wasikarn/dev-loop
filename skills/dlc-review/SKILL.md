@@ -28,7 +28,7 @@ Invoke as `/dlc-review [pr-number] [jira-key?] [Author|Reviewer]`
 **Today:** !`date +%Y-%m-%d`
 **Git branch:** !`git branch --show-current`
 **Project:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/detect-project.sh" 2>/dev/null`
-**Diff stat:** !`git diff HEAD~1...HEAD --stat 2>/dev/null || git diff main...HEAD --stat 2>/dev/null | tail -10`
+**Diff stat:** !`rtk git diff HEAD~1...HEAD --stat 2>/dev/null || rtk git diff main...HEAD --stat 2>/dev/null`
 **PR title:** !`gh pr view $0 --json title,body,labels,author --jq '{title,body,labels: [.labels[].name],author: .author.login}' 2>/dev/null`
 **Changed files:** !`gh pr diff $0 --name-only 2>/dev/null`
 

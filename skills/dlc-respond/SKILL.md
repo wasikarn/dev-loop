@@ -17,7 +17,7 @@ Invoke as `/dlc-respond [pr-number] [jira-key?]`
 **Git branch:** !`git branch --show-current`
 **Project:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/detect-project.sh" 2>/dev/null`
 **Open threads:** !`gh pr view $0 --json reviews,comments --jq '[.reviews[] | select(.state == "CHANGES_REQUESTED")] | length' 2>/dev/null`
-**PR diff stat:** !`gh pr diff $0 --stat 2>/dev/null | tail -5`
+**PR diff stat:** !`rtk gh pr diff $0 --stat 2>/dev/null`
 
 **Args:** `$0`=PR# (required) · `$1`=Jira key (optional, for AC context)
 
@@ -138,7 +138,7 @@ gh api repos/{owner}/{repo}/pulls/comments/{comment_id}/replies \
   -f body="{reply_body}"
 ```
 
-**Before posting replies:** Lead verifies `git log --oneline -10` — confirm that the sha in each planned reply matches the commit whose message references that thread. Mismatched sha → fix the reply before posting.
+**Before posting replies:** Lead verifies `rtk git log --oneline -10` — confirm that the sha in each planned reply matches the commit whose message references that thread. Mismatched sha → fix the reply before posting.
 
 **Reply format (Thai):**
 

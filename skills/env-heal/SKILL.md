@@ -83,9 +83,9 @@ For each var missing from .env.example:
 Run the project test suite:
 
 ```bash
-node ace test   # AdonisJS
+rtk test node ace test   # AdonisJS
 # or
-bun run test    # Next.js projects
+rtk bun run test         # Next.js projects
 ```
 
 If tests fail:

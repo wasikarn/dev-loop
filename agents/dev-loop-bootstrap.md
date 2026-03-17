@@ -39,7 +39,7 @@ Try `ast-grep` first, fall back to grep:
 
 ```bash
 ast-grep -p 'interface $NAME $$$' . --json 2>/dev/null | head -30 \
-  || grep -r "^export interface\|^export type" --include="*.ts" -l 2>/dev/null | head -10
+  || rtk grep "^export interface\|^export type" --include="*.ts" . 2>/dev/null | head -10
 ```
 
 ### 5. Detect Test Infrastructure

@@ -13,7 +13,7 @@ Invoke as `/dlc-build [task-description-or-jira-key] [--quick?] [--full?] [--hot
 
 **Task:** $ARGUMENTS | **Today:** !`date +%Y-%m-%d`
 **Git branch:** !`git branch --show-current`
-**Recent commits:** !`git log --oneline -5 2>/dev/null`
+**Recent commits:** !`rtk git log --oneline -5 2>/dev/null`
 **Project:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/detect-project.sh" 2>/dev/null`
 
 **Args:** `$0`=task description or Jira key (required) · `$1`=`--quick` · `$1`=`--full` · `$1`=`--hotfix`

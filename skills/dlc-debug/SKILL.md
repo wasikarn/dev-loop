@@ -33,7 +33,7 @@ Invoke as `/dlc-debug [bug-description-or-jira-key] [--quick?]`
 
 **Bug:** $ARGUMENTS | **Today:** !`date +%Y-%m-%d`
 **Git branch:** !`git branch --show-current`
-**Recent commits:** !`git log --oneline -5 2>/dev/null`
+**Recent commits:** !`rtk git log --oneline -5 2>/dev/null`
 **Project:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/detect-project.sh" 2>/dev/null`
 
 **Args:** `$0`=bug description (required) · `$1`=`--quick` (optional, skip DX Analyst) · `$2`=`--review` (optional, add Fix Reviewer after Fixer)
@@ -137,7 +137,7 @@ Lead updates the progress checkboxes at the start of each phase.
 
 Pre-gather shared context to eliminate duplicate reads across Investigator and DX Analyst:
 
-1. `git log --oneline -10` — identify recent changes near the affected area
+1. `rtk git log --oneline -10` — identify recent changes near the affected area
 2. From bug description + triage, list primary affected files (max 5) based on error messages, stack traces, or area described
 3. Read key sections of each file: class/function names, relevant code paths (scan structure — do NOT read entire files)
 4. Append `## Shared Context` to `debug-context.md` with:
@@ -242,7 +242,7 @@ After all Fix Plan items done, Lead shuts down Fixer.
 
 1. Run validate command fresh and read actual output
 2. `git diff --stat HEAD~N` — confirm scope matches Fix Plan (N = number of fix commits)
-3. `git log --oneline -10` — confirm one commit per Fix Plan item
+3. `rtk git log --oneline -10` — confirm one commit per Fix Plan item
 4. `git status` — confirm clean working tree
 
 **GATE:** All Fix Plan items done + Final Lead verification passes → proceed.
@@ -252,7 +252,7 @@ After all Fix Plan items done, Lead shuts down Fixer.
 Run Fix Review if: `--review` flag was passed **or** severity is P0.
 
 Create Fix Reviewer in same team using prompts from [teammate-prompts.md](references/teammate-prompts.md).
-Provide: fix commit hashes (from `git log --oneline -N`), root cause summary from `investigation.md`.
+Provide: fix commit hashes (from `rtk git log --oneline -N`), root cause summary from `investigation.md`.
 
 After Fix Reviewer completes, Lead shuts down Fix Reviewer.
 

@@ -26,9 +26,5 @@ done
 echo "env/config change detected: $file_path"
 echo "Running tests..."
 
-output=$(cd "$dir" && timeout 120 node ace test 2>&1)
-exit_code=$?
-
-echo "$output" | tail -20
-
-exit $exit_code
+cd "$dir" && timeout 120 rtk test node ace test 2>&1
+exit $?
