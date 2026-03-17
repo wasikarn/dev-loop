@@ -185,6 +185,45 @@ Explore project structure first, then consult docs index for API details.
 - Run `/optimize-context` when this file feels outdated
 ```
 
+## Template: Global User (~/.claude/CLAUDE.md)
+
+For the user-level global CLAUDE.md. Different purpose from project files: user role, cross-project tools, and persistent preferences — not architecture or commands.
+
+```markdown
+# Claude Instructions
+
+## Role
+
+<one-line: who I am, what projects I work on, primary stack>
+
+## Projects & Stack
+
+| Project | Stack | Notes |
+|---------|-------|-------|
+| `<name>` | <stack> | <key note> |
+
+## Tools
+
+| Tool | Use |
+|------|-----|
+| `<tool>` | <when/how> |
+
+## Preferences
+
+- <formatting preference>
+- <communication style>
+- <workflow preference>
+
+## Gotchas
+
+- <cross-project quirk>
+- Run `/optimize-context` when this file feels outdated
+```
+
+**What to include:** cross-project conventions, global CLI tools, MCP server shortcuts, tone/language preferences, persistent workflow rules.
+
+**What NOT to include:** project-specific architecture (belongs in project CLAUDE.md), commands (belong in project CLAUDE.md), one-time context.
+
 ## File Types & Locations
 
 | Type | Location |
@@ -218,15 +257,4 @@ Claude auto-discovers CLAUDE.md files in parent directories.
 
 ## Passive Context vs Skills
 
-From Vercel research: agents ignored available skills 56% of the time.
-
-| Use Case |
-| --- |
-| General framework knowledge |
-| Project conventions & architecture |
-| Action-specific workflows (migrations, upgrades) |
-| One-time operations (scaffolding, code generation) |
-
-**Rule:** If the agent needs this info on every task → passive context. If only for specific user-triggered actions → skill.
-
-> "The gap may close as models get better at tool use, but results matter now." — Vercel. Prefer passive context until skills catch up.
+See [compression-guide.md](compression-guide.md#passive-context-design-principles) for full rationale and passive/active decision rules.

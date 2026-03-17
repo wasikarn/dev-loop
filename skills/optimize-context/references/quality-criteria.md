@@ -47,7 +47,7 @@
 
 **10/10 Currency:** Reflects current codebase, commands work, refs accurate
 **7/10:** Mostly current, minor staleness
-**3/10:** Several outdated references
+**3/10:** Several outdated references — ⚠️ CRITICAL if score < 5 (stale CLAUDE.md is actively harmful)
 **0/10:** Severely outdated
 
 **10/10 Actionability:** Copy-paste ready, concrete steps, real paths

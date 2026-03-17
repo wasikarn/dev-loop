@@ -78,15 +78,15 @@ Replace multi-line explanations with single-line rules:
 
 Use consistent shorthand within CLAUDE.md:
 
-| Long |
-| --- |
-| For example |
-| Configuration |
-| Environment |
-| Development |
-| Production |
-| Authentication |
-| Documentation |
+| Long | Short |
+| --- | --- |
+| For example | e.g. |
+| Configuration | config |
+| Environment | env |
+| Development | dev |
+| Production | prod |
+| Authentication | auth |
+| Documentation | docs |
 
 ### 6. Remove What Claude Already Knows (Training Cutoff Awareness)
 

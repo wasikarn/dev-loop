@@ -14,6 +14,7 @@ Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invo
 | --- | --- |
 | [quality-criteria.md](references/quality-criteria.md) | CLAUDE.md Quality rubric (8 criteria, 100 pts) + Project Coverage rubric (12 categories) — load in Phase 2 |
 | [compression-guide.md](references/compression-guide.md) | Compression techniques: tables, one-liners, pointer-to-docs patterns — load in Phase 4 |
+| [audit-antipatterns.md](references/audit-antipatterns.md) | CLAUDE.md anti-patterns catalog: noise, stale, redundant, missing retrieval — load in Phase 3 |
 | [templates.md](references/templates.md) | CLAUDE.md templates by project type (horizontal/vertical/hybrid) — load in Phase 4 when creating from scratch |
 | `scripts/pre-scan.sh` | Detects framework, npm scripts, dir structure in ~30ms — run first in Phase 1 |
 | [key-rules.md](references/key-rules.md) | 12 operational rules — read before making changes in Phase 4 |
@@ -26,8 +27,9 @@ Critical minimum thresholds (score below these → must fix before passing):
 | ------------------- | ----- |
 | Commands | 10/15 |
 | Architecture | 10/15 |
-| Retrieval readiness | 10/15 |
+| Retrieval readiness | 10/15 (framework projects only) |
 | Conciseness | 10/15 |
+| Currency | 5/10 |
 
 ### Project Coverage (optional — `--coverage` flag)
 
@@ -122,7 +124,7 @@ Grades: A (90-100), B (70-89), C (50-69), D (30-49), F (0-29).
 | Conciseness | XX/15 | ✅ or ⚠️ CRITICAL (if <10) | ... |
 | Non-obvious | XX/10 | ✅ | ... |
 | Novel content | XX/10 | ✅ | ... |
-| Currency | XX/10 | ✅ | ... |
+| Currency | XX/10 | ✅ or ⚠️ CRITICAL (if <5) | ... |
 | Actionability | XX/10 | ✅ | ... |
 
 Critical check: PASS ✅ — all criteria above minimums
@@ -138,17 +140,23 @@ If `--coverage` flag: also assess Project Coverage using the rubric in [referenc
 
 Audit each section deeply — trace references to actual codebase files, verify commands by running them, cross-reference architecture claims against real directory structure. Surface-level checks are insufficient.
 
-| Check |
-| ----------------- |
-| Stale |
-| Gaps |
-| Redundant |
-| Outdated |
-| Oversized |
-| Noise |
-| Missing retrieval |
+Load [audit-antipatterns.md](references/audit-antipatterns.md) to systematically detect noise, stale content, redundancy, and missing retrieval patterns.
+
+**Write findings to `.claude/optimize-context-report.md`** so they survive context compaction during long audits.
+
+| Check | Detection heuristic |
+| ----------------- | ------------------- |
+| Stale | File path, command, or version reference that no longer matches codebase |
+| Gaps | Framework/tool detected in pre-scan but no corresponding commands or architecture section |
+| Redundant | Same content appears in CLAUDE.md and in `agent_docs/`, `.claude/rules/`, or another file |
+| Outdated | Tech version or API referenced is superseded (check `package.json`, lockfiles) |
+| Oversized | File exceeds 15 KB after excluding auto-generated sections |
+| Noise | Sentence that doesn't change agent behavior — generic advice, obvious framework defaults, TODO never resolved |
+| Missing retrieval | Framework project with no retrieval directive and no docs index |
 
 Categorize as `Stale (must fix)`, `Gaps (must add)`, `Redundant (can reduce)`, `Noise (should remove)`, `OK`.
+
+> **If `--dry-run`:** output report above and STOP — do not proceed to Phase 4.
 
 Proceed directly to phase 4 after outputting the report.
 

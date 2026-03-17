@@ -41,6 +41,7 @@ bash skills/optimize-context/scripts/pre-scan.sh . | jq -c '.'
 
 ## Gotchas
 
+- Run `/optimize-context` when this file feels outdated
 - This CLAUDE.md is **tracked in git** — changes here are shared with the team
 - `pre-scan.sh` targets bash 3.x (macOS default) — no `declare -A`, no `mapfile`
 - `stat -f%z` is macOS/BSD syntax for file size — GNU Linux uses `stat -c%s`
