@@ -13,6 +13,7 @@ A Claude Code plugin — 8 workflow skills, 7 custom agents, 13 lifecycle hooks,
 | `jq` | All hooks (routing, gates, nudges, shellcheck) | `brew install jq` / `apt install jq` |
 | `gh` CLI | `dlc-build`, `dlc-review`, `dlc-respond`, `dlc-debug`, `merge-pr` | `brew install gh` then `gh auth login` |
 | `git` | All DLC skills, session context hook | pre-installed on most systems |
+| `rtk` | DLC skills — token-optimized git/gh output | `brew install rtk` |
 | `shellcheck` | `shellcheck-written-scripts` hook (optional) | `brew install shellcheck` |
 | `node` / `npx` | Auto markdown lint hook (optional) | `brew install node` |
 
