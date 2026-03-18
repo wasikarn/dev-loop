@@ -69,7 +69,7 @@ Current agents (7):
 | `pr-review-bootstrap` | sonnet | Fetch PR diff + Jira AC in one pass before review |
 | `review-consolidator` | haiku | Dedup/sort multi-reviewer findings into single ranked table |
 | `skill-validator` | sonnet | Validates SKILL.md against best practices |
-| `tathep-reviewer` | sonnet | Code reviewer with persistent memory + preloaded skills |
+| `code-reviewer` | sonnet | General-purpose code reviewer with persistent memory + preloaded skills |
 
 ## Hooks
 

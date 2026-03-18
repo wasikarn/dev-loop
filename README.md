@@ -225,7 +225,7 @@ Specialized subagents that the DLC skills and other workflows spawn automaticall
 | `pr-review-bootstrap` | Sonnet | `dlc-review` Phase 0 | Fetches PR diff, Jira AC, and groups changed files |
 | `review-consolidator` | Haiku | `dlc-review` Phase 4 | Deduplicates and ranks findings from multiple reviewers |
 | `skill-validator` | Sonnet | Manually | Validates SKILL.md frontmatter and description quality |
-| `tathep-reviewer` | Sonnet | Manually | Code reviewer with persistent memory (tathep projects) |
+| `code-reviewer` | Sonnet | Manually | General-purpose code reviewer with persistent memory |
 
 ---
 
