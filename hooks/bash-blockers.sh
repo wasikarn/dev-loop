@@ -9,10 +9,6 @@ deny() {
     exit 0
 }
 
-# grep/rg → Grep tool
-echo "$cmd" | grep -qE '^\s*(grep|rg)\b|\|\s*(grep|rg)\b' && \
-    deny "Use the Grep tool instead of bash grep/rg — faster, better permissions, structured output."
-
 # find/fd → Glob tool
 echo "$cmd" | awk '/^[[:space:]]*(find|fd)[[:space:]]/{found=1} END{exit !found}' && \
     deny "Use the Glob tool instead of bash find/fd — faster, respects .gitignore, structured output."
