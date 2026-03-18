@@ -6,6 +6,21 @@ A Claude Code plugin — 8 workflow skills, 7 custom agents, 13 lifecycle hooks,
 
 ---
 
+## Prerequisites
+
+| Tool | Required by | Install |
+| --- | --- | --- |
+| `jq` | All hooks (routing, gates, nudges, shellcheck) | `brew install jq` / `apt install jq` |
+| `gh` CLI | `dlc-build`, `dlc-review`, `dlc-respond`, `dlc-debug`, `merge-pr` | `brew install gh` then `gh auth login` |
+| `git` | All DLC skills, session context hook | pre-installed on most systems |
+| `shellcheck` | `shellcheck-written-scripts` hook (optional) | `brew install shellcheck` |
+| `node` / `npx` | Auto markdown lint hook (optional) | `brew install node` |
+
+> **Hooks degrade gracefully** — if a tool is missing, the hook skips silently instead of blocking.
+> **Skills require `gh` and `git`** — DLC skills will tell you if prerequisites are missing.
+
+---
+
 ## Installation
 
 Choose one method based on your use case:
@@ -56,7 +71,7 @@ Skills are namespaced after plugin install:
 
 For contributors or users who want to customize everything and have it symlinked to `~/.claude/` for immediate effect.
 
-### Prerequisites
+### Method 2 Prerequisites
 
 | Tool | Required | Install |
 | --- | --- | --- |

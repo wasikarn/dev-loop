@@ -7,6 +7,8 @@
 
 set -euo pipefail
 
+command -v jq > /dev/null 2>&1 || exit 0
+
 INPUT=$(cat)
 
 TASK_NAME=$(echo "$INPUT" | jq -r '.task_name // empty')

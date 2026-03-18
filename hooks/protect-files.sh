@@ -2,6 +2,8 @@
 # protect-files.sh — Block edits to sensitive config files
 # Used as a PreToolUse hook for Edit|Write events
 
+command -v jq > /dev/null 2>&1 || exit 0
+
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
 
