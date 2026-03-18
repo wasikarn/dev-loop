@@ -31,7 +31,7 @@
 | **Skills** | 8 | Workflow automation — dev loop, PR review, debugging, utilities |
 | **Agents** | 7 | Specialized subagents for bootstrapping, reviewing, and committing |
 | **Hooks** | 8 | Lifecycle automation — dependency checks, skill routing, quality gates |
-| **Output Styles** | 2 | Thai Tech Lead, Coding Mentor |
+| **Output Styles** | 2 | Senior Software Engineer, Coding Mentor |
 | **Commands** | 1 | `analyze-claude-features` |
 
 ---
@@ -262,8 +262,8 @@ Activate an output style to change how Claude communicates throughout a session.
 
 | Style | How to activate | Description |
 | --- | --- | --- |
-| `thai-tech-lead` | `/output-style thai-tech-lead` | Thai language responses, English for code and technical terms. Concise, architecture-focused. |
-| `coding-mentor` | `/output-style coding-mentor` | Explains architectural decisions and trade-offs inline while writing code. Good for onboarding. |
+| `senior-software-engineer` | `/output-style senior-software-engineer` | Thai language, English for code and technical terms. Pragmatic senior engineer tone — trade-offs, production quality, practical solutions. |
+| `coding-mentor` | `/output-style coding-mentor` | Thai language, teaches through doing. Adds concise "Why" explanations after significant changes. Good for onboarding and exploring new codebases. |
 
 ---
 
