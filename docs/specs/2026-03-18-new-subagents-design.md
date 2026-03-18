@@ -36,12 +36,12 @@ main model context in both dlc-build (replacing `consolidation-prompt.md`) and d
 
 ```yaml
 name: review-consolidator
+description: "Mechanical dedup, pattern-cap, sort, and signal-check for multi-reviewer findings tables. Use after DLC review debate to consolidate raw findings into a single ranked output. Called by dlc-build Phase 4 iter 1 and dlc-review Phase 4 Convergence."
 model: haiku
 tools: Read
-memory: none
 ```
 
-`Read` is available for future extension; the primary input form is inline text in prompt.
+`Read` is available for large-review overflow; the primary input form is inline text in prompt. `memory` field omitted — stateless per invocation, no cross-session state needed.
 
 ### Input
 
@@ -55,7 +55,10 @@ to a temp file and pass the path instead, using the `Read` tool.
 
 ### Process (strictly ordered)
 
-1. **Confidence filter** — drop findings below role threshold (Hard Rule violations bypass):
+1. **Confidence filter** — drop findings below role threshold (Hard Rule violations bypass).
+   Thresholds align with `phase-4-review.md` §Confidence Filter — Security is intentionally
+   merged into Correctness at 75 (supersedes the old `consolidation-prompt.md` Security: 70
+   threshold; the old value was a residual inconsistency):
 
    | Reviewer role | Threshold |
    | --- | --- |
@@ -67,7 +70,9 @@ to a temp file and pass the path instead, using the `Read` tool.
    findings with different root causes even if in the same file
 3. **Pattern cap** — same violation in >3 files → consolidate to 1 row + "and N more"
 4. **Sort** — Critical → Warning → Info
-5. **Signal check** — if (Critical+Warning)/Total < 60% → prepend `⚠ Low signal` to output
+5. **Signal check** — if (Critical+Warning)/Total < 60% → prepend `⚠ Low signal` to output.
+   The 60% threshold is inherited from `review-conventions.md` §Signal check — a review
+   where fewer than 60% of findings are actionable is likely noise-dominated.
 
 ### Output
 
@@ -96,7 +101,7 @@ columns from the old `consolidation-prompt.md` format are intentionally dropped
 
 | Skill | Phase | Change |
 | ------- | ------- | -------- |
-| dlc-build | Phase 4 iter 1 (3 reviewers only) | Replace "load `consolidation-prompt.md` and delegate" with "run `review-consolidator` agent with raw findings inline" |
+| dlc-build | Phase 4 iter 1, 3-reviewer case only | Replace "load `consolidation-prompt.md` and delegate" with "run `review-consolidator` agent with raw findings inline"; for 1–2 reviewer cases, lead consolidates inline as before (per `consolidation-prompt.md` Lead Note 4) |
 | dlc-review | Phase 4 Convergence | Replace 4 inline steps (Dedup/Pattern cap/Sort/Signal check) with "run `review-consolidator` agent with surviving debate findings inline" |
 
 **File retired:** `skills/dlc-build/references/consolidation-prompt.md` — content moves
@@ -117,21 +122,28 @@ reads — critical for the common build→test→debug workflow.
 
 ```yaml
 name: dlc-debug-bootstrap
+description: "Pre-gather shared debug context before dlc-debug Phase 1: reads dlc-build artifacts when present, maps affected files from stack trace or description, collects recent commits and code structure. Run at the start of any debug session to avoid redundant reads by Investigator agents."
 model: haiku
 tools: Read, Glob, Bash, Grep
-memory: none
+compatibility: fd, ast-grep
 ```
 
-**Notes on omitted frontmatter fields:** `argument-hint` and `compatibility` are SKILL.md
-fields only — not valid in agent frontmatter. The agent requires `fd` and `ast-grep` in
-the environment; if unavailable, it falls back gracefully (see Error Handling).
+`memory` field omitted — stateless per invocation. `compatibility` is a valid agent
+frontmatter field (see `dev-loop-bootstrap.md` which uses the same `fd, ast-grep` deps).
+`argument-hint` is omitted intentionally — both inputs are passed inline in the agent
+prompt (not as `$ARGUMENTS`), so argument parsing is not needed.
 
 ### Agent Input
 
-Passed by the calling skill inline in the agent prompt:
+Passed by the calling skill inline in the agent prompt using this labeled format:
 
-- `bug_description` — bug description text or Jira key from user's `$ARGUMENTS`
-- `project_root` — absolute path to target project root (passed explicitly by dlc-debug lead)
+```text
+Bug: {bug_description}
+Project Root: {project_root}
+```
+
+Both fields are required. Using labeled fields prevents the agent from conflating file
+paths in `bug_description` with `project_root`.
 
 ### Agent Process
 
@@ -142,7 +154,7 @@ Step 1: Check for dlc-build artifacts
   └─ Not found → skip; omit "Recent Build Context" section from output
 
 Step 2: Map affected files from bug description
-  Parse stack trace / error message for file paths (max 5)
+  Parse stack trace / error message for file paths (max 5 — context budget for Haiku)
   If no stack trace: fd -t f patterns matching area named in description
   If still empty: note "affected files unknown — Investigator must determine"
 
@@ -153,9 +165,11 @@ Step 3: Recent commits in affected area
 Step 4: Scan file structure (NOT full file content)
   ast-grep for function signatures in affected files
   Collect key class/interface names only
-  Fallback: grep -n "^export\|^class\|^function" if ast-grep unavailable
+  Fallback: rtk grep -n "^export|^class|^function" --include="*.ts" if ast-grep unavailable
 
 Step 5: Append ## Shared Context to debug-context.md
+  debug-context.md already exists (created by dlc-debug Phase 0 Step 4)
+  Use Bash to append the section
 ```
 
 ### Output Written to `debug-context.md`
@@ -187,8 +201,10 @@ All sub-sections are required except "Recent Build Context" (conditional) and
 
 ### Agent Error Handling
 
-- `debug-context.md` not yet created → create skeleton then append
-- `ast-grep` unavailable → fallback to grep for function signatures; note in output
+- `debug-context.md` not yet created → create skeleton (`# Debug Context\n**Bug:** {description}`)
+  then append; this path is for crash-recovery only — under normal flow Phase 0 Step 4
+  always creates the file before Phase 1 starts
+- `ast-grep` unavailable → fallback to `rtk grep -n "^export|^class|^function" --include="*.ts"`
 - `fd` unavailable → fallback to Glob for file mapping
 - dlc-build artifacts found but unrelated to bug area → omit Recent Build Context section
 - **Call-site fallback:** if agent errors, dlc-debug lead executes Phase 1 Bootstrap
@@ -200,9 +216,8 @@ All sub-sections are required except "Recent Build Context" (conditional) and
 | ------- | ------- | -------- |
 | dlc-debug | Phase 1 Bootstrap Steps 1–4 | Replace inline Steps 1–4 with "run `dlc-debug-bootstrap` agent; pass `project_root` and `bug_description` in prompt" |
 
-**Calling convention:** dlc-debug lead passes both values inline in the agent invocation
-prompt — no argument parsing needed. The agent reads `project_root` from the prompt text
-and uses it as the base path for all file operations.
+**Calling convention:** dlc-debug lead passes both values inline using labeled format:
+`Bug: {description}\nProject Root: {project_root}`. No argument parsing needed.
 
 ---
 
@@ -217,6 +232,7 @@ and uses it as the base path for all file operations.
 | `skills/dlc-review/SKILL.md` | Edit | Replace Phase 4 Convergence inline steps |
 | `skills/dlc-debug/SKILL.md` | Edit | Replace Phase 1 Bootstrap Steps 1–4 with agent call |
 | `skills/dlc-build/references/consolidation-prompt.md` | Delete | Content moves to agent |
+| `skills/dlc-build/CLAUDE.md` | Edit | Remove `consolidation-prompt.md` row from Docs Index |
 
 ## Non-Goals
 
