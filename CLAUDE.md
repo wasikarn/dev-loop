@@ -100,7 +100,7 @@ Custom output styles live at `output-styles/<name>.md` with frontmatter (`name`,
 
 Output styles replace the default system prompt's coding instructions unless `keep-coding-instructions: true`. Use for consistent formatting/tone across sessions.
 
-Current styles: `thai-tech-lead` (Thai language tech lead mode), `coding-mentor` (explains architecture decisions inline while coding)
+Current styles: `senior-software-engineer` (Thai language, pragmatic senior engineer tone with trade-off focus), `coding-mentor` (explains architecture decisions inline while coding)
 
 ## Plugin
 
