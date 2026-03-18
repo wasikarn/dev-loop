@@ -1,6 +1,6 @@
 # Review Rules — 12-Point Canonical Definition
 
-Single source of truth for the 12-point review framework used across `code-reviewer`, `dlc-build`, and `dlc-review`.
+Single source of truth for the 12-point review framework used across `code-reviewer`, `dlc-build`, and `dlc-review`. Code examples: [`review-examples.md`](review-examples.md)
 
 | # | Rule | Category | Look for |
 | --- | --- | --- | --- |
