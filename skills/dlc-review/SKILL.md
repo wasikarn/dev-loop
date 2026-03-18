@@ -22,11 +22,11 @@ Invoke as `/dlc-review [pr-number] [jira-key?] [Author|Reviewer]`
 | [jira-integration.md](../../references/jira-integration.md) — Jira detection, MCP fetch, AC verification (loaded when Jira key detected) |
 | [references/operational.md](references/operational.md) — Graceful Degradation, Context Compression Recovery, Success Criteria |
 
-**PR:** #$0 | **Mode:** $1 (default: Author)
+**PR:** #$0 | **Mode:** $2 (default: Author)
 **Today:** !`date +%Y-%m-%d`
 **Git branch:** !`git branch --show-current`
 **Project:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/detect-project.sh" 2>/dev/null`
-**Diff stat:** !`rtk git diff HEAD~1...HEAD --stat 2>/dev/null || rtk git diff main...HEAD --stat 2>/dev/null`
+**Diff stat:** !`gh pr diff $0 --stat 2>/dev/null || rtk git diff main...HEAD --stat 2>/dev/null`
 **PR title:** !`gh pr view $0 --json title,body,labels,author --jq '{title,body,labels: [.labels[].name],author: .author.login}' 2>/dev/null`
 **Changed files:** !`gh pr diff $0 --name-only 2>/dev/null`
 
