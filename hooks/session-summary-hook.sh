@@ -18,9 +18,7 @@ if [ -z "$COMMAND" ]; then
 fi
 
 # Match git commit commands (not git commit --amend checks, log, etc.)
-if ! echo "$COMMAND" | grep -qE '^\s*git\s+commit\s'; then
-  exit 0
-fi
+[[ "$COMMAND" =~ ^[[:space:]]*git[[:space:]]+commit[[:space:]] ]] || exit 0
 
 # Ensure log directory exists
 LOG_DIR="$HOME/.claude/session-logs"

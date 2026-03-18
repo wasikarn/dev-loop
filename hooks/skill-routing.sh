@@ -23,13 +23,6 @@ emit_hint() {
 # --- fix-bug (priority 1) ---
 if [[ $PROMPT_LOWER =~ bug|broken|failing|error|crash|test\ fail ]] \
    || [[ $PROMPT =~ พัง|ไม่ทำงาน|แก้\ bug ]]; then
-  if [[ $PROMPT_LOWER =~ parallel ]] \
-     || [[ $PROMPT =~ ยาก|หา\ root\ cause\ ไม่เจอ ]]; then
-    emit_hint "[skill-hint:fix-bug]
-Sequence: systematic-debugging → TDD → verification-before-completion
-Skip systematic-debugging: root cause already stated explicitly (not a guess)
-Alt (complex): dlc-debug — parallel root cause + DX analysis"
-  fi
   emit_hint "[skill-hint:fix-bug]
 Sequence: systematic-debugging → TDD → verification-before-completion
 Skip systematic-debugging: root cause already stated explicitly (not a guess)

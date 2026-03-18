@@ -49,7 +49,7 @@ echo "### Current Session"
 echo "- Check CLAUDE.md for project-specific rules"
 echo "- Check todo list for in-progress tasks"
 if [ -f "package.json" ]; then
-  PKG_NAME=$(cat package.json | grep -o '"name": *"[^"]*"' | head -1 | sed 's/"name": *"//;s/"//')
+  PKG_NAME=$(jq -r '.name // empty' package.json 2>/dev/null)
   if [ -n "$PKG_NAME" ]; then
     echo "- Working in project: \`$PKG_NAME\`"
   fi
