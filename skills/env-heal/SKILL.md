@@ -6,6 +6,7 @@ agent: general-purpose
 argument-hint: "[--quick?] [--dry-run?]"
 compatibility: "Run from within the project repo. Supports AdonisJS (Env.schema), dotenv (.env.example), and any Node.js project."
 model: haiku
+allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 # Self-Healing Env Validation
