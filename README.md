@@ -16,6 +16,7 @@
   <a href="#agents">Agents</a> •
   <a href="#hooks">Hooks</a> •
   <a href="#jira-integration">Jira</a> •
+  <a href="#recommended-ecosystem">Ecosystem</a> •
   <a href="#troubleshooting">Troubleshooting</a> •
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
@@ -277,6 +278,38 @@ DLC skills auto-fetch Jira context when you pass a ticket key (e.g. `PROJ-123`).
 | `jira-cache-server` | Cached, faster | [wasikarn/jira-cache-server](https://github.com/wasikarn/jira-cache-server) |
 
 > If neither is configured, skills skip Jira context silently and continue normally. Jira is never a blocker.
+
+---
+
+## Recommended Ecosystem
+
+The plugin works standalone, but these tools are worth installing to get the most out of the DLC workflow.
+
+### Complementary Claude Code Plugins
+
+Install via `claude plugin install <name>`:
+
+| Plugin | Why it's worth installing |
+| --- | --- |
+| `superpowers@claude-plugins-official` | Structured workflow skills — brainstorming before building, TDD, systematic debugging, verification before claiming done. Prevents the common failure modes that make AI-generated code unreliable. |
+| `claude-mem@thedotmack` | Cross-session persistent memory. Claude remembers past decisions, recurring patterns, and project context across conversations — no more re-explaining the same constraints every session. |
+| `qmd@qmd` | Local semantic search over your codebase and docs. Index `.ts`/`.tsx`/`.md` files; Claude searches by meaning, not just keywords. Speeds up `dlc-build` research phase significantly. |
+| `feature-dev@claude-plugins-official` | Specialized subagents for feature exploration and architecture analysis. Pairs well with `dlc-build` for larger features. |
+| `commit-commands@claude-plugins-official` | Quick `/commit` and `/commit-push-pr` skills. Saves friction for the Ship phase of `dlc-build`. |
+| `playwright@claude-plugins-official` | Browser automation via MCP. Useful for `dlc-debug` when diagnosing UI bugs or end-to-end test failures. |
+| `typescript-lsp@claude-plugins-official` | TypeScript language server integration. Claude gets real-time type errors, go-to-definition, and rename-symbol — reduces hallucinated type signatures in TypeScript projects. |
+| `pr-review-toolkit@claude-plugins-official` | Additional review agents (silent-failure hunter, type-design analyzer, test coverage analyzer). Complements `dlc-review`'s three-reviewer debate. |
+
+### Nice to Have: MCP Servers
+
+These MCP servers integrate directly with the DLC skills when present. All are optional — skills degrade gracefully if absent.
+
+| MCP Server | When it helps | Install |
+| --- | --- | --- |
+| `context7` | Auto-fetches up-to-date library docs during `dlc-build` research phase. No more hallucinated API signatures — Claude reads the actual current docs for any npm/PyPI package. | [upstash/context7-mcp](https://github.com/upstash/context7-mcp) |
+| `sequential-thinking` | Structured multi-step reasoning for complex architecture decisions. Useful in `systems-thinking` skill and `dlc-build` planning phase when the problem has many unknowns. | `claude mcp add sequential-thinking` |
+| `figma` | Pulls Figma frames and component data directly into context. If your team designs in Figma before coding, this lets `dlc-build` use the actual design spec rather than a description of it. | [GLips/Figma-Context-MCP](https://github.com/GLips/Figma-Context-MCP) |
+| `mcp-atlassian` | Already covered in [Jira Integration](#jira-integration) — also gives access to Confluence pages, which `dlc-build` uses as additional acceptance criteria context. | [sooperset/mcp-atlassian](https://github.com/sooperset/mcp-atlassian) |
 
 ---
 
