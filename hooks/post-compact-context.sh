@@ -4,7 +4,8 @@
 # Dynamic sections pull live state so context stays accurate.
 
 # Show compact summary if available (PostCompact payload provides this)
-COMPACT_SUMMARY=$(echo "${HOOK_INPUT:-}" | jq -r '.compact_summary // empty' 2>/dev/null)
+INPUT=$(cat)
+COMPACT_SUMMARY=$(echo "$INPUT" | jq -r '.compact_summary // empty' 2>/dev/null)
 if [ -n "$COMPACT_SUMMARY" ]; then
   echo "## Compaction Summary"
   echo "$COMPACT_SUMMARY"
