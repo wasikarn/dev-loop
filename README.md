@@ -65,15 +65,6 @@ Restart Claude Code — the plugin is ready.
 
 ### Option A — Plugin Install (recommended)
 
-#### Step 0 — Install Claude Code
-
-Claude Code must be installed before anything else. Download and install it from [claude.ai/download](https://claude.ai/download), then verify:
-
-```bash
-claude --version
-# Expected: Claude Code x.y.z
-```
-
 #### Step 1 — Install Homebrew (macOS only)
 
 ```bash
@@ -184,7 +175,6 @@ Skills and agents take effect immediately on file change. Restart Claude Code on
 
 | Tool | Status | Install |
 | --- | --- | --- |
-| Claude Code | Required — must be installed first | [claude.ai/download](https://claude.ai/download) |
 | `git` | Required | `brew install git` (usually pre-installed) |
 | `jq` | Required — all hooks fail without it | `brew install jq` |
 | `gh` (authenticated) | Required — DLC skills + merge-pr | `brew install gh && gh auth login` |
