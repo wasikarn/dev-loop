@@ -22,7 +22,10 @@ fi
 HINT=""
 
 if echo "$ERROR" | grep -qi "command not found"; then
-  CMD_NAME=$(echo "$COMMAND" | awk '{print $1}')
+  # Try to extract the missing command name from error text
+  # "sudo: foobar: command not found" → take second-to-last field before "not found"
+  CMD_NAME=$(echo "$ERROR" | sed 's/: command not found.*//' | awk -F': ' '{print $NF}' 2>/dev/null || true)
+  [ -z "$CMD_NAME" ] && CMD_NAME=$(echo "$COMMAND" | awk '{print $1}')
   HINT="Command '$CMD_NAME' not found. Check if it's installed (run: which $CMD_NAME) or use an alternative tool."
 elif echo "$ERROR" | grep -qi "permission denied"; then
   HINT="Permission denied. Check file permissions (ls -la) or if sudo is needed."
@@ -30,7 +33,7 @@ elif echo "$ERROR" | grep -qi "no such file or directory"; then
   HINT="File or directory not found. Verify the path exists before retrying."
 elif echo "$ERROR" | grep -qi "port.*already in use\|address already in use"; then
   HINT="Port already in use. Find and stop the process: lsof -ti :PORT | xargs kill"
-elif echo "$ERROR" | grep -qi "npm err\|yarn err\|bun.*error"; then
+elif echo "$COMMAND" | grep -qiE "^(npm|yarn|pnpm|bun) " && echo "$ERROR" | grep -qiE "error|failed|not found|ERR!"; then
   HINT="Package manager error. Try: remove node_modules and lock file, then reinstall."
 elif echo "$ERROR" | grep -qi "syntax error"; then
   HINT="Shell syntax error in command. Check for unmatched quotes, brackets, or missing semicolons."

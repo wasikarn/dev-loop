@@ -137,6 +137,18 @@
           }
         ]
       }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"\"/hooks/bash-failure-hint.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
