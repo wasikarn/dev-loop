@@ -48,7 +48,7 @@ ls -la ~/.claude/skills/dlc-respond
 ## Gotchas
 
 - Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` for parallel Fixers — degrades gracefully to subagent or solo mode
-- `review-dismissed.md` is **read-only** here — `dlc-review` writes it, `dlc-respond` only reads it
+- `review-dismissed.md` is **read-only** here — `dlc-review` and `dlc-build` write it, `dlc-respond` only reads it
 - `respond-context.md` is written to **target project root** (not this skills repo) — clean up after done
 - Fixer teammates must validate BEFORE committing — not after (validated BEFORE vs AFTER matters for revert cost)
 - Max 3 fix attempts per thread — beyond 3 = architectural mismatch, escalate to user
