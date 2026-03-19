@@ -40,14 +40,20 @@
 ## Quick Start
 
 ```bash
-# 1. Install prerequisites (macOS)
-brew install jq gh && gh auth login
+# 1. Install Homebrew (macOS — skip if already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# 2. Add marketplace and install plugin
+# 2. Install required tools
+brew install jq gh git
+
+# 3. Authenticate GitHub CLI (choose HTTPS if you don't have SSH keys)
+gh auth login
+
+# 4. Add marketplace and install plugin
 claude plugin marketplace add wasikarn/dev-loop
 claude plugin install dev-loop
 
-# 3. Enable Agent Teams (required for DLC skills)
+# 5. Enable Agent Teams (required for DLC skills)
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ```
 
@@ -59,22 +65,40 @@ Restart Claude Code — the plugin is ready.
 
 ### Option A — Plugin Install (recommended)
 
-#### Step 1 — Install prerequisites
+#### Step 0 — Install Claude Code
+
+Claude Code must be installed before anything else. Download and install it from [claude.ai/download](https://claude.ai/download), then verify:
+
+```bash
+claude --version
+# Expected: Claude Code x.y.z
+```
+
+#### Step 1 — Install Homebrew (macOS only)
+
+```bash
+# Check if Homebrew is installed
+brew --version
+
+# If not installed:
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+> Ubuntu / Debian users: skip this step. Install `jq` via `sudo apt install jq` and `gh` via the [official GitHub CLI instructions](https://cli.github.com/manual/installation).
+
+#### Step 2 — Install required tools
 
 **Required — plugin will not function without these:**
 
 ```bash
-# macOS
-brew install jq gh
-
-# Ubuntu / Debian
-sudo apt install jq && brew install gh
+brew install jq gh git
 ```
 
 | Tool | Why it's needed |
 | --- | --- |
 | `jq` | All lifecycle hooks depend on it — missing breaks every hook |
 | `gh` (authenticated) | DLC skills need it to fetch PR diffs, post comments, and merge PRs |
+| `git` | All DLC skills and hooks depend on git |
 
 **Recommended — plugin degrades gracefully without these:**
 
@@ -86,14 +110,16 @@ sudo apt install jq && brew install gh
 | `fd` | Bootstrap agents fall back to slower Glob search | `brew install fd` |
 | `ast-grep` | Bootstrap agents fall back to less precise Grep | `brew install ast-grep` |
 
-#### Step 2 — Authenticate GitHub CLI
+#### Step 3 — Authenticate GitHub CLI
 
 ```bash
 gh auth login
 # Choose: GitHub.com → HTTPS → authenticate via browser
 ```
 
-#### Step 3 — Install the plugin
+> **Note:** When prompted for preferred protocol, choose **HTTPS** unless you already have SSH keys configured for GitHub. The plugin installer uses `git clone` to pull this repository — it will use SSH if your git is configured that way, or fall back to HTTPS via the `gh` credential helper.
+
+#### Step 4 — Install the plugin
 
 `claude plugin install` requires a registered marketplace. Add this plugin's marketplace first, then install:
 
@@ -102,7 +128,13 @@ claude plugin marketplace add wasikarn/dev-loop
 claude plugin install dev-loop
 ```
 
-#### Step 4 — Enable Agent Teams
+> **Troubleshooting:** If the `marketplace add` step fails with a permission or authentication error, try the explicit HTTPS URL instead:
+>
+> ```bash
+> claude plugin marketplace add https://github.com/wasikarn/dev-loop.git
+> ```
+
+#### Step 5 — Enable Agent Teams
 
 DLC skills (`dlc-build`, `dlc-review`, `dlc-respond`, `dlc-debug`) spawn parallel agents using Agent Teams. Without this flag, they degrade to solo mode.
 
@@ -110,11 +142,11 @@ DLC skills (`dlc-build`, `dlc-review`, `dlc-respond`, `dlc-debug`) spawn paralle
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ```
 
-#### Step 5 — Restart Claude Code
+#### Step 6 — Restart Claude Code
 
-On next startup, the plugin automatically checks for missing dependencies and warns you in context.
+Close and reopen Claude Code. On next startup, the plugin automatically checks for missing dependencies and warns you in context if anything is still missing.
 
-#### Step 6 — Verify installation
+#### Step 7 — Verify installation
 
 ```bash
 claude plugin list
@@ -152,7 +184,8 @@ Skills and agents take effect immediately on file change. Restart Claude Code on
 
 | Tool | Status | Install |
 | --- | --- | --- |
-| `git` | Required | Pre-installed on most systems |
+| Claude Code | Required — must be installed first | [claude.ai/download](https://claude.ai/download) |
+| `git` | Required | `brew install git` (usually pre-installed) |
 | `jq` | Required — all hooks fail without it | `brew install jq` |
 | `gh` (authenticated) | Required — DLC skills + merge-pr | `brew install gh && gh auth login` |
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | Required — enables Agent Teams for DLC skills | `claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1` |
