@@ -112,6 +112,8 @@ claude plugin list
 
 For contributors who want to edit skills and see changes immediately without reinstalling the plugin.
 
+> **Warning:** Do not use this if you already installed via Option A. Both methods write to the same `~/.claude/` directories and will conflict. Use one or the other.
+
 **1.** Clone the repository:
 
 ```bash

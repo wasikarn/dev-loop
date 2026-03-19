@@ -19,10 +19,6 @@ ASSET_TYPES=(
   "scripts:$HOME/.claude/scripts"
 )
 
-# Dotfiles: individual repo_file:claude_target pairs (space-separated, pipe-delimited entries)
-# Note: zshrc is intentionally excluded — use link-skill.sh --zshrc to opt-in
-DOTFILES="statusline.sh:$HOME/.claude/statusline.sh"
-
 # Copy-dotfiles: copied (not symlinked) so ~/.claude/CLAUDE.md stays independent from repo
 COPY_DOTFILES="global-CLAUDE.md:$HOME/.claude/CLAUDE.md"
 
@@ -69,17 +65,6 @@ link_asset_type() {
   if [ $found -eq 0 ]; then
     echo "  (no items in $type/)"
   fi
-}
-
-link_dotfiles() {
-  IFS='|' read -ra PAIRS <<< "$DOTFILES"
-  for pair in "${PAIRS[@]}"; do
-    local src_rel="${pair%%:*}"
-    local dst="${pair#*:}"
-    local src="$REPO_ROOT/$src_rel"
-    [ -f "$src" ] || continue
-    link_item "$src" "$dst"
-  done
 }
 
 copy_item() {
@@ -135,18 +120,6 @@ list_status() {
   done
 
   echo ""
-  echo "dotfiles (symlinked):"
-  IFS='|' read -ra PAIRS <<< "$DOTFILES"
-  for pair in "${PAIRS[@]}"; do
-    local src_rel="${pair%%:*}"
-    local dst="${pair#*:}"
-    local target
-    target=$(readlink "$dst" 2>/dev/null) \
-      && echo "  ✓ $src_rel → $target" \
-      || echo "  ✗ $src_rel (not linked at $dst)"
-  done
-
-  echo ""
   echo "dotfiles (copied):"
   IFS='|' read -ra PAIRS <<< "$COPY_DOTFILES"
   for pair in "${PAIRS[@]}"; do
@@ -181,10 +154,6 @@ case "${1:-}" in
   --list)
     list_status
     ;;
-  --zshrc)
-    echo "Linking zshrc → ~/.zshrc"
-    link_item "$REPO_ROOT/zshrc" "$HOME/.zshrc"
-    ;;
   "")
     echo "Linking all assets → ~/.claude/"
     for entry in "${ASSET_TYPES[@]}"; do
@@ -194,11 +163,6 @@ case "${1:-}" in
       echo "[$type]"
       link_asset_type "$type" "$dst_dir"
     done
-
-    # Dotfiles: individual file symlinks
-    echo ""
-    echo "[dotfiles]"
-    link_dotfiles
 
     # Copy-dotfiles: copied (not symlinked)
     echo ""

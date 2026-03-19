@@ -123,11 +123,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full step-by-step guide. Key rule
 | --- | --- |
 | Lint all markdown | `npx markdownlint-cli2 "**/*.md"` |
 | Sync docs cache | `bash scripts/sync-docs.sh` (fetches Claude Code official docs to `~/.claude/docs/`) |
-| Dev mode — link one skill | `bash scripts/link-skill.sh <name>` |
-| Dev mode — link everything | `bash scripts/link-skill.sh` (skills, agents, hooks, output-styles) |
-| Dev mode — check links | `bash scripts/link-skill.sh --list` |
 
-> `link-skill.sh` is for local development only. After `claude plugin install`, symlinks are not needed.
+**Contributor dev mode only** (do not use if plugin is installed — will conflict):
+
+| Task | Command |
+| --- | --- |
+| Link one skill | `bash scripts/link-skill.sh <name>` |
+| Link everything | `bash scripts/link-skill.sh` (skills, agents, hooks, output-styles) |
+| Check link status | `bash scripts/link-skill.sh --list` |
 
 ## Gotchas
 

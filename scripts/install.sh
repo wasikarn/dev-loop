@@ -7,7 +7,7 @@
 #   2. Prompts for machine-specific values (USERNAME, ALLOWED_DOMAINS)
 #   3. Creates ~/.claude/ directory structure
 #   4. Generates ~/.claude/settings.json from global-settings.template.json
-#   5. Runs link-skill.sh to create all symlinks
+#   5. Runs link-skill.sh to symlink skills, agents, hooks, and output-styles
 
 set -euo pipefail
 
@@ -228,18 +228,6 @@ fi
 
 section "Symlinks"
 bash "$REPO_ROOT/scripts/link-skill.sh"
-
-section "zshrc (optional)"
-echo ""
-echo "  claude-code-skills includes an optimized ~/.zshrc (atuin, fzf-tab, lazy NVM, ~0.11s startup)."
-echo "  WARNING: This will REPLACE your existing ~/.zshrc."
-echo ""
-read -r -p "  Link claude-code-skills zshrc → ~/.zshrc? [y/N]: " LINK_ZSHRC
-if [[ "${LINK_ZSHRC,,}" == "y" ]]; then
-  bash "$REPO_ROOT/scripts/link-skill.sh" --zshrc
-else
-  info "zshrc — skipped (run 'bash scripts/link-skill.sh --zshrc' later to opt-in)"
-fi
 
 echo ""
 echo "╔══════════════════════════════════════╗"

@@ -6,7 +6,9 @@ This guide is for developers who want to customize, extend, or contribute to the
 
 ## Local Development Setup (symlinks)
 
-Instead of installing via `claude plugin install`, you can clone the repo and symlink everything directly to `~/.claude/` for immediate effect on every change.
+> **Warning:** Do not use symlinks if you have `claude plugin install wasikarn/claude-code-skills` active — both write to the same `~/.claude/` directories and will conflict. Use one or the other.
+
+For contributors who want to edit skills and see changes take effect immediately without reinstalling the plugin. Clone the repo and symlink assets directly to `~/.claude/`.
 
 ### Prerequisites
 
@@ -64,7 +66,7 @@ Changes to symlinked files take effect immediately. Restart only needed for sett
 1. Create `skills/<name>/SKILL.md` with YAML frontmatter
 2. Create `skills/<name>/CLAUDE.md` with contributor context (architecture, gotchas, validate commands)
 3. Add `references/` directory for multi-phase skills or skills exceeding ~100 lines — move templates, checklists, and examples there
-4. Symlink: `bash scripts/link-skill.sh <name>`
+4. _(Dev mode only)_ Symlink to test locally: `bash scripts/link-skill.sh <name>`
 5. Lint: `npx markdownlint-cli2 "skills/<name>/**/*.md"`
 
 ### Frontmatter fields
