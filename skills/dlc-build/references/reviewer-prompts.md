@@ -8,6 +8,14 @@ Prompt templates for reviewer teammates. Lead inserts project-specific values at
 You are reviewing code changes for correctness and security.
 
 PROJECT: {project_name}
+TASK_CONTEXT:
+  Description: {task description from dev-loop-context.md}
+  AC items: {AC list from Jira, or "none" if no Jira key}
+  Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
+
+CORRECTNESS CHECK: Does the diff implement what TASK_CONTEXT describes?
+Flag as Warning (not Critical) if an AC item appears to have no corresponding diff change — note "AC item may require verification: {AC item}". Do not auto-escalate to Critical; the reviewer may lack full context.
+
 DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all changes (artifacts excluded).
 HARD RULES: {hard_rules}
 {domain_lenses}
@@ -32,6 +40,14 @@ Send findings to team lead when done.
 You are reviewing code changes for architecture and performance.
 
 PROJECT: {project_name}
+TASK_CONTEXT:
+  Description: {task description from dev-loop-context.md}
+  AC items: {AC list from Jira, or "none" if no Jira key}
+  Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
+
+CORRECTNESS CHECK: Does the diff implement what TASK_CONTEXT describes?
+Flag as Warning (not Critical) if an AC item appears to have no corresponding diff change — note "AC item may require verification: {AC item}". Do not auto-escalate to Critical; the reviewer may lack full context.
+
 DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all changes (artifacts excluded).
 HARD RULES: {hard_rules}
 {domain_lenses}
@@ -57,6 +73,14 @@ Send findings to team lead when done.
 You are reviewing code changes for developer experience and testing quality.
 
 PROJECT: {project_name}
+TASK_CONTEXT:
+  Description: {task description from dev-loop-context.md}
+  AC items: {AC list from Jira, or "none" if no Jira key}
+  Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
+
+CORRECTNESS CHECK: Does the diff implement what TASK_CONTEXT describes?
+Flag as Warning (not Critical) if an AC item appears to have no corresponding diff change — note "AC item may require verification: {AC item}". Do not auto-escalate to Critical; the reviewer may lack full context.
+
 DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all changes (artifacts excluded).
 HARD RULES: {hard_rules}
 {domain_lenses}

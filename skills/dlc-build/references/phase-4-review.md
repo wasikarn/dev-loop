@@ -42,3 +42,11 @@ Drop findings below the role threshold before consolidation. Hard Rule violation
 Write findings to `.claude/dlc-build/review-findings-{iteration}.md` per [../../references/review-output-format.md](../../references/review-output-format.md). Full mode iter 1 with 3 reviewers: dispatch `review-consolidator` agent with raw findings inline — removes main context bias from ranking and saves Sonnet tokens on mechanical dedup work. For 1–2 reviewer cases, lead consolidates inline (no agent). If agent errors → dedup, pattern-cap, sort, and signal-check inline per [review-conventions.md](../../references/review-conventions.md).
 
 **GATE:** Findings consolidated → update `Phase: review` in dev-loop-context.md → proceed to Assess.
+
+## Lead Notes
+
+**Task context injection (B1):** When constructing reviewer prompts, populate `TASK_CONTEXT` from:
+
+- `Description`: task description from `dev-loop-context.md` → `task:` field
+- `AC items`: Jira AC list from `dev-loop-context.md` → Jira context section, or "none"
+- `Plan summary`: read plan file path from `dev-loop-context.md` → `plan_file:` field; read that file and extract top 5 task titles (one line, max 10 words each). If `plan_file` is empty, set Plan summary to "plan file path not in context."
