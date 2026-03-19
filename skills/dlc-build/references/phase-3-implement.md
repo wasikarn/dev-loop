@@ -27,3 +27,16 @@ If same finding fails 3× → see 3-Fix Rule in [operational.md](operational.md)
 Verify all workers have sent final completion messages. Then shut down the worker team (TeamDelete or confirm idle). Workers and reviewers must never be alive simultaneously.
 
 **GATE:** All tasks done + validate passes + all workers shut down → run Verification Gate (see operational.md) → update `Phase: implement` → proceed to Review.
+
+## Phase 3 Output Format
+
+When all tasks are complete and validate passes, output this summary table — do NOT write a prose paragraph:
+
+```markdown
+### Phase 3: Implement Complete
+| Task | Status | Commit |
+|---|---|---|
+| {task name} | ✅ | {short sha} |
+| {task name} | ✅ | {short sha} |
+→ Validate passes · Workers shut down · Proceeding to Phase 4
+```

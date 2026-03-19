@@ -27,3 +27,16 @@ Lead merges all explorer findings into `.claude/dlc-build/research.md`. Structur
 Update `Phase: research` in dev-loop-context.md.
 
 **GATE:** `.claude/dlc-build/research.md` complete with file:line evidence → proceed.
+
+## Phase 1 Output Format
+
+When Phase 1 completes (after writing research.md), output this summary table — do NOT write a prose paragraph:
+
+```markdown
+### Phase 1 Complete
+| Explorer | Files read | Key findings |
+|---|---|---|
+| Explorer A | N files | {top finding — one line} |
+| Explorer B | N files | {top finding — one line} |
+→ research.md written · Proceeding to Phase 2
+```
