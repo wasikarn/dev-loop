@@ -124,6 +124,27 @@ Before spawning reviewers, count changed files from the already-loaded PR diff s
 
 Use the file count from `PR diff stat` in the skill header (`!gh pr diff $0 --stat`). Parse the summary line (e.g., "12 files changed") — do not run a new git command.
 
+### Step 0.9: Severity Calibration Block
+
+Before creating the team, construct the `SEVERITY CALIBRATION` block to inject into each reviewer prompt:
+
+1. Read `{project_root}/.claude/review-dismissed.md` if it exists — find the most recent entry per severity level and use the `Finding` column as the example text.
+2. If file is absent or a severity level has no entries, use hardcoded fallback:
+   - Critical: "SQL injection via unsanitized user input in query builder"
+   - Warning: "Missing null check on optional field that is null in 10% of production calls"
+   - Suggestion: `Variable name 'data' is ambiguous — rename to reflect content type`
+
+Inject into each teammate prompt (append after `{bootstrap_context}` block):
+
+```text
+SEVERITY CALIBRATION — examples from this project:
+Critical: {example}
+Warning: {example}
+Suggestion: {example}
+
+Anchor to these before assigning any severity. When in doubt, use Warning over Critical.
+```
+
 ### Step 1: Create the team
 
 Create an agent team named `review-pr-$0` with 3 reviewer teammates using prompts from [teammate-prompts.md](references/teammate-prompts.md):
@@ -157,6 +178,18 @@ Follow [debate-protocol.md](references/debate-protocol.md) exactly:
 5. **Output:** Debate summary table — Finding / Raised By / Challenged By / Outcome. Show: Consensus (N/3), Dropped (reason), Lead decided (rationale).
 
 ## Phase 4: Convergence
+
+**Phase 4.5 — Falsification Pass (before consolidation):**
+
+Spawn `falsification-agent` (defined in `agents/falsification-agent.md`) with the surviving debate findings table inline. The agent challenges each finding on three grounds and returns SUSTAINED / DOWNGRADED / REJECTED verdicts.
+
+Apply verdicts before dispatching `review-consolidator`:
+
+- REJECTED → remove from table
+- DOWNGRADED → update severity (e.g., Critical → Warning)
+- SUSTAINED → pass through unchanged
+
+Note rejected count in output summary: `(N findings rejected by Falsification Pass)`.
 
 Dispatch `review-consolidator` agent with the surviving debate findings passed inline in
 the prompt. Capture the agent's output as the consolidated findings table.
