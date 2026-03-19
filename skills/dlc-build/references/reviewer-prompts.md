@@ -20,7 +20,7 @@ DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all chang
 HARD RULES: {hard_rules}
 {domain_lenses}
 
-DISMISSED FINDINGS (iteration 2+ only): {dismissed_findings_path}
+DISMISSED FINDINGS: {dismissed_findings_path}
 — Read the `## Dismissed` section. Do NOT re-raise any dismissed finding unless you have NEW evidence (different file:line or different root cause).
 
 YOUR FOCUS: Rules #1 (correctness), #2 (app helpers & util), #10 (type safety), #12 (error handling).
@@ -52,7 +52,7 @@ DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all chang
 HARD RULES: {hard_rules}
 {domain_lenses}
 
-DISMISSED FINDINGS (iteration 2+ only): {dismissed_findings_path}
+DISMISSED FINDINGS: {dismissed_findings_path}
 — Read the `## Dismissed` section. Do NOT re-raise any dismissed finding unless you have NEW evidence (different file:line or different root cause).
 
 YOUR FOCUS: Rules #3 (N+1), #4 (DRY), #5 (flatten/guard clauses), #6 (SOLID), #7 (elegance).
@@ -85,7 +85,7 @@ DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all chang
 HARD RULES: {hard_rules}
 {domain_lenses}
 
-DISMISSED FINDINGS (iteration 2+ only): {dismissed_findings_path}
+DISMISSED FINDINGS: {dismissed_findings_path}
 — Read the `## Dismissed` section. Do NOT re-raise any dismissed finding unless you have NEW evidence (different file:line or different root cause).
 
 YOUR FOCUS: Rules #8 (naming), #9 (docs), #11 (testability), #12 (debugging).
@@ -126,7 +126,7 @@ When constructing reviewer prompts:
 1. Replace all `{placeholders}` with actual values
 2. Insert project-specific Hard Rules from `.claude/skills/review-rules/hard-rules.md` (if exists) or use Generic Hard Rules — Hard Rule violations bypass confidence filter and are always reported
 3. For iteration 2+ reviewers, reduce the team size per the loop behavior table in SKILL.md
-4. **Iteration 2+:** Set `{dismissed_findings_path}` to `.claude/dlc-build/review-findings-{N-1}.md` so reviewers check the `## Dismissed` section before submitting. For iteration 1, set to `(none — first iteration)` to disable the dismissed check.
+4. Set `{dismissed_findings_path}` to: (1) `.claude/review-dismissed.md` (cross-session, all iterations — load if exists), then (2) `.claude/dlc-build/review-findings-{N-1}.md` (current session iter 2+). Reviewers check both sources; before applying any dismissed entry, verify the file:line still exists in the current codebase.
 5. **Domain lenses:** Set `{domain_lenses}` to the relevant lens content from `references/review-lenses/` based on file extensions and Jira labels detected in Phase 0. Leave empty if no domain lens applies.
 6. **Confidence thresholds by role:** per `reviewer-shared-rules.md` — Security/Correctness: 70/75, Architecture: 80, DX: 85. Hard Rules bypass all thresholds.
 

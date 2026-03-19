@@ -166,6 +166,7 @@ See [references/operational.md](references/operational.md) for Success Criteria 
 
 ## Constraints
 
+- **review-dismissed.md is read-only here** — dlc-review and dlc-build both write to this file; dlc-respond reads it only (Step 2.5 triage)
 - **Fix scope = thread scope only** — why: scope creep makes re-review harder and risks introducing new issues unrelated to the review
 - **Validate BEFORE commit** — why: reverting uncommitted changes is cheaper than reverting commits; catches regressions before they enter history
 - **Never silently skip a Critical thread** — why: skipped Criticals become production incidents; if unfixable, the decision must be explicit and documented

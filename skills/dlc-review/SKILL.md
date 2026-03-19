@@ -154,7 +154,11 @@ If agent errors → perform dedup, pattern-cap, sort, and signal-check inline pe
 
 Output the consolidated findings table per [review-output-format.md](../../references/review-output-format.md).
 
-**Dismissed Findings Log:** After consolidation, append dropped findings to `{project_root}/.claude/review-dismissed.md` (format: date | pattern | file | reason | PR — cap 50 FIFO).
+**Dismissed Findings Log:** After consolidation, append dropped findings to `{project_root}/.claude/review-dismissed.md` (cap 50 FIFO). Use this canonical format:
+
+| Date | Finding | File:Line | Reason | Source | Workflow |
+| --- | --- | --- | --- | --- | --- |
+| YYYY-MM-DD | {brief} | {file}:{line} | {reason} | PR #{number} | dlc-review |
 
 Replace the "Agents" column with "Consensus":
 

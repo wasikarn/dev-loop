@@ -10,4 +10,12 @@ Update progress tracker checkboxes (iteration N: Implement tasks, Review Critica
 
 When dropping a finding (false positive, accepted risk), append it to the `## Dismissed` section in `review-findings-{N}.md` using the table format — prevents re-raising in subsequent iterations.
 
+**Cross-session persistence:** Additionally, append the dismissed finding to `.claude/review-dismissed.md` at project root (create if absent). Use this canonical format shared with dlc-review:
+
+| Date | Finding | File:Line | Reason | Source | Workflow |
+| --- | --- | --- | --- | --- | --- |
+| YYYY-MM-DD | {brief description} | {file}:{line} | {reason} | Lead | dlc-build |
+
+FIFO cap: 50 entries total — if file exceeds 50 rows (excluding header), remove the oldest entry before appending. Duplicate entries (same File:Line) do not need to be deduplicated on write; readers treat same File:Line as the same finding.
+
 **GATE:** Loop decision made → update `Phase: assess` (or `Phase: ship` if exiting) in dev-loop-context.md → proceed accordingly.
