@@ -1,7 +1,7 @@
 ---
 name: code-reviewer
 description: "General-purpose code reviewer with persistent memory. Reviews code, audits PRs, and checks recent changes in any project. Auto-detects stack and architecture from the codebase. Remembers patterns, conventions, and recurring issues across sessions."
-tools: Read, Grep, Glob, Bash(git diff *), Bash(git log *), Bash(git show *), Bash(git status *)
+tools: Read, Grep, Glob, Bash
 model: sonnet
 memory: user
 ---

@@ -9,10 +9,5 @@
     "url": "https://github.com/wasikarn"
   },
   "homepage": "https://github.com/wasikarn/dev-loop#readme",
-  "repository": "https://github.com/wasikarn/dev-loop",
-  "skills": "./skills/",
-  "agents": "./agents/",
-  "commands": "./commands/",
-  "outputStyles": "./output-styles/",
-  "hooks": "./hooks/hooks.json"
+  "repository": "https://github.com/wasikarn/dev-loop"
 }

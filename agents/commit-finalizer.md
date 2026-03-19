@@ -1,7 +1,7 @@
 ---
 name: commit-finalizer
 description: "Fast git commit agent using Haiku. Use after completing any code change to stage and commit with a well-formatted message. Cheaper than Sonnet for mechanical commit tasks. Accepts optional commit message hint as input. Follows conventional commits format. Does NOT push unless explicitly asked."
-tools: Bash(git add *), Bash(git status *), Bash(git diff *), Bash(git commit *), Bash(git push *), Bash(git log *)
+tools: Bash
 model: haiku
 ---
 

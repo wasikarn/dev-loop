@@ -1,9 +1,8 @@
 ---
 name: pr-review-bootstrap
 description: "Bootstraps PR review context by fetching PR diff, Jira issue, and AC in one fast pass. Use at the START of any PR review session before dispatching review agents. Accepts PR number or branch name as input. Returns structured review context: changed files, Jira AC, PR description, and file groups for parallel agent dispatch."
-tools: Bash, Read, mcp__mcp-atlassian__jira_get_issue
+tools: Bash, Read
 model: haiku
-argument-hint: "[pr-number-or-branch] [jira-key?]"
 disallowedTools: Edit, Write
 maxTurns: 15
 ---
