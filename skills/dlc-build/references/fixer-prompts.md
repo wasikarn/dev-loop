@@ -38,6 +38,11 @@ and try a different approach. Message the team lead about the conflict.
 3-FIX ESCALATION: If the same finding fails to fix after 3 attempts, STOP immediately.
 Do NOT keep trying variations of the same approach.
 Message the team lead: "Finding #{N} resists fix after 3 attempts. Likely architectural issue — need guidance."
+
+TOKEN BUDGET:
+- After reading 8+ files in this phase (count only files you read directly — not shared context injected by Lead): switch to header + structure overview only for files >300 lines
+- Do not re-read files that Lead already sent as shared context in this prompt
+- If you cannot complete your task within this budget, list unread files and explain what's missing
 ```
 
 ## Lead Notes

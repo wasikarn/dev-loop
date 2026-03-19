@@ -36,6 +36,11 @@ OUTPUT FORMAT (send via SendMessage after each task):
 **Commit:** {hash} {message}
 **Blockers:** {none or description}
 **Notes for lead:** {optional context for spot-check}
+
+TOKEN BUDGET:
+- After reading 8+ files in this phase (count only files you read directly — not shared context injected by Lead): switch to header + structure overview only for files >300 lines
+- Do not re-read files that Lead already sent as shared context in this prompt
+- If you cannot complete your task within this budget, list unread files and explain what's missing
 ```
 
 ## Lead Notes
