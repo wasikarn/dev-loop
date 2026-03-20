@@ -59,7 +59,7 @@ Phase 0→1→2→ [3: Implement ↔ 4: Review ↔ 5: Assess loop (max 3)] →6:
 | `review-consolidator` agent | Phase 4 iter 1 (3 reviewers) — consolidate findings |
 | [../../references/review-conventions.md](../../references/review-conventions.md) | Entering Phase 4 |
 | [../../references/review-output-format.md](../../references/review-output-format.md) | Entering Phase 4 |
-| [../dlc-review/references/debate-protocol.md](../dlc-review/references/debate-protocol.md) | Phase 4 iter 1 debate only (check existence first — fallback in phase-4-review.md) |
+| [../../references/debate-protocol.md](../../references/debate-protocol.md) | Phase 4 iter 1 debate only (fallback in phase-4-review.md) |
 | [../../references/jira-integration.md](../../references/jira-integration.md) | Jira key in `$ARGUMENTS` |
 | [references/pr-template.md](references/pr-template.md) | Entering Phase 6 |
 

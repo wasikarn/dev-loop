@@ -68,7 +68,7 @@ gh pr list --author @me --state open --json number,title,headRefName,createdAt \
 
 **1c — Jira Context** (skip if no Jira key in `$ARGUMENTS`):
 
-Follow [../../references/jira-integration.md](../../references/jira-integration.md) §dlc-build:
+Follow [../../../references/jira-integration.md](../../../references/jira-integration.md) §dlc-build:
 
 1. Fetch ticket → extract AC and subtasks
 2. AC items become plan task constraints (Phase 2)

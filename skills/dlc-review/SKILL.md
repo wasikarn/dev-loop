@@ -183,7 +183,7 @@ Wait for all 3 teammates to complete. Track progress: show each teammate's statu
 
 ## Phase 3: Adversarial Debate
 
-Follow [debate-protocol.md](references/debate-protocol.md) exactly:
+Follow [debate-protocol.md](../../references/debate-protocol.md) exactly:
 
 1. **Pre-Debate Triage:** Auto-pass (Hard Rule + conf ≥90), auto-drop (Info + conf <80), must-debate (all others). Only must-debate findings enter round-robin.
 2. **Broadcast** must-debate findings to all teammates.
