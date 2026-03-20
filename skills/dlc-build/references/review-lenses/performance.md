@@ -40,7 +40,7 @@ BUNDLE SIZE (frontend only):
 
 CORE WEB VITALS (frontend — INP replaced FID, March 2024):
 - LCP: above-fold `<img>` without `<Image priority>` (Next.js) or `fetchpriority="high"`
-- INP (<200ms): long sync work in click handler → `scheduler.postTask()` / `requestIdleCallback`
+- INP (<200ms): long sync work in click handler → `scheduler.postTask()` or yield with `setTimeout(0)`
 - CLS: element without reserved dimensions, content injected above fold
 
 TYPESCRIPT COMPILATION (flag in PR touching type definitions):

@@ -102,6 +102,6 @@ Endpoint removed/changed without prior `Deprecation` header in earlier version, 
 
 ## Confidence Threshold
 
-A1–A5 findings with direct evidence from diff require confidence >= 80.
+A1–A6 findings with direct evidence from diff require confidence >= 80.
 "Possible" breaking changes (where the change *might* be breaking depending on consumer patterns)
 are reported at 🟡 Warning with rationale.
