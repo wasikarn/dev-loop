@@ -16,6 +16,8 @@ Invoke as `/dlc-respond [pr-number] [jira-key?]`
 **PR:** #$0 | **Today:** !`date +%Y-%m-%d`
 **Git branch:** !`git branch --show-current`
 **Project:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/detect-project.sh" 2>/dev/null || true`
+**Artifacts dir:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" dlc-respond 2>/dev/null || echo ""`
+**Review memory dir:** !`bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" dlc-review 2>/dev/null || echo ""`
 **Open threads:** !`gh pr view $0 --json reviewThreads --jq '[.reviewThreads[] | select(.isResolved == false)] | length' 2>/dev/null || true`
 **PR diff stat:** !`gh pr diff $0 --stat 2>/dev/null || true`
 
@@ -57,7 +59,7 @@ Fetch all threads — see [references/operational.md](references/operational.md#
 
 ### Step 2.5: Check Dismissed Patterns
 
-Load `{project_root}/.claude/review-dismissed.md` if present. Threads matching dismissed patterns → note as "Previously dismissed" in triage table (still include — reviewer may have re-raised with new evidence).
+Load `{review_memory_dir}/review-dismissed.md` if present. Threads matching dismissed patterns → note as "Previously dismissed" in triage table (still include — reviewer may have re-raised with new evidence).
 
 ### Step 3: Classify Threads
 
@@ -112,7 +114,7 @@ Why file-based only: semantic grouping requires extra reasoning and adds complex
 
 ### Step 4: Write `respond-context.md`
 
-Write to `{project_root}/respond-context.md` — thread triage table, project info, validate command, Jira context if fetched. Required for context compression recovery.
+Write to `{artifacts_dir}/respond-context.md` — thread triage table, project info, validate command, Jira context if fetched. Required for context compression recovery.
 
 **GATE:** Call AskUserQuestion (see [references/phase-gates.md](references/phase-gates.md) Triage → Fix gate) → proceed.
 
@@ -163,7 +165,7 @@ After all thread replies, post summary:
 gh pr review {pr} --comment --body "{summary}"
 ```
 
-Update `respond-context.md` progress section after each thread reply.
+Update `{artifacts_dir}/respond-context.md` progress section after each thread reply.
 
 **GATE:** All threads replied. (See [references/phase-gates.md](references/phase-gates.md) Reply → Re-request gate.)
 
@@ -181,7 +183,7 @@ Remove `respond-context.md` from the project root after re-review is requested �
 ephemeral scaffolding and must not remain as uncommitted state in the target project:
 
 ```bash
-rm -f {project_root}/respond-context.md
+rm -f {artifacts_dir}/respond-context.md
 ```
 
 ### Final Summary
