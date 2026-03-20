@@ -153,6 +153,16 @@ Create an agent team named `review-pr-$0` with 3 reviewer teammates using prompt
 - **Teammate 2 — Architecture & Performance:** Focus on N+1 (#3), DRY (#4), flatten (#5), SOLID (#6), elegance (#7)
 - **Teammate 3 — DX & Testing:** Focus on naming (#8), docs (#9), testability (#11), debugging (#12)
 
+**Conditional specialist agents** (spawn in parallel with the 3 teammates above, based on file groups from `{bootstrap_context}`):
+
+| Condition | Agent to spawn |
+| --- | --- |
+| Test files changed (`*.spec.*`, `*.test.*`) OR new exported functions without spec changes | `test-quality-reviewer` |
+| Migration files changed (`*.migration.*`, files with `CREATE TABLE` / `ALTER TABLE` / `addColumn`) | `migration-reviewer` |
+| Controller/route/handler/interface/DTO files changed | `api-contract-auditor` |
+
+Specialist agents send findings to the team lead and enter the same debate pipeline as standard teammates.
+
 Insert into each teammate prompt:
 
 - Project Hard Rules (from Phase 1)

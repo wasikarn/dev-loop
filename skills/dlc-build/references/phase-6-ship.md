@@ -24,6 +24,12 @@ Load [pr-template.md](pr-template.md) for PR title format, description template 
    - **Auto-cleanup:** `rm -f .claude/dlc-build/dev-loop-context.md .claude/dlc-build/research.md .claude/dlc-build/review-findings-*.md`
    - **Archive:** leave in `.claude/dlc-build/` for reference (add `.claude/dlc-build/` to `.gitignore` if not already)
 
+## Step 3.5: Jira Sync (optional)
+
+If a Jira key is present in `dev-loop-context.md`, run the `jira-sync` agent to post an implementation
+summary comment. The agent reads the context artifact and posts automatically — no manual drafting
+needed.
+
 ## Step 4: Metrics (optional)
 
 Append one JSON line to `~/.claude/dlc-metrics.jsonl` for future analysis:

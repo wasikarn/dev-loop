@@ -21,4 +21,12 @@ Source material:
 
 Present plan to user — iterate via annotations until approved. Call `ExitPlanMode` after user approves. **Immediately update `plan_file:` in `.claude/dlc-build/dev-loop-context.md`** with the path returned by the plan system.
 
-**GATE:** User approves plan → proceed to Implement-Review Loop.
+**Adversarial Gate:** Run `plan-challenger` agent with the plan file path and `research.md` path. Review its challenge table — address CHALLENGED items before proceeding:
+
+- Remove YAGNI/scope-creep tasks from the plan
+- Add any missing tasks flagged by the challenger
+- Correct any task ordering issues
+
+If all items are SUSTAINED or the user overrides a CHALLENGED item with explicit justification → proceed.
+
+**GATE:** plan-challenger review addressed + user approves → proceed to Implement-Review Loop.

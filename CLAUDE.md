@@ -55,17 +55,29 @@ Key fields: `description` (include "proactively" to auto-trigger), `memory` (`us
 
 > **Plugin limitation:** `hooks`, `mcpServers`, and `permissionMode` are silently ignored when agents are loaded from a plugin. To use these fields, copy the agent to `.claude/agents/` instead.
 
-Current agents (8):
+Current agents (20):
 
 | Agent | Model | Purpose |
 | --- | --- | --- |
 | `commit-finalizer` | haiku | Fast git commit with conventional commits format |
 | `dev-loop-bootstrap` | haiku | Pre-gather Phase 1 context before dlc-build explorer spawns |
 | `dlc-debug-bootstrap` | haiku | Pre-gather debug context before dlc-debug Investigator spawns |
+| `dlc-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before dlc-respond Fixers spawn |
 | `pr-review-bootstrap` | haiku | Fetch PR diff + Jira AC in one pass before review |
 | `review-consolidator` | haiku | Dedup/sort multi-reviewer findings into single ranked table |
+| `research-validator` | haiku | Validate research.md completeness (file:line evidence gate) before Phase 1→2 |
+| `fix-intent-verifier` | haiku | Verify each dlc-respond fix addresses reviewer intent (ADDRESSED/PARTIAL/MISALIGNED) |
+| `jira-sync` | haiku | Post structured implementation summary to Jira after dlc-build/dlc-debug completes |
+| `work-context` | haiku | Session start digest: active sprint tickets + PRs awaiting action + unmerged branches |
+| `merge-preflight` | haiku | Pre-merge go/no-go safety checklist before merge-pr Confirmation Gate |
+| `metrics-analyst` | haiku | Retrospective from dlc-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
 | `falsification-agent` | sonnet | Challenges review findings before consolidation — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
+| `plan-challenger` | sonnet | Challenges dlc-build Phase 2 plan for YAGNI/scope/ordering issues before implementation |
+| `test-quality-reviewer` | sonnet | Dedicated test quality reviewer: behavior vs implementation, mock fidelity, edge case coverage |
+| `migration-reviewer` | sonnet | Reviews DB migration files: DDL safety, indexes, table-lock risk, rollback path |
+| `api-contract-auditor` | sonnet | Detects API breaking changes: removed fields, changed status codes, new required params |
 | `skill-validator` | sonnet | Validates SKILL.md against best practices |
+| `project-onboarder` | sonnet | Bootstrap a new project into dev-loop: scaffold hard-rules.md + dlc-build directory |
 | `code-reviewer` | sonnet | General-purpose code reviewer with cross-session persistent memory |
 
 ## Hooks

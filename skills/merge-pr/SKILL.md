@@ -67,6 +67,15 @@ Load the relevant reference file now, then follow its steps exactly.
 
 ---
 
+## Pre-merge Preflight
+
+After safety checks pass, run `merge-preflight` agent (Haiku) with the PR number and mode. It
+produces a structured go/no-go report with pass/fail per check (CI status, CHANGELOG, version bump,
+concurrent hotfixes). Review the report before proceeding to the Confirmation Gate.
+
+- **GO** → proceed to Confirmation Gate
+- **NO-GO** → resolve the listed FAIL items before continuing
+
 ## Confirmation Gate
 
 Before any merge, tag, or delete operation, show this summary then use `AskUserQuestion` with Yes/No options:

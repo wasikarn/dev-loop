@@ -122,20 +122,23 @@ Write to `{project_root}/respond-context.md` — thread triage table, project in
 
 Fix in severity order: 🔴 Critical → 🟡 Important → 🔵 Suggestion (only if user requested).
 
-**Bootstrap (Lead — before spawning Fixers):**
+**Bootstrap:** Run `dlc-respond-bootstrap` agent (Haiku) with PR #$0 before spawning Fixers. It
+pre-reads all affected files and fetches open thread text in one pass — inject its output block as
+shared context in each Fixer prompt to eliminate redundant per-Fixer reads.
 
-1. Read all affected files (files listed in triage table)
-2. Run `git log --oneline -5 -- {affected_files}` for recent change context
-3. Include pre-gathered content as shared context in each Fixer prompt — avoids redundant per-Fixer reads
+**Bootstrap fallback:** If agent unavailable, lead reads affected files and runs
+`git log --oneline -5 -- {affected_files}` inline and injects manually.
 
 **Agent Teams mode:** Create 1 Fixer per non-overlapping file group using prompts from [references/teammate-prompts.md](references/teammate-prompts.md).
 **Solo/subagent mode:** Lead fixes sequentially using the same Fixer rules.
 
 **Lead verification gate (before Phase 2):**
 
-- Run validate independently: `{validate_command}`
-- Check `git diff --stat` — scope must match thread scope only
-- If validate fails or scope crept → revert and re-fix before proceeding
+1. Run validate independently: `{validate_command}` — if fails, revert and re-fix
+2. Check `git diff --stat` — scope must match thread scope only (scope crept → revert)
+3. Run `fix-intent-verifier` agent (Haiku) with the triage table and PR number — verify each fix
+   addresses the reviewer's intent (not just the literal symptom). For MISALIGNED threads: Fixer
+   re-reads the original thread and re-fixes. For PARTIAL threads: Fixer refines before proceeding.
 
 **GATE:** All Critical+Important fixed + Lead-verified validate passes. (See [references/phase-gates.md](references/phase-gates.md) Fix → Reply gate.)
 

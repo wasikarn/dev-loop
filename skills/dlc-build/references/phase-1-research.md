@@ -26,7 +26,7 @@ Lead merges all explorer findings into `.claude/dlc-build/research.md`. Structur
 
 Update `Phase: research` in dev-loop-context.md.
 
-**GATE:** `.claude/dlc-build/research.md` complete with file:line evidence → proceed.
+**GATE:** Run `research-validator` agent with path `.claude/dlc-build/research.md`. If result is FAIL, re-dispatch the relevant explorer with a targeted prompt before proceeding. If result is PASS → proceed.
 
 ## Phase 1 Output Format
 
