@@ -46,6 +46,9 @@ RE_NO_FEATURE='feature|service|component|api|page'
 RE_FEATURE_EN='implement|add feature'
 RE_FEATURE_BUILD='build.*(feature|service|component|api)'
 RE_FEATURE_CREATE='create.*(feature|service|component|page)'
+RE_JIRA_KEY='[A-Z]+-[0-9]+'
+RE_JIRA_INTENT='implement|fix|build|look at|what is|status of|สร้าง|แก้'
+RE_JIRA_CREATE='create story|write ticket|create ticket|write story|jira ticket|สร้าง ticket|สร้าง story|เขียน ticket'
 
 # --- fix-bug (priority 1) ---
 if [[ $PROMPT_LOWER =~ $RE_BUG ]] \
@@ -135,6 +138,25 @@ if [[ $PROMPT_LOWER =~ $RE_REFACTOR ]] \
 Sequence: read existing code → understand constraints → minimal targeted change
 Guard: run full tests before + after — refactor must not change behavior
 Skip brainstorming: if scope is already clear from description"
+fi
+
+# --- jira-key (atlassian-pm hint) ---
+# Detects Jira key in prompt with implementation/review intent → suggest /dlc-build BEP-XXX
+# Detects story creation intent → suggest story-writer agent (atlassian-pm)
+if [[ $PROMPT =~ $RE_JIRA_KEY ]]; then
+  JIRA_KEY="${BASH_REMATCH[0]}"
+  if [[ $PROMPT_LOWER =~ $RE_JIRA_INTENT ]]; then
+    add_hint "[skill-hint:jira-workflow]
+Detected Jira key: ${JIRA_KEY}
+Suggested: /dlc-build ${JIRA_KEY}  — reads AC from Jira, builds plan, implements, ships
+Enhanced if atlassian-pm plugin installed: issue-bootstrap agent provides parent epic + linked issues automatically"
+  fi
+fi
+
+if [[ $PROMPT_LOWER =~ $RE_JIRA_CREATE ]]; then
+  add_hint "[skill-hint:jira-story-creation]
+Use: story-writer agent (atlassian-pm plugin) — generates ADF-formatted Jira stories/subtasks
+If atlassian-pm not installed: describe requirements as a checklist and use /dlc-build to implement"
 fi
 
 # --- start-feature (priority 4) ---

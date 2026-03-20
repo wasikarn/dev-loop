@@ -74,6 +74,21 @@ Follow [../../references/jira-integration.md](../../references/jira-integration.
 2. AC items become plan task constraints (Phase 2)
 3. Jira context staged for `dev-loop-context.md` (Step 3)
 
+**1d — Duplicate Detection** (skip if no Jira key; run in parallel with 1a–1c):
+
+If `jira-search` agent (atlassian-pm plugin) is available, search for similar in-progress work:
+
+```text
+jira-search: "status = 'In Progress' AND summary ~ '{task keywords}' AND key != '{JIRA-KEY}'"
+```
+
+- Match found → Call AskUserQuestion:
+  question: "{MATCH-KEY} ({assignee}) is already working on a similar task: '{match summary}'. Continue anyway?"
+  header: "Possible Duplicate"
+  options: [{ label: "Continue", description: "Proceed with new task" },
+             { label: "Switch to existing", description: "Use /dlc-respond or /dlc-review on that ticket" }]
+- No match or jira-search not available → proceed silently
+
 ## Step 2: Classify Mode
 
 Per [workflow-modes.md](workflow-modes.md) — use the Mode Decision Tree:

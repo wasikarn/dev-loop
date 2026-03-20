@@ -18,15 +18,20 @@ Scan all `$ARGUMENTS` for standard Jira key pattern `[A-Z]+-\d+` (e.g. `PROJ-123
 
 Try in order (stop at first success):
 
-1. **`jira-cache-server`** → `cache_get_issue` with the detected key (preferred — cached, fast)
-2. **`mcp-atlassian`** → `jira_get_issue` with the detected key (fallback — direct API)
+1. **`issue-bootstrap` agent** (atlassian-pm plugin — optional) — if available, delegate entirely:
+   pass the issue key, capture the structured `{bootstrap_context}` output block.
+   Provides: issue + parent epic + all subtasks + linked issues in one pass — no further extraction needed.
+2. **`mcp-atlassian`** → `mcp__mcp-atlassian__jira_get_issue` with the detected key (direct API fallback)
 3. **Neither available** → warn user "Jira MCP not configured, skipping ticket context" → skip Jira sections
+
+> **atlassian-pm detection:** `issue-bootstrap` is available when the `atlassian-pm` plugin is installed
+> (it bundles `jira-cache-server` MCP server). If `issue-bootstrap` is not in the agent list, fall through to option 2.
 
 If fetch fails (API error, ticket not found) → warn → skip Jira sections → proceed normally. Jira context is never blocking.
 
 ### Extract Fields
 
-From the issue response, extract and summarize:
+When using `mcp-atlassian` fallback (option 2), extract and summarize manually:
 
 | Field | Source | Notes |
 | --- | --- | --- |
@@ -38,6 +43,8 @@ From the issue response, extract and summarize:
 | `subtasks` | Subtask list | Keys + summaries only |
 | `parent` | Parent link | Epic/story key if exists |
 | `linked_issues` | Issue links | Type (blocks, relates-to) + key + summary |
+
+When using `issue-bootstrap` (option 1), all fields above are already extracted and structured in the output block — skip manual extraction.
 
 ---
 

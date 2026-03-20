@@ -21,3 +21,19 @@ check "rtk" "brew install rtk  (https://rtk-ai.app/)" "recommended — token-opt
 if [ -n "$MISSING" ]; then
   printf "## ⚠️  dev-loop: Missing Dependencies\n\nThe following tools are not installed. Some skills and hooks will not work correctly:\n%b\n\nInstall missing tools and restart Claude Code to dismiss this warning.\n" "$MISSING"
 fi
+
+# Optional: atlassian-pm plugin
+# Detection: jira-cache-server MCP server is bundled with atlassian-pm.
+# If it appears in Claude settings, the plugin is installed.
+SETTINGS_FILES="$HOME/.claude/settings.json $HOME/.claude/settings.local.json"
+ATLASSIAN_PM_FOUND=0
+for f in $SETTINGS_FILES; do
+  if [ -f "$f" ] && grep -q "jira-cache-server" "$f" 2>/dev/null; then
+    ATLASSIAN_PM_FOUND=1
+    break
+  fi
+done
+
+if [ "$ATLASSIAN_PM_FOUND" -eq 0 ]; then
+  printf "\n## 💡 dev-loop: Optional Enhancement\n\n- \`atlassian-pm\` (not installed) — \`claude plugin install wasikarn/atlassian-pm\`\n  Unlocks: Jira context in all DLC skills, ADF comment formatting, sprint digest in work-context.\n"
+fi

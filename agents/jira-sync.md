@@ -42,7 +42,13 @@ Extract from the context artifact:
 - **Validate result** — pass/fail status if recorded in artifact
 - **AC deviations** — any "Deviations" or "Notes" section in the artifact
 
-Format as:
+**If `story-writer` + `quality-gate` agents (atlassian-pm plugin) are available:**
+
+Delegate comment formatting to `story-writer` — pass the extracted fields above and request
+an ADF-formatted implementation summary comment. Then run the output through `quality-gate`
+to validate before posting. Use the validated ADF as the comment body in Step 4.
+
+**Otherwise (fallback):** format as plain markdown:
 
 ```markdown
 ## Implementation Summary

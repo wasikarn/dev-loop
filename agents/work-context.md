@@ -52,7 +52,11 @@ Fetch tickets assigned to the current user with status "In Progress":
 mcp__mcp-atlassian__jira_search(jql="assignee = currentUser() AND status = 'In Progress' ORDER BY updated DESC", fields=["summary","status","priority"], limit=5)
 ```
 
-If MCP not available, skip this section.
+If `sprint-planner` agent (atlassian-pm plugin) is available, also fetch sprint context:
+sprint name, days remaining, and total story points — append as a one-line header above the ticket table.
+
+If MCP not available, skip this section — output:
+`[Jira: skipped — install atlassian-pm plugin for Jira integration]`
 
 ### 4. Output Daily Digest
 

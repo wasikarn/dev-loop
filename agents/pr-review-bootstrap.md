@@ -31,11 +31,13 @@ Look for ticket ID in:
 
 If found, fetch ticket using fallback order:
 
-1. `jira-cache-server` → `cache_get_issue` (preferred)
-2. `mcp-atlassian` → `jira_get_issue` (fallback)
-3. Neither available → skip Jira section, continue without AC
+1. `issue-bootstrap` agent (atlassian-pm plugin — optional) — if available, delegate entirely;
+   captures parent epic + subtasks + linked issues in one pass, AC already structured in output
+2. `mcp-atlassian` → `mcp__mcp-atlassian__jira_get_issue` (direct API fallback)
+3. Neither available → skip Jira section, continue without AC — output:
+   `[Jira: skipped — install atlassian-pm plugin for Jira integration]`
 
-Extract acceptance criteria from the issue description or custom fields.
+Extract acceptance criteria from the issue description or custom fields (when using option 2).
 
 ### 3. Group Changed Files
 
