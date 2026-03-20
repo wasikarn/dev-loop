@@ -121,6 +121,7 @@ Dispatch `dlc-debug-bootstrap` agent. Pass labeled input inline:
 ```text
 Bug: {bug description from $ARGUMENTS}
 Project Root: {project_root from Phase 0 detect-project output}
+Artifacts Dir: {artifacts_dir}
 ```
 
 The agent appends `## Shared Context` to `debug-context.md` — include that section
