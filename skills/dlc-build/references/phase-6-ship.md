@@ -34,7 +34,7 @@ If `pr-description-writer` is not available, fall back to `pr-template.md` manua
 2. Update `Phase: complete` in `{artifacts_dir}/dev-loop-context.md`
 3. Delete checkpoint tags: `git tag -d $(git tag -l 'dlc-checkpoint-iter-*')`
 4. Clean up artifacts (choose one):
-   - **Auto-cleanup:** `rm -f "{artifacts_dir}/dev-loop-context.md" "{artifacts_dir}/research.md" "{artifacts_dir}/review-findings-*.md"`
+   - **Auto-cleanup:** `rm -f "{artifacts_dir}/dev-loop-context.md" "{artifacts_dir}/research.md" {artifacts_dir}/review-findings-*.md`
    - **Archive:** leave in `{artifacts_dir}` for reference
 
 ## Step 3.5: Jira Sync (optional)
