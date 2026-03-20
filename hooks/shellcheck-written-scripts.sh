@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck-written-scripts.sh — PostToolUse(Write) hook
+# PostToolUse(Write) hook — runs shellcheck on written .sh files
 # Runs shellcheck on .sh files that Claude creates/writes.
 # Returns additionalContext so Claude sees warnings immediately.
 
@@ -38,3 +38,5 @@ ${SC_TRUNCATED}" '{
     additionalContext: $ctx
   }
 }'
+
+exit 0

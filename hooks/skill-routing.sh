@@ -13,7 +13,7 @@ PROMPT=$(echo "$INPUT" | jq -r '.user_prompt // empty' 2>/dev/null) || exit 0
 [ -z "$PROMPT" ] && exit 0
 
 # Lowercase once for case-insensitive matching (Thai chars unaffected)
-PROMPT_LOWER="${PROMPT,,}"
+PROMPT_LOWER=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]')
 
 emit_hint() {
   jq -n --arg ctx "$1" '{"hookSpecificOutput": {"additionalContext": $ctx}}'

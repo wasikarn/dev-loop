@@ -16,7 +16,7 @@ INPUT=$(cat)
 TEAM_NAME=$(echo "$INPUT" | jq -r '.team_name // empty')
 
 # Skip teams that don't match this nudge's pattern
-if ! echo "$TEAM_NAME" | grep -qiE "$NUDGE_PATTERN"; then
+if ! echo "$TEAM_NAME" | grep -qiE "${NUDGE_PATTERN:-}"; then
   exit 0
 fi
 
@@ -26,7 +26,7 @@ if [ "${NUDGE_CHECK_TASKS:-0}" = "1" ]; then
   if [ -d "$TASKS_DIR" ]; then
     PENDING=$(find "$TASKS_DIR" -name "*.json" -exec grep -l '"status":"pending"' {} \; 2>/dev/null | head -1)
     if [ -n "$PENDING" ]; then
-      echo "$NUDGE_MSG" >&2
+      echo "${NUDGE_MSG:-}" >&2
       exit 2
     fi
   fi
@@ -34,5 +34,5 @@ if [ "${NUDGE_CHECK_TASKS:-0}" = "1" ]; then
 fi
 
 # Unconditional nudge
-echo "$NUDGE_MSG" >&2
+echo "${NUDGE_MSG:-}" >&2
 exit 2

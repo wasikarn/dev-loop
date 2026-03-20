@@ -61,6 +61,7 @@
           {
             "type": "command",
             "async": true,
+            "timeout": 30,
             "command": "command -v jq > /dev/null 2>&1 && FILE=$(jq -r '.tool_input.file_path // empty') && [ -n \"$FILE\" ] && echo \"$FILE\" | grep -qE '\\.md$' && npx markdownlint-cli2 --fix \"$FILE\" 2>/dev/null; exit 0"
           }
         ]
@@ -151,7 +152,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "NUDGE_PATTERN='review-pr' NUDGE_CHECK_TASKS=1 NUDGE_MSG='You still have pending debate tasks. Please review your assigned teammate\\'s findings and respond with Agree, Challenge, or Escalate per the debate protocol.' ${CLAUDE_PLUGIN_ROOT}/hooks/idle-nudge.sh",
+            "command": "NUDGE_PATTERN='review-pr' NUDGE_CHECK_TASKS=1 NUDGE_MSG=\"You still have pending debate tasks. Please review your assigned teammate's findings and respond with Agree, Challenge, or Escalate per the debate protocol.\" ${CLAUDE_PLUGIN_ROOT}/hooks/idle-nudge.sh",
             "timeout": 10
           }
         ]

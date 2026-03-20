@@ -27,7 +27,7 @@ if [ "${LOG:-0}" = "1" ]; then
 fi
 
 # Sanitize for AppleScript string interpolation (strip double-quotes and backslashes)
-SAFE_ERROR=$(echo "$ERROR" | tr -d '"\\')
+SAFE_ERROR=$(echo "$ERROR" | tr -d '"\\' | tr -d '\n')
 
 # macOS notification (opt-in via NOTIFY=1)
 if [ "${NOTIFY:-0}" = "1" ] && command -v osascript > /dev/null 2>&1; then

@@ -15,13 +15,13 @@ TASK_NAME=$(echo "$INPUT" | jq -r '.task_name // empty')
 TOOL_OUTPUT=$(echo "$INPUT" | jq -r '.tool_output // empty')
 
 # Skip tasks that don't match this gate's pattern
-if ! echo "$TASK_NAME" | grep -qiE "$GATE_PATTERN"; then
+if ! echo "$TASK_NAME" | grep -qiE "${GATE_PATTERN:-}"; then
   exit 0
 fi
 
 # Require at least one file:line reference in the output
 if ! echo "$TOOL_OUTPUT" | grep -qE '[a-zA-Z0-9_/.-]+\.[a-zA-Z]+:[0-9]+'; then
-  echo "$GATE_MSG" >&2
+  echo "${GATE_MSG:-}" >&2
   exit 2
 fi
 
