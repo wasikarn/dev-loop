@@ -73,9 +73,9 @@ Current agents (20):
 | `metrics-analyst` | haiku | Retrospective from dlc-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
 | `falsification-agent` | sonnet | Challenges review findings before consolidation — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
 | `plan-challenger` | sonnet | Challenges dlc-build Phase 2 plan for YAGNI/scope/ordering issues before implementation |
-| `test-quality-reviewer` | sonnet | Dedicated test quality reviewer: behavior vs implementation, mock fidelity, edge case coverage |
-| `migration-reviewer` | sonnet | Reviews DB migration files: DDL safety, indexes, table-lock risk, rollback path |
-| `api-contract-auditor` | sonnet | Detects API breaking changes: removed fields, changed status codes, new required params |
+| `test-quality-reviewer` | sonnet | Dedicated test quality reviewer (T1–T9): behavior vs implementation, mock fidelity, edge cases, assertion presence (Hard Rule), boundary operators, stale contracts, test isolation |
+| `migration-reviewer` | sonnet | Reviews DB migration files (M1–M10): DDL safety, reversibility, FK indexes, table-lock risk, zero-downtime violations, expand/contract, data batching, index types, deadlock risk |
+| `api-contract-auditor` | sonnet | Detects API breaking changes (A1–A10): removed/renamed fields, changed status codes, new required params, type narrowing, enum reordering, idempotency, pagination, error envelopes, deprecation |
 | `skill-validator` | sonnet | Validates SKILL.md against best practices |
 | `project-onboarder` | sonnet | Bootstrap a new project into dev-loop: scaffold hard-rules.md + dlc-build directory |
 | `code-reviewer` | sonnet | General-purpose code reviewer with cross-session persistent memory |
