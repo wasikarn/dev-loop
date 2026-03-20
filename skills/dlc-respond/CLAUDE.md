@@ -29,7 +29,7 @@ Address PR review comments: fetch threads → fix code → reply on GitHub → r
 - `references/phase-gates.md` — explicit gate conditions for every phase transition
 - `references/operational.md` — graceful degradation levels, compression recovery, success criteria
 - Project-specific Hard Rules loaded from `{project_root}/.claude/skills/review-rules/hard-rules.md` if present
-- Dismissed patterns loaded (read-only) from `{project_root}/.claude/review-dismissed.md` if present
+- Dismissed patterns loaded (read-only) from `{review_memory_dir}/review-dismissed.md` if present
 
 ## Validate After Changes
 
@@ -49,7 +49,7 @@ ls -la ~/.claude/skills/dlc-respond
 
 - Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` for parallel Fixers — degrades gracefully to subagent or solo mode
 - `review-dismissed.md` is **read-only** here — `dlc-review` and `dlc-build` write it, `dlc-respond` only reads it
-- `respond-context.md` is written to **target project root** (not this skills repo) — clean up after done
+- `respond-context.md` is written to `{artifacts_dir}/respond-context.md` (centralized, not the project repo) — clean up after done
 - Fixer teammates must validate BEFORE committing — not after (validated BEFORE vs AFTER matters for revert cost)
 - Max 3 fix attempts per thread — beyond 3 = architectural mismatch, escalate to user
 - Thread grouping: same file → 1 Fixer (never parallel writes to same file)
