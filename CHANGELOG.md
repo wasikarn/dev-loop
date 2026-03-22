@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.15] — 2026-03-22
+
+### Hook Performance + Shared Library
+
+- chore: add .shellcheckrc to fix SC1091/SC2034 false positives from shared lib migration
+- docs: fix README version badge (was stuck at 0.6.13, plugin.json already at 0.6.14)
+- perf(hooks): replace echo|grep subprocesses with bash builtins
+- refactor(hooks): extract shared lib and apply consistency rules
+- feat(hooks): add cleanup-artifacts.sh — auto-purge stale artifact files on SessionStart
+- chore: remove stale [Unreleased] section from CHANGELOG
+
 ## [Unreleased]
 
 ### perf(hooks): replace echo|grep subprocesses with bash builtins
