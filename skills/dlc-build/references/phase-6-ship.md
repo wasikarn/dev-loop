@@ -4,6 +4,26 @@
 
 Load [pr-template.md](pr-template.md) now. Present the Phase 6 Summary (task, mode, iterations, final status, iteration history table).
 
+## Step 1.5: Comprehension Gate
+
+Before presenting completion options, ask one question to confirm human engagement:
+
+Call AskUserQuestion:
+
+- question: "What was the most critical finding in this review, and do you understand the fix applied?"
+- header: "Comprehension Check"
+- options: [
+    { label: "Yes — I understand all changes", description: "Proceed to ship" },
+    { label: "Explain the critical finding", description: "Claude walks through the key finding and fix" },
+    { label: "I reviewed the diff myself", description: "Proceed to ship" }
+  ]
+
+**If "Explain the critical finding":** Summarize the top Critical finding in plain terms — what the problem was, why it matters, and what the fix does. Then re-present the gate question.
+
+**Log to metrics:** Set `human_confirmed = true` if user chose option 1 or 3. Set `human_confirmed = false` if user never responded (timeout/auto-proceed). This surfaces rubber-stamp patterns in `dlc-metrics`.
+
+**Never block:** If user skips or dismisses, proceed silently. This is a signal, not a barrier.
+
 ## Step 2: Completion Options
 
 Present options to user:
@@ -53,6 +73,12 @@ to their post-merge checklist if atlassian-pm is installed.
 
 Append one JSON line to `~/.claude/dlc-metrics.jsonl` for future analysis:
 
+New fields:
+
+- `findings_reversed` — count of findings rejected by falsification-agent (signals agent overconfidence)
+- `ac_coverage` — AC items verified vs total (e.g. "3/4"); use "N/A" if no Jira
+- `human_confirmed` — whether user engaged with Comprehension Gate (Step 1.5)
+
 ```json
-{"skill":"dlc-build","date":"{YYYY-MM-DD}","mode":"{mode}","iterations":{N},"task":"{task_short}","final_critical":0,"final_warning":{W}}
+{"skill":"dlc-build","date":"{YYYY-MM-DD}","mode":"{mode}","iterations":{N},"task":"{task_short}","final_critical":0,"final_warning":{W},"findings_reversed":{falsification_rejected_count},"ac_coverage":"{AC_passed}/{AC_total}","human_confirmed":{true|false}}
 ```
