@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### refactor(hooks): extract shared lib and apply consistency rules
+
+- refactor(hooks): extract shared lib (`hooks/lib/common.sh`) with `require_jq`, `has_evidence`, `jq_fields`; apply consistency rules across 9 hook scripts
+
 ### feat(hooks): auto-cleanup stale artifact files on session start
 
 - feat(hooks): add `cleanup-artifacts.sh` — removes `.md` artifact files older than `DEV_LOOP_ARTIFACT_TTL_DAYS` days (default: 7) from `~/.claude/plugins/data/dev-loop-dev-loop/`

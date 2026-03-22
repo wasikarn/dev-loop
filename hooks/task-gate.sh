@@ -7,12 +7,13 @@
 
 set -euo pipefail
 
-command -v jq > /dev/null 2>&1 || exit 0
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+require_jq
 INPUT=$(cat)
 
-TASK_NAME=$(echo "$INPUT" | jq -r '.task_name // empty')
-TOOL_OUTPUT=$(echo "$INPUT" | jq -r '.tool_output // empty')
+IFS=$'\t' read -r TASK_NAME TOOL_OUTPUT < <(jq_fields '.task_name // ""' '.tool_output // ""')
 
 # Require GATE_PATTERN — without it, this hook has no target and should be a no-op
 [ -z "${GATE_PATTERN:-}" ] && exit 0
@@ -23,7 +24,7 @@ if ! echo "$TASK_NAME" | grep -qiE "$GATE_PATTERN"; then
 fi
 
 # Require at least one file:line reference in the output
-if ! echo "$TOOL_OUTPUT" | grep -qE '[a-zA-Z0-9_/.-]+\.[a-zA-Z]+:[0-9]+'; then
+if ! has_evidence "$TOOL_OUTPUT"; then
   echo "${GATE_MSG:-}" >&2
   exit 2
 fi

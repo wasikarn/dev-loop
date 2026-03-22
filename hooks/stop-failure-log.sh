@@ -5,12 +5,15 @@
 #   LOG=1     enable session log writing to $HOME/.claude/session-logs/ (opt-in)
 #   NOTIFY=1  enable macOS notification (personal use, macOS only)
 
-command -v jq > /dev/null 2>&1 || exit 0
+set -euo pipefail
 
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+
+require_jq
 INPUT=$(cat)
 
-ERROR=$(echo "$INPUT" | jq -r '.error // "unknown"' 2>/dev/null || true)
-ERROR_DETAILS=$(echo "$INPUT" | jq -r '.error_details // ""' 2>/dev/null || true)
+IFS=$'\t' read -r ERROR ERROR_DETAILS < <(jq_fields '.error // "unknown"' '.error_details // ""')
 
 # Log to session log (opt-in via LOG=1)
 if [ "${LOG:-0}" = "1" ]; then
@@ -31,7 +34,7 @@ SAFE_ERROR=$(echo "$ERROR" | tr -d '"' | tr -d '\134' | tr -d '\n')
 
 # macOS notification (opt-in via NOTIFY=1)
 if [ "${NOTIFY:-0}" = "1" ] && command -v osascript > /dev/null 2>&1; then
-  osascript -e "display notification \"Session stopped: $SAFE_ERROR\" with title \"Claude Code\" subtitle \"API Error\"" 2>/dev/null || true
+  osascript -e "display notification \"Session stopped: $SAFE_ERROR\" with title \"Claude Code\" subtitle \"API Error\"" 2>/dev/null || :
 fi
 
 exit 0

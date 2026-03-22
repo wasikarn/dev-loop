@@ -3,10 +3,17 @@
 # Output goes to stdout → injected into Claude's context.
 # Keeps only dynamic state — conventions live in CLAUDE.md (auto-loaded).
 
+set -euo pipefail
+
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+
+require_jq
 INPUT=$(cat)
 
+read -r COMPACT_SUMMARY < <(jq_fields '.compact_summary // ""')
+
 # Show compact summary if available
-COMPACT_SUMMARY=$(echo "$INPUT" | jq -r '.compact_summary // empty' 2>/dev/null)
 if [ -n "$COMPACT_SUMMARY" ]; then
   echo "## Compaction Summary"
   echo "$COMPACT_SUMMARY"
@@ -18,12 +25,12 @@ echo "- Re-read CLAUDE.md for project conventions (auto-loaded)"
 echo "- Check todo list for in-progress tasks"
 
 # Dynamic: current git state
-BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || :
 if [ -n "$BRANCH" ]; then
   echo ""
   echo "### Git State"
   echo "- Branch: \`$BRANCH\`"
-  DIRTY=$(git status --porcelain 2>/dev/null | head -5)
+  DIRTY=$(git status --porcelain 2>/dev/null | head -5) || :
   if [ -n "$DIRTY" ]; then
     echo "- Uncommitted changes:"
     while IFS= read -r line; do echo "  - $line"; done <<< "$DIRTY"
@@ -31,7 +38,7 @@ if [ -n "$BRANCH" ]; then
 fi
 
 # Re-inject project Hard Rules if present (may have been evicted by compaction)
-PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || :
 if [ -n "$PROJECT_ROOT" ]; then
   HARD_RULES="$PROJECT_ROOT/.claude/skills/review-rules/hard-rules.md"
   if [ -f "$HARD_RULES" ]; then

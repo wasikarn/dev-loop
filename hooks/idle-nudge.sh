@@ -9,11 +9,13 @@
 
 set -euo pipefail
 
-command -v jq > /dev/null 2>&1 || exit 0
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+require_jq
 INPUT=$(cat)
 
-TEAM_NAME=$(echo "$INPUT" | jq -r '.team_name // empty')
+read -r TEAM_NAME < <(jq_fields '.team_name // ""')
 
 # Require NUDGE_PATTERN — without it, this hook has no target and should be a no-op
 [ -z "${NUDGE_PATTERN:-}" ] && exit 0

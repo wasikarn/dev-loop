@@ -3,10 +3,14 @@
 # Detects workflow keywords, injects structured skill hints.
 # Ranked-hint model: collects ALL matching hints, emits once at end (multi-intent support).
 # NOTE: no set -euo pipefail — hook must exit 0 on all failures
+# Any error in skill routing must silently pass through so Claude always receives
+# the prompt. Failure here means no skill hints — a recoverable UX issue, not fatal.
 
 export LANG=en_US.UTF-8
 
-command -v jq &>/dev/null || exit 0
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+require_jq
 
 INPUT=$(cat)
 PROMPT=$(echo "$INPUT" | jq -r '.user_prompt // empty' 2>/dev/null) || exit 0

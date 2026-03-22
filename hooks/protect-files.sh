@@ -4,10 +4,13 @@
 
 set -euo pipefail
 
-command -v jq > /dev/null 2>&1 || exit 0
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+require_jq
 INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+
+read -r FILE_PATH < <(jq_fields '.tool_input.file_path // ""')
 
 PROTECTED_PATTERNS=(".claude/settings.json" ".claude/settings.local.json")
 

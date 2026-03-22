@@ -7,15 +7,16 @@
 
 set -euo pipefail
 
-command -v jq > /dev/null 2>&1 || exit 0
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+require_jq
 INPUT=$(cat)
+
+IFS=$'\t' read -r AGENT_TYPE LAST_MSG < <(jq_fields '.agent_type // ""' '.last_assistant_message // ""')
 
 # Fail-safe: empty GATE_PATTERN means no filtering — pass through
 [ -z "${GATE_PATTERN:-}" ] && exit 0
-
-AGENT_TYPE=$(echo "$INPUT" | jq -r '.agent_type // empty' 2>/dev/null || true)
-LAST_MSG=$(echo "$INPUT" | jq -r '.last_assistant_message // empty' 2>/dev/null || true)
 
 # Skip agents that don't match this gate's pattern
 if ! echo "$AGENT_TYPE" | grep -qiE "${GATE_PATTERN:-}"; then
@@ -23,7 +24,7 @@ if ! echo "$AGENT_TYPE" | grep -qiE "${GATE_PATTERN:-}"; then
 fi
 
 # Require at least one file:line reference
-if ! echo "$LAST_MSG" | grep -qE '[a-zA-Z0-9_/.-]+\.[a-zA-Z]+:[0-9]+'; then
+if ! has_evidence "$LAST_MSG"; then
   jq -n --arg reason "${GATE_MSG:-Your output must include file:line evidence. Re-examine the code and cite specific locations.}" \
     '{"decision": "block", "reason": $reason}'
   exit 0

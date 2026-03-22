@@ -5,26 +5,25 @@
 
 set -euo pipefail
 
-command -v jq > /dev/null 2>&1 || exit 0
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 
+require_jq
 INPUT=$(cat)
 
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
-ERROR=$(echo "$INPUT" | jq -r '.error // empty' 2>/dev/null || true)
-IS_INTERRUPT=$(echo "$INPUT" | jq -r '.is_interrupt // false' 2>/dev/null || true)
+IFS=$'\t' read -r COMMAND ERROR IS_INTERRUPT < <(jq_fields \
+  '.tool_input.command // ""' \
+  '.error // ""' \
+  '(.is_interrupt | tostring)')
 
 # Don't inject context for user-interrupted commands
-if [ "$IS_INTERRUPT" = "true" ]; then
-  exit 0
-fi
+[ "$IS_INTERRUPT" = "true" ] && exit 0
 
 # Build diagnostic hint based on error patterns
 HINT=""
 
 if echo "$ERROR" | grep -qi "command not found"; then
-  # Try to extract the missing command name from error text
-  # "sudo: foobar: command not found" → take second-to-last field before "not found"
-  CMD_NAME=$(echo "$ERROR" | sed 's/: command not found.*//' | awk -F': ' '{print $NF}' 2>/dev/null || true)
+  CMD_NAME=$(echo "$ERROR" | sed 's/: command not found.*//' | awk -F': ' '{print $NF}' 2>/dev/null || :)
   [ -z "$CMD_NAME" ] && CMD_NAME=$(echo "$COMMAND" | awk '{print $1}')
   HINT="Command '$CMD_NAME' not found. Check if it's installed (run: which $CMD_NAME) or use an alternative tool."
 elif echo "$ERROR" | grep -qi "permission denied"; then
