@@ -40,7 +40,8 @@ Read CLAUDE.md first — auto-loaded, contains project patterns and conventions.
 
 ## Phase Flow
 
-Phase 0→1→2→ [3: Implement ↔ 4: Review ↔ 5: Assess loop (max 3)] →6: Ship
+Phase 0→1→[1.5: Clarify?]→[2a: ArchOpts?]→2b→ [3: Implement ↔ 4: Review ↔ 5: Assess loop (max 3)] →6: Ship
+(brackets = Full mode only)
 
 | Iter | Implement | Reviewers | Debate |
 | --- | --- | --- | --- |
@@ -57,6 +58,7 @@ Phase 0→1→2→ [3: Implement ↔ 4: Review ↔ 5: Assess loop (max 3)] →6:
 | [references/phase-0-triage.md](references/phase-0-triage.md) | Entering Phase 0 |
 | [references/phase-1-research.md](references/phase-1-research.md) | Entering Phase 1 (Full mode) |
 | [references/phase-2-plan.md](references/phase-2-plan.md) | Entering Phase 2 |
+| [references/architect-prompts.md](references/architect-prompts.md) | Phase 2 Step 1 — Architecture Options (Full mode only) |
 | [references/phase-3-implement.md](references/phase-3-implement.md) | Entering Phase 3 |
 | [references/phase-4-review.md](references/phase-4-review.md) | Entering Phase 4 |
 | [references/phase-5-assess.md](references/phase-5-assess.md) | Entering Phase 5 |
@@ -141,17 +143,20 @@ See [references/operational.md](references/operational.md) for degradation behav
 
 ## Gate Summary
 
-| Transition | Key condition |
-| --- | --- |
-| Triage → Research/Plan | Mode confirmed by user |
-| Research → Plan | research.md complete with file:line evidence |
-| Plan → Implement | Plan approved by user |
-| Implement → Review | All tasks + validate + workers shut down |
-| Review → Assess | Findings consolidated |
-| Assess → Loop | Critical found, iteration < 3 |
-| Assess → Ship | Zero Critical (or user accepts) |
-| Assess → Escalate (STOP) | Iteration 3, still Critical — present 4 options |
-| Ship → Done | User selects completion option |
+| Transition | Key condition | Who decides |
+| --- | --- | --- |
+| Triage → Research/Plan | Mode confirmed by user | User |
+| Research → ClarifyQ | research.md complete (research-validator PASS) | Lead |
+| ClarifyQ → ArchOpts | Clarifying questions answered or skipped (Full mode) | User/Lead |
+| ArchOpts → Plan | Architecture approach selected by user (Full mode) | User |
+| Research → Plan | Quick/Hotfix: research.md complete (skips ClarifyQ + ArchOpts) | Lead |
+| Plan → Implement | Plan approved by user | User |
+| Implement → Review | All tasks + validate + workers shut down | Lead |
+| Review → Assess | Findings consolidated | Lead |
+| Assess → Loop | Critical found, iteration < 3 | Lead |
+| Assess → Ship | Zero Critical (or user accepts) | User/Lead |
+| Assess → Escalate (STOP) | Iteration 3, still Critical — present 4 options | Lead |
+| Ship → Done | User selects completion option | User |
 
 Full gate details: [references/phase-gates.md](references/phase-gates.md)
 
