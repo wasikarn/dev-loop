@@ -46,10 +46,10 @@ Violating any constraint makes this a "rewrite", not a "simplification". Stop an
 ### Step 1: Identify Changed Files
 
 ```bash
-git diff HEAD --name-only
+git diff "$(git merge-base HEAD origin/HEAD)" HEAD --name-only
 ```
 
-If $ARGUMENTS contains specific files, use those instead. Skip test files (any path matching `*.test.*`, `*.spec.*`, `__tests__`).
+If $ARGUMENTS contains specific files, use those instead. Otherwise, the scope is all files changed since the branch diverged from origin/HEAD — not just the last commit. Skip test files (any path matching `*.test.*`, `*.spec.*`, `__tests__`).
 
 ### Step 2: Read Each Changed File's Diff
 
@@ -67,7 +67,7 @@ For each file, apply **only** changes from this allowed list:
 | --- | --- |
 | Nesting | Flatten guard clauses — invert early-exit conditions (≤2 levels of nesting target) |
 | Comments | Remove comments that restate the code verbatim; remove stale/outdated comments |
-| Naming | Rename single-file local variables to communicate intent (never rename exported identifiers) |
+| Naming | Rename function-scoped local variables (declared with `let`/`const`/`var` inside a function body) to communicate intent — never rename module-level or exported identifiers |
 | Duplication | Inline trivial one-line helpers used exactly once in the changed section |
 | Dead code | Remove unreachable branches **only** when the condition is a literal or constant |
 | Expressions | Simplify boolean expressions using De Morgan's laws when it improves readability |
