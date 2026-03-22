@@ -89,6 +89,34 @@ jira-search: "status = 'In Progress' AND summary ~ '{task keywords}' AND key != 
              { label: "Switch to existing", description: "Use /dlc-respond or /dlc-review on that ticket" }]
 - No match or jira-search not available → proceed silently
 
+**1e — AC Quality Check** (skip if no Jira key or Jira unavailable):
+
+For each AC item fetched in Step 1c, flag if:
+
+- ❌ **No measurable outcome** — vague improvement without a testable condition
+  (e.g. "ระบบต้องเร็วขึ้น" with no threshold, "improve error handling" with no criterion)
+- ❌ **Unbounded scope** — no explicit boundary on what is NOT included
+  (e.g. "handle all edge cases" — edge cases of what, exactly?)
+- ❌ **Contradicts another AC** — mutually exclusive conditions in same ticket
+
+Output an AC quality table before proceeding to Step 2:
+
+| AC | Status | Issue |
+| --- | --- | --- |
+| AC1 | ✅ Testable | — |
+| AC2 | ⚠️ Ambiguous | No success threshold defined |
+
+If **2 or more ACs are flagged**: Call AskUserQuestion before proceeding:
+
+- question: "{N} ACs have quality issues (see table above). Proceed with ambiguous ACs or clarify first?"
+- header: "AC Quality Warning"
+- options: [
+    { label: "Proceed as-is", description: "Use ACs as written — I'll handle ambiguity in plan" },
+    { label: "Clarify now", description: "Tell me what each flagged AC means" }
+  ]
+- If "Clarify now" → capture user's clarification, update AC items in-memory, then proceed.
+- If 0-1 ACs flagged → proceed silently (minor ambiguity, not worth a round-trip).
+
 ## Step 2: Classify Mode
 
 Per [workflow-modes.md](workflow-modes.md) — use the Mode Decision Tree:
