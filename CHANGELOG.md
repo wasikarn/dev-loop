@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.17] — 2026-03-23
+
+### dlc-build: Clarifying Questions Gate + Architecture Options (data-driven expert recommendations)
+
+- docs(dlc-build): add Gotchas for new gates; update user-facing docs
+- docs(dlc-build): update phase-gates.md for ClarifyQ and ArchOpts gates
+- docs(dlc-build): update reference table, phase flow, gate summary for new steps
+- feat(dlc-build): add Architecture Options step to Phase 2 (Full mode)
+- feat(dlc-build): add architect-prompts.md for Phase 2 Architecture Options
+- feat(dlc-build): add Step 3.5 Clarifying Questions Gate after research
+
 ## [0.6.16] — 2026-03-23
 
 ### Hook Tests + Skill Docs + Gotchas + Analytics + /careful + /freeze + Permission Router
