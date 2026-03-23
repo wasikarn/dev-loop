@@ -2,6 +2,33 @@
 
 Prompt templates for the 3 reviewer teammates. Lead inserts project Hard Rules and PR number.
 
+## Lead Notes — Lens Injection
+
+Before spawning teammates, select lenses from `skills/dlc-build/references/review-lenses/` based on diff content and inject as `{domain_lenses}`:
+
+| Diff touches | Inject lens |
+| --- | --- |
+| `*.tsx`, `*.jsx`, React components, hooks, Next.js pages | `review-lenses/frontend.md` |
+| auth/, middleware, API endpoints, user input | `review-lenses/security.md` |
+| migrations/, `*.sql`, ORM queries, repository layer | `review-lenses/database.md` |
+| data fetching, list rendering, event handlers, hot paths | `review-lenses/performance.md` |
+| `*.ts` type definitions, generics, type guards | `review-lenses/typescript.md` |
+| `try`, `catch`, `async`, `.catch(`, `Promise`, `new Error`, `throw` | `review-lenses/error-handling.md` |
+| route handlers, controllers, REST routes, GraphQL resolvers | `review-lenses/api-design.md` |
+| logging, metrics, tracing, new endpoints or background jobs | `review-lenses/observability.md` |
+
+Multiple lenses can apply. Leave `{domain_lenses}` empty if no lens applies.
+
+Diff size gate (from SKILL.md Phase 2):
+
+| Changed files | Lens injection |
+| --- | --- |
+| <30 | Inject all relevant lenses |
+| 30–50 | Inject only 1 highest-risk lens: security > database > performance > frontend > typescript |
+| >50 | Skip all lenses — Hard Rules only |
+
+---
+
 ## Shared Rules Block
 
 All teammates share these rules (insert into each prompt):
@@ -29,6 +56,10 @@ CONFIDENCE CALIBRATION (0-100 scale):
 - 80: Missing null check with no caller guard visible in diff — possible but caller not inspected
 - 70: Naming unclear — subjective, context-dependent (do not report)
 - 60: Preference-based style without convention evidence — do not report
+
+DOMAIN LENSES:
+{domain_lenses}
+(If empty, no domain-specific lens applies to this diff.)
 
 KNOWN FALSE POSITIVES (do not re-raise without new evidence):
 {dismissed_patterns}
@@ -136,6 +167,30 @@ You are reviewing PR #[PR_NUMBER] for architecture and performance issues.
 
 YOUR FOCUS: N+1 prevention (#3), DRY & simplicity (#4), flatten structure (#5), small functions & SOLID (#6), elegance (#7), and all Hard Rules.
 
+DRY & SIMPLICITY (#4) — patterns to flag:
+- Copy-paste variation: same logic in 2+ places with minor differences (different variable names, different hardcoded values) — extract shared function with parameter
+- Parallel conditionals: `if (type === 'A') { doX() }` ... `if (type === 'A') { doY() }` in separate places → consolidate into one type-dispatch
+- Re-implementing framework built-ins: manual date formatting when Luxon/dayjs exists, manual array dedup when `Set` works
+- Over-abstraction: interface/base class with only one implementation, factory that creates one type, generic util used in one place — YAGNI
+
+FLATTEN STRUCTURE (#5) — patterns to flag:
+- Nesting > 1 level: `if (a) { if (b) { if (c) { ... } } }` — use guard clauses: `if (!a) return; if (!b) return; if (!c) return;`
+- Callback pyramid: nested callbacks/then chains → async/await
+- Ternary nesting: `a ? b ? x : y : c ? m : n` — extract branches to named variables or early returns
+- Else after return: `if (cond) { return x; } else { ... }` — the else is redundant; flatten
+
+SOLID (#6) — patterns to flag:
+- Single Responsibility: one class/function doing validation + DB + notification + caching in one body → split responsibilities
+- Open/Closed: switch/if-else chain that must be extended to add new types (instead of using polymorphism / registry pattern)
+- Dependency Inversion: service instantiates its own dependencies (`new EmailService()` in constructor body) → inject via constructor parameter so it can be swapped/mocked
+- Interface Segregation: one interface with 10+ methods where callers use only 2–3 → split into focused interfaces
+- God object: class with 5+ unrelated public methods or 200+ lines → extract responsibilities
+
+PERFORMANCE (#7 scope — flag patterns that harm runtime):
+- Sequential await on independent operations: `const a = await fetchA(); const b = await fetchB();` → `const [a, b] = await Promise.all([fetchA(), fetchB()])`
+- Re-computation in hot path: same expensive calculation inside loop or event handler without memoization
+- Unbounded collection loaded fully before filter: `await getAllUsers()` then `.filter()` → push filter to DB query
+
 SQL PERFORMANCE: If the PR diff contains Repository files, database migration files, or raw SQL queries:
 1. Check index coverage on all WHERE/ORDER BY/JOIN conditions
 2. Verify pagination pattern (keyset preferred over OFFSET for large tables)
@@ -152,6 +207,35 @@ SQL PERFORMANCE: If the PR diff contains Repository files, database migration fi
 You are reviewing PR #[PR_NUMBER] for developer experience and test quality.
 
 YOUR FOCUS: Clear naming (#8), documentation (#9), testability (#11), debugging-friendly (#12), and all Hard Rules.
+
+NAMING (#8) — patterns to flag:
+- Generic names: `data`, `result`, `tmp`, `obj`, `item`, `value` in non-trivial scopes — must communicate intent
+- Abbreviations where full words fit: `usr`, `ord`, `cfg`, `mgr`, `svc` — flag unless they're established project conventions
+- Boolean variables/functions named as nouns: `const active = ...` → `const isActive = ...`; `function user()` → `function isUser()` or `getUser()`
+- Inconsistent casing across the file: `userId` vs `user_id` in the same module
+- Function name doesn't match what it does: `getUser()` that modifies the user is misleading
+
+DOCUMENTATION (#9) — patterns to flag:
+- Stale comments: comment references removed function, old variable name, or outdated behavior
+- TODO/FIXME older than this PR (added in a previous commit, still present) → should be a ticket, not a comment
+- Comment restates the code: `// increment i` above `i++` — adds no value
+- Missing explanation on non-obvious decisions: magic numbers, algorithm choice, intentional workaround
+  Example: `const RETRY_DELAY = 1500` with no comment explaining why 1.5s
+- JSDoc on public API function missing `@param` descriptions or `@returns` when return type is non-obvious
+- `@ts-ignore` / `@ts-expect-error` without explaining why it is necessary
+
+TESTABILITY (#11) — patterns to flag:
+- Private state mutation tested via spy rather than behavior: `expect(service._cache).toEqual(...)` — internal state leaks
+- Constructor injecting concrete dependencies (not interfaces) → cannot mock in tests
+- Function mixes pure logic with I/O (DB/HTTP/file) in same scope — cannot test logic without mocking I/O
+- Hard-coded `new Date()` / `Math.random()` inside function body → non-deterministic, not injectable
+
+DEBUGGING (#12) — patterns to flag:
+- `console.log`, `console.error`, `console.warn` in non-test, non-script files → use project structured logger
+- Error message that doesn't identify context: `throw new Error('not found')` → `throw new Error(\`User not found: id=${userId}\`)`
+- Catch block that swallows the error: `catch (e) {}` or `catch (e) { return null }` without logging
+- Async operation with no error handling where caller also has no `.catch()` / `try/catch`
+- Silent conditional: `if (result) { doSomething() }` with no `else` for the failure path in a critical flow
 
 [INSERT SHARED RULES BLOCK]
 ```
