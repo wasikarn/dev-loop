@@ -61,7 +61,13 @@ Do NOT use `npm version` — it auto-commits and would capture the version bump 
 
 ## Step 4: Verify write-back
 
-Read `{version_file}` back and extract the version string using the same command as Step 1.
+Read `{version_file}` back and extract the version string:
+
+| File | Verification command |
+| --- | --- |
+| `package.json` | `node -e "console.log(require('./package.json').version)"` |
+| `pyproject.toml` | `grep -m1 '^version' pyproject.toml \| sed 's/version = "\(.*\)"/\1/'` |
+| `setup.cfg` | `grep -m1 '^version' setup.cfg \| sed 's/version = //'` |
 
 If the extracted version does not match `{next_version}` → abort:
 
