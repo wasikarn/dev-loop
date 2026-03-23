@@ -193,18 +193,40 @@ Skills and agents take effect immediately on file change. Restart Claude Code on
 
 The four DLC skills form a complete development loop. Each runs a team of specialized agents that work in parallel, debate findings, and produce structured output.
 
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                     DLC Workflow Overview                       │
-├──────────────┬──────────────┬──────────────┬───────────────────┤
-│  dlc-build   │  dlc-review  │ dlc-respond  │     dlc-debug     │
-│              │              │              │                   │
-│ Research     │ Reviewer A   │ Fetch open   │ Investigator      │
-│ → Plan       │ Reviewer B   │ threads      │ (root cause)      │
-│ → Implement  │ Reviewer C   │ → Fix each   │ + DX Analyst      │
-│ → Review     │ ↓ Debate     │ → Commit     │ (observability)   │
-│ → Ship       │ → Consensus  │ → Reply      │ → Fixer           │
-└──────────────┴──────────────┴──────────────┴───────────────────┘
+```mermaid
+flowchart TD
+    START([New task / Jira ticket / Bug]) --> BUILD
+
+    BUILD["**dlc-build**
+    Research → Plan → Implement
+    → Review → Ship"]
+
+    BUILD -->|PR created| REVIEW
+    BUILD -->|Production incident| DEBUG
+
+    REVIEW["**dlc-review**
+    3 reviewers debate in parallel
+    → Consensus findings table"]
+
+    REVIEW -->|Review comments posted| RESPOND
+
+    RESPOND["**dlc-respond**
+    Fetch open threads → Fix in parallel
+    → Commit → Reply to close threads"]
+
+    RESPOND -->|All threads resolved| MERGE
+    RESPOND -->|Another review cycle| REVIEW
+
+    DEBUG["**dlc-debug**
+    Investigator + DX Analyst in parallel
+    → Root cause + Fix + Hardening"]
+
+    DEBUG -->|Fix PR ready| REVIEW
+
+    MERGE["**merge-pr**
+    Preflight → Merge → Tag → Deploy"]
+
+    MERGE --> DONE([Shipped ✓])
 ```
 
 ---
@@ -212,6 +234,18 @@ The four DLC skills form a complete development loop. Each runs a team of specia
 #### `dlc-build` — Full Development Loop
 
 The primary workflow for any coding task. Runs Research → Plan → Implement → Review → Ship with an iterative fix-review loop (max 3 iterations).
+
+```mermaid
+flowchart LR
+    R["Phase 1\nResearch\nExplorers + Bootstrap\n(concurrent)"]
+    P["Phase 2\nPlan\n+ plan-challenger\n(speculative)"]
+    I["Phase 3\nImplement\nCoders"]
+    REV["Phase 4\nReview\n3 reviewers → debate\n→ consolidate"]
+    S["Phase 5\nShip\nCommit + PR"]
+
+    R --> P --> I --> REV --> S
+    REV -->|"issues found\n(max 3 iter)"| I
+```
 
 **When to use:** New features, bug fixes, refactors, Jira tickets, CI failures, production hotfixes.
 
