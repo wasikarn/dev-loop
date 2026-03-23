@@ -17,9 +17,37 @@ to miss.
 
 Lead passes: `$PR_NUMBER`, `$MODE` (feature / hotfix / release), and optionally `$VERSION`.
 
+## Execution Model
+
+Run checks 1–5 as parallel bash background processes. Each check writes its result to a temp file. Aggregate all results into the go/no-go table at the end.
+
+```bash
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
+
+check_pr_state()  { ...; } # Step 1 — writes PASS|FAIL|WARN: detail to $TMPDIR/pr-state.txt
+check_changelog() { ...; } # Step 2 — writes result to $TMPDIR/changelog.txt
+check_version()   { ...; } # Step 3 — writes result to $TMPDIR/version.txt
+check_hotfix()    { ...; } # Step 4 — writes result to $TMPDIR/hotfix.txt
+check_backport()  { ...; } # Step 5 — writes result to $TMPDIR/backport.txt
+
+check_pr_state &
+check_changelog &
+check_version &
+check_hotfix &
+check_backport &
+wait
+
+# Read all result files and build the go/no-go table
+```
+
+Implement each check function with the bash commands from the corresponding step. Each function writes `PASS: detail`, `FAIL: detail`, or `WARN: detail` to its temp file.
+
 ## Steps
 
 ### 1. PR State Checks
+
+<!-- Runs in parallel — see Execution Model -->
 
 ```bash
 gh pr view $PR_NUMBER --json state,isDraft,mergeable,reviewDecision,statusCheckRollup \
@@ -36,6 +64,8 @@ Checks:
 
 ### 2. CHANGELOG Check
 
+<!-- Runs in parallel — see Execution Model -->
+
 ```bash
 head -30 CHANGELOG.md 2>/dev/null || head -30 CHANGES.md 2>/dev/null
 ```
@@ -47,6 +77,8 @@ Checks:
 - Top entry version matches `$VERSION` if provided
 
 ### 3. Version Bump Check (release / hotfix modes)
+
+<!-- Runs in parallel — see Execution Model -->
 
 ```bash
 cat package.json | jq '.version' 2>/dev/null \
@@ -63,6 +95,8 @@ FAIL if current version == base branch version in hotfix/release mode.
 
 ### 4. Concurrent Hotfix Check (hotfix mode only)
 
+<!-- Runs in parallel — see Execution Model -->
+
 ```bash
 git branch -r | grep "hotfix/" | grep -v "$(git branch --show-current)"
 ```
@@ -70,6 +104,8 @@ git branch -r | grep "hotfix/" | grep -v "$(git branch --show-current)"
 WARN if another hotfix branch exists — concurrent hotfixes require coordination.
 
 ### 5. Backport Check (hotfix mode only)
+
+<!-- Runs in parallel — see Execution Model -->
 
 Verify that a backport branch or PR exists for the long-lived version branch if the project has one.
 
