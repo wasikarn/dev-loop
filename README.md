@@ -4,7 +4,7 @@
 
 **A Claude Code plugin for structured development, PR review, and debugging — powered by Agent Teams.**
 
-[![Version](https://img.shields.io/badge/version-0.6.21-blue?style=flat-square)](https://github.com/wasikarn/dev-loop/releases)
+[![Version](https://img.shields.io/badge/version-0.6.22-blue?style=flat-square)](https://github.com/wasikarn/dev-loop/releases)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-12-blue?style=flat-square)](#skills)
 [![Agents](https://img.shields.io/badge/agents-23-purple?style=flat-square)](#agents)

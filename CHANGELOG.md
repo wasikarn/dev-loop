@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.22] — 2026-03-23
+
+### feat: domain expert ecosystem upgrade — review lenses, DX checklist, code-reviewer
+
+- **feat(review-lenses):** add `api-design.md` lens — REST status Hard Rules (201/204/422), idempotency, backward-compat (removed fields, new required params), pagination, cursor vs OFFSET
+- **feat(review-lenses):** add `observability.md` lens — structured logging Hard Rules (no string interpolation, no PII), correlation ID at entry points, trace propagation, metrics naming, alerting coverage
+- **feat(review-lenses/frontend):** upgrade from 8 items → comprehensive lens: RSC/App Router boundary, hydration mismatches, streaming + Suspense, Server Actions security, accessibility, missing key props
+- **feat(review-lenses/error-handling):** expand E1–E4 → E1–E8: add untyped error surface (E5), log-without-rethrow (E6), no retry on transient failures (E7), unbounded retry (E8); STRUCTURED ERROR TYPES, OBSERVABILITY INTEGRATION, RETRY & RESILIENCE sections
+- **feat(dlc-build/reviewer-prompts):** add 3 rows to Lens Selection table — error-handling, api-design, observability; add domain-specific Rule #7 to worker prompts
+- **feat(dlc-review/teammate-prompts):** add Lens Selection table + `{domain_lenses}` placeholder; upgrade Teammate 2 with DRY/SOLID/performance patterns; upgrade Teammate 3 with NAMING, DOCUMENTATION, TESTABILITY, DEBUGGING guidance
+- **feat(agents/code-reviewer):** upgrade to domain expert level — add 6 inline domain lenses (security, database, TypeScript, frontend, error handling, API design) with specific patterns and confidence thresholds per lens
+- **feat(dlc-debug/dx-checklist):** expand 11 → 19 DX patterns: E5–E8 (error handling), O3–O6 (structured log context, PII, correlation ID, trace propagation), P5 (non-injectable dependency)
+- **feat(dlc-debug/teammate-prompts):** upgrade Fix Reviewer SAFETY section — TOCTOU pattern, null paths, race conditions, error swallowing, type safety regression; correctness causal chain tracing
+- **docs:** update CLAUDE.md Docs Index with review-lenses reference; update README with domain expert capabilities for dlc-build, dlc-review, dlc-debug, and code-reviewer agent
+
 ## [0.6.21] — 2026-03-23
 
 ### fix: post-audit accuracy — workflow phase references, CLAUDE.md, README
