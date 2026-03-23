@@ -13,6 +13,7 @@
 <p>
   <a href="#installation">Installation</a> •
   <a href="#skills">Skills</a> •
+  <a href="#daily-usage">Daily Usage</a> •
   <a href="#agents">Agents</a> •
   <a href="#hooks">Hooks</a> •
   <a href="#output-styles">Output Styles</a> •
@@ -445,6 +446,59 @@ Detailed usage guides for each skill: [docs/skills/](docs/skills/)
 /dev-loop:merge-pr 42
 # Squash into develop → version bump → CHANGELOG → post-merge verification
 ```
+
+---
+
+## Daily Usage
+
+Typical developer day using the DLC workflow:
+
+```mermaid
+flowchart TD
+    MORNING([Start of day]) --> WC
+
+    WC["/dev-loop:work-context
+    Sprint tickets + open PRs
+    + unmerged branches"]
+
+    WC --> DECISION{What needs doing?}
+
+    DECISION -->|New task / ticket| BUILD
+    DECISION -->|Incoming PR to review| REVIEW
+    DECISION -->|Review comments on my PR| RESPOND
+    DECISION -->|Bug / production incident| DEBUG
+
+    BUILD["/dev-loop:dlc-build PROJ-123
+    or: 'add X feature'
+    Full loop → PR created"]
+
+    REVIEW["/dev-loop:dlc-review 42
+    3 reviewers → findings table
+    post as GitHub review comments"]
+
+    RESPOND["/dev-loop:dlc-respond 42
+    Fix all threads → commit → reply"]
+
+    DEBUG["/dev-loop:dlc-debug 'error msg'
+    Root cause + DX hardening → fix PR"]
+
+    BUILD --> MERGE
+    RESPOND --> MERGE
+    DEBUG --> REVIEW
+
+    REVIEW -->|Comments posted, waiting| EOD
+
+    MERGE["/dev-loop:merge-pr 42
+    Preflight → merge → tag"]
+
+    MERGE --> EOD([End of day ✓])
+```
+
+**Session tips:**
+
+- Start every session with `/dev-loop:work-context` — shows active sprint tickets, open PRs awaiting action, and unmerged branches
+- Run `/dev-loop:careful` before risky work (migrations, force-push, DROP TABLE)
+- Use `/dev-loop:dlc-metrics` weekly to spot recurring review findings
 
 ---
 
