@@ -158,7 +158,7 @@ Lead updates the progress checkboxes at the start of each phase.
 
 ## Phase 1: Investigate + DX Audit
 
-### Bootstrap (Lead — before spawning teammates)
+### Bootstrap (concurrent with teammates)
 
 Dispatch `dlc-debug-bootstrap` agent. Pass labeled input inline:
 
@@ -168,15 +168,15 @@ Project Root: {project_root from Phase 0 detect-project output}
 Artifacts Dir: {artifacts_dir}
 ```
 
-The agent appends `## Shared Context` to `debug-context.md` — include that section
-path in each teammate's prompt when constructing them (Step 1).
+**Do not wait** — proceed immediately to Step 1 to spawn the teammate team while bootstrap runs.
 
-**Call-site fallback:** if agent errors → execute original Steps 1–4 inline:
+When bootstrap completes: the agent has appended `## Shared Context` to `debug-context.md`. Send that section's contents to each teammate via `SendMessage`:
 
-1. `rtk git log --oneline -10` — recent commits near affected area
-2. List primary affected files (max 5) from error/stack trace
-3. Read key sections of each file (structure only, not full content)
-4. Append `## Shared Context` to `debug-context.md`
+```text
+SHARED CONTEXT: {contents of ## Shared Context section from debug-context.md}
+```
+
+**Call-site fallback:** If bootstrap errors → execute inline: `rtk git log --oneline -10`, list primary affected files (max 5) from the error/stack trace, read key sections, then append `## Shared Context` to `debug-context.md` and send via `SendMessage` to teammates. Teammates begin with `SHARED CONTEXT: (pending — gathering inline)` until the SendMessage arrives.
 
 ### Step 1: Create Team
 
