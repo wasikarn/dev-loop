@@ -1,4 +1,4 @@
-import type { DiffBucket, FileDiff, ReviewRole } from '../../types.js'
+import type { DiffBucket, FileDiff, ReviewRole } from '../types.js'
 
 /**
  * Returns the set of roles a file belongs to, applying domain mapping rules in order.
@@ -91,17 +91,22 @@ export function mapToDomains(files: FileDiff[]): DiffBucket[] {
   for (const file of files) {
     const roles = getRolesForFile(file)
     for (const role of roles) {
-      buckets[role].push(file)
+      const bucket = buckets[role] ?? []
+      bucket.push(file)
+      buckets[role] = bucket
     }
   }
 
   const roles: ReviewRole[] = ['correctness', 'architecture', 'dx']
-  return roles.map(role => ({
-    role,
-    files: buckets[role],
-    lenses: [],
-    totalLines: buckets[role].reduce((sum, f) => sum + f.linesChanged, 0),
-  }))
+  return roles.map(role => {
+    const files = buckets[role] ?? []
+    return {
+      role,
+      files,
+      lenses: [],
+      totalLines: files.reduce((sum, f) => sum + f.linesChanged, 0),
+    }
+  })
 }
 
 // Test with: npx tsx src/review/domain-mapper.ts (manual)

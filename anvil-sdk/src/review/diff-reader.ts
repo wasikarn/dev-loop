@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process'
 import { extname } from 'node:path'
-import type { FileDiff } from '../../types.js'
+import type { FileDiff } from '../types.js'
 
 const LANGUAGE_MAP: Record<string, string> = {
   '.ts': 'typescript',
