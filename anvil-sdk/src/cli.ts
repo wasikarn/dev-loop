@@ -72,7 +72,11 @@ function parseArgs(args: string[]): ParsedArgs {
 }
 
 function loadHardRules(path: string | undefined): string {
-  if (path !== undefined && path.length > 0 && existsSync(path)) {
+  if (path !== undefined && path.length > 0) {
+    if (!existsSync(path)) {
+      console.warn(`[sdk-review] --hard-rules path not found: ${path}`)
+      process.exit(1)
+    }
     return readFileSync(path, 'utf8')
   }
   // Look in cwd

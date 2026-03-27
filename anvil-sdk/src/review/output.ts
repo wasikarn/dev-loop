@@ -24,7 +24,7 @@ function formatFinding(f: ConsolidatedFinding): string {
     `**Rule:** ${f.rule}${f.isHardRule ? ' 🚨 Hard Rule' : ''}`,
   ]
   if (f.patternNote) {
-    lines.push(f.patternNote)
+    lines.push(`**Pattern:** ${f.patternNote}`)
   }
   if (f.crossDomain) {
     lines.push(`> Cross-domain: ${f.crossDomain}`)
