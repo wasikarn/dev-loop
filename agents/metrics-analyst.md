@@ -1,6 +1,6 @@
 ---
 name: metrics-analyst
-description: "Reads ~/.claude/dlc-metrics.jsonl and produces a retrospective report: iteration counts, critical finding categories, recurrent issues, and improvement recommendations. Use after multiple dlc-build or dlc-review runs to identify recurring workflow patterns and surface candidates for new Hard Rules."
+description: "Reads dlc-metrics.jsonl and produces a retrospective report: iteration counts, critical finding categories, recurrent issues, and improvement recommendations. Use after multiple dlc-build or dlc-review runs to identify recurring workflow patterns and surface candidates for new Hard Rules."
 tools: Bash, Read, Write
 model: haiku
 disallowedTools: Edit
@@ -20,13 +20,20 @@ Turn accumulated dlc-metrics.jsonl data into actionable retrospective insights.
 If `$ARGUMENTS` is a valid directory path: set `session_dir = $ARGUMENTS`. Skip to Step 1.
 If `$ARGUMENTS` is empty or not a valid directory path: set `session_dir = null`. Steps 1–4 run normally; Step 5 is skipped.
 
+Derive `metrics_file`:
+
+- If `session_dir` is set: `metrics_file = dirname(session_dir)/dlc-metrics.jsonl`
+  (e.g. if `session_dir = /path/to/dlc-build/2026-03-27-task-slug/`, then
+  `metrics_file = /path/to/dlc-build/dlc-metrics.jsonl`)
+- If `session_dir` is null: `metrics_file = ~/.claude/dlc-metrics.jsonl` (standalone invocation)
+
 ### 1. Read Metrics File
 
 ```bash
-cat ~/.claude/dlc-metrics.jsonl 2>/dev/null | head -200
+cat {metrics_file} 2>/dev/null | head -200
 ```
 
-If file not found or empty, output: `No metrics data found at ~/.claude/dlc-metrics.jsonl — run
+If file not found or empty, output: `No metrics data found at {metrics_file} — run
 dlc-build or dlc-review at least once to accumulate data.` and exit.
 
 ### 2. Parse Entries
