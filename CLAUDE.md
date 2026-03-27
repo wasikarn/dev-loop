@@ -19,7 +19,7 @@ Prefer reading source before editing — key references:
 | `skills/<name>/references/checklist.md` | Per-skill review criteria with severity markers (review-pr skills) |
 | `skills/<name>/references/examples.md` | Per-skill ✅/❌ code examples for all 12 rules (review-pr skills) |
 | [`references/review-conventions.md`](references/review-conventions.md) | Comment labels, dedup protocol, strengths, PR size thresholds |
-| [`skills/dlc-build/references/review-lenses/`](skills/dlc-build/references/review-lenses/) | 8 domain lenses injected into reviewers at Phase 4 — `frontend`, `security`, `database`, `performance`, `typescript`, `error-handling`, `api-design`, `observability`. Shared by both `dlc-build` and `dlc-review`. |
+| [`skills/dlc-build/references/review-lenses/`](skills/dlc-build/references/review-lenses/) | 8 domain lenses injected into reviewers at Phase 6 — `frontend`, `security`, `database`, `performance`, `typescript`, `error-handling`, `api-design`, `observability`. Shared by both `dlc-build` and `dlc-review`. |
 
 <important if="editing or creating skills">
 
@@ -69,23 +69,23 @@ Current agents (23):
 | Agent | Model | Purpose |
 | --- | --- | --- |
 | `commit-finalizer` | haiku | Fast git commit with conventional commits format |
-| `dev-loop-bootstrap` | haiku | Pre-gather Phase 1 context before dlc-build explorer spawns |
+| `dev-loop-bootstrap` | haiku | Pre-gather Phase 2 context before dlc-build explorer spawns |
 | `dlc-debug-bootstrap` | haiku | Pre-gather debug context before dlc-debug Investigator spawns |
 | `dlc-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before dlc-respond Fixers spawn |
 | `pr-review-bootstrap` | haiku | Fetch PR diff + Jira AC in one pass before review |
 | `review-consolidator` | haiku | Dedup/sort multi-reviewer findings into single ranked table |
-| `research-validator` | haiku | Validate research.md completeness (file:line evidence gate) before Phase 1→2 |
+| `research-validator` | haiku | Validate research.md completeness (file:line evidence gate) before Phase 2→3 |
 | `fix-intent-verifier` | haiku | Verify each dlc-respond fix addresses reviewer intent (ADDRESSED/PARTIAL/MISALIGNED) |
 | `jira-sync` | haiku | Post structured implementation summary to Jira after dlc-build/dlc-debug completes |
 | `work-context` | haiku | Session start digest: active sprint tickets + PRs awaiting action + unmerged branches |
 | `merge-preflight` | haiku | Pre-merge go/no-go safety checklist before merge-pr Confirmation Gate |
 | `metrics-analyst` | haiku | Retrospective from dlc-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
 | `falsification-agent` | sonnet | Challenges review findings before consolidation — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
-| `plan-challenger` | sonnet | Challenges dlc-build Phase 2 plan for YAGNI/scope/ordering issues before implementation |
+| `plan-challenger` | sonnet | Challenges dlc-build Phase 3 plan for YAGNI/scope/ordering issues before implementation |
 | `test-quality-reviewer` | sonnet | Dedicated test quality reviewer (T1–T9): behavior vs implementation, mock fidelity, edge cases, assertion presence (Hard Rule), boundary operators, stale contracts, test isolation |
 | `code-explorer` | sonnet | Trace feature execution paths: entry points → data layer, map abstraction layers, identify extension points — read-only, explicit trigger only |
-| `comment-analyzer` | sonnet | Verify comment accuracy against code, detect stale references and comment rot — explicit trigger; dlc-build lead may optionally spawn after Phase 3 |
-| `code-simplifier` | sonnet | Post-review polish: flatten nesting, remove redundant comments, improve naming — no behavior changes; triggered optionally in dlc-build Phase 5.5 or standalone |
+| `comment-analyzer` | sonnet | Verify comment accuracy against code, detect stale references and comment rot — explicit trigger; dlc-build lead may optionally spawn after Phase 4 |
+| `code-simplifier` | sonnet | Post-review polish: flatten nesting, remove redundant comments, improve naming — no behavior changes; triggered optionally in dlc-build Phase 7 (optional) or standalone |
 | `migration-reviewer` | sonnet | Reviews DB migration files (M1–M10): DDL safety, reversibility, FK indexes, table-lock risk, zero-downtime violations, expand/contract, data batching, index types, deadlock risk |
 | `api-contract-auditor` | sonnet | Detects API breaking changes (A1–A10): removed/renamed fields, changed status codes, new required params, type narrowing, enum reordering, idempotency, pagination, error envelopes, deprecation |
 | `skill-validator` | sonnet | Validates SKILL.md against best practices |
