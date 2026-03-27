@@ -62,7 +62,7 @@ function getRolesForFile(file: FileDiff): Set<ReviewRole> {
   // Model / schema (not test) → architecture + correctness
   if (
     (p.includes('model/') || p.includes('schema/')) &&
-    !(/\.(test|spec)\.(ts|tsx)$/.test(p))
+    !(/\.(test|spec)\.(ts|tsx|js|jsx)$/.test(p))
   ) {
     roles.add('architecture')
     roles.add('correctness')
