@@ -544,9 +544,9 @@ Specialized subagents spawned automatically by DLC skills. Can also be invoked d
 | Agent | Model | Invoked by | Purpose |
 | --- | --- | --- | --- |
 | `commit-finalizer` | Haiku | Manually | Fast git commit with conventional commit formatting |
-| `dlc-build-bootstrap` | Haiku | `dlc-build` Phase 2 | Pre-gathers project structure and type definitions |
-| `dlc-debug-bootstrap` | Haiku | `dlc-debug` Phase 1 | Pre-gathers stack trace context and affected files |
-| `dlc-respond-bootstrap` | Haiku | `dlc-respond` Phase 1 | Pre-gathers open PR threads and affected files |
+| `anvil-build-bootstrap` | Haiku | `dlc-build` Phase 2 | Pre-gathers project structure and type definitions |
+| `anvil-debug-bootstrap` | Haiku | `dlc-debug` Phase 1 | Pre-gathers stack trace context and affected files |
+| `anvil-respond-bootstrap` | Haiku | `dlc-respond` Phase 1 | Pre-gathers open PR threads and affected files |
 | `pr-review-bootstrap` | Haiku | `dlc-review` Phase 1 | Fetches PR diff, Jira AC, and groups changed files |
 | `review-consolidator` | Haiku | `dlc-review` Phase 5 | Deduplicates and ranks findings from multiple reviewers |
 | `research-validator` | Haiku | `dlc-build` Phase 2→3 gate | Validates research.md completeness (file:line evidence) |

@@ -1,5 +1,5 @@
 ---
-name: dlc-debug-bootstrap
+name: anvil-debug-bootstrap
 description: "Pre-gather shared debug context before dlc-debug Phase 1: reads dlc-build artifacts when present, maps affected files from stack trace or description, collects recent commits and code structure. Run at the start of any debug session to avoid redundant reads by Investigator agents."
 model: haiku
 tools: Read, Glob, Bash, Grep, Write

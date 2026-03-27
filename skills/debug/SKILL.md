@@ -160,7 +160,7 @@ Lead updates the progress checkboxes at the start of each phase.
 
 ### Bootstrap (concurrent with teammates)
 
-Dispatch `dlc-debug-bootstrap` agent. Pass labeled input inline:
+Dispatch `anvil-debug-bootstrap` agent. Pass labeled input inline:
 
 ```text
 Bug: {bug description from $ARGUMENTS}

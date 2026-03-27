@@ -155,7 +155,7 @@ Write to `{artifacts_dir}/respond-context.md` — thread triage table, project i
 
 Fix in severity order: 🔴 Critical → 🟡 Important → 🔵 Suggestion (only if user requested).
 
-**Bootstrap:** Run `dlc-respond-bootstrap` agent (Haiku) with PR #$0 before spawning Fixers. It
+**Bootstrap:** Run `anvil-respond-bootstrap` agent (Haiku) with PR #$0 before spawning Fixers. It
 pre-reads all affected files and fetches open thread text in one pass — inject its output block as
 shared context in each Fixer prompt to eliminate redundant per-Fixer reads.
 

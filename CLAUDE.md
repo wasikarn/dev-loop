@@ -76,9 +76,9 @@ Current agents (23):
 | Agent | Model | Purpose |
 | --- | --- | --- |
 | `commit-finalizer` | haiku | Fast git commit with conventional commits format |
-| `dlc-build-bootstrap` | haiku | Pre-gather Phase 2 context before dlc-build explorer spawns |
-| `dlc-debug-bootstrap` | haiku | Pre-gather debug context before dlc-debug Investigator spawns |
-| `dlc-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before dlc-respond Fixers spawn |
+| `anvil-build-bootstrap` | haiku | Pre-gather Phase 2 context before dlc-build explorer spawns |
+| `anvil-debug-bootstrap` | haiku | Pre-gather debug context before dlc-debug Investigator spawns |
+| `anvil-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before dlc-respond Fixers spawn |
 | `pr-review-bootstrap` | haiku | Fetch PR diff + Jira AC in one pass before review |
 | `review-consolidator` | haiku | Dedup/sort multi-reviewer findings into single ranked table |
 | `research-validator` | haiku | Validate research.md completeness (file:line evidence gate) before Phase 2→3 |
