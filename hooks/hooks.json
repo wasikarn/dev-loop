@@ -73,7 +73,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/permission-router.sh"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/safe-command-approver.sh"
           }
         ]
       }

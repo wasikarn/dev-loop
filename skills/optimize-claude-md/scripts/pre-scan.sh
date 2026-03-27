@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # pre-scan.sh — Collect all Phase 1 metadata in one pass.
-# Output: compact JSON to stdout. Run before starting optimize-context workflow.
-# Usage: bash skills/optimize-context/scripts/pre-scan.sh [project-root]
+# Output: compact JSON to stdout. Run before starting optimize-claude-md workflow.
+# Usage: bash skills/optimize-claude-md/scripts/pre-scan.sh [project-root]
 #
 # Replaces ~5 separate agent reads with one script. Saves ~2-4k tokens per run.
 

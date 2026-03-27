@@ -50,7 +50,7 @@ npx markdownlint-cli2 "skills/merge-pr/**/*.md"
 ls -la ~/.claude/skills/merge-pr
 
 # Re-link after changes
-bash scripts/link-skill.sh merge-pr
+bash scripts/link-assets.sh merge-pr
 ```
 
 ## Gotchas

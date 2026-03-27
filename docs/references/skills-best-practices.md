@@ -155,7 +155,7 @@ Apply the fixes to the schema file and .env.example.
 Precedence (highest wins): Enterprise → Personal `~/.claude/skills/` → Project `.claude/skills/` → Plugin
 
 ```bash
-bash scripts/link-skill.sh <name>   # install one
-bash scripts/link-skill.sh          # install all
-bash scripts/link-skill.sh --list   # check symlink status
+bash scripts/link-assets.sh <name>   # install one
+bash scripts/link-assets.sh          # install all
+bash scripts/link-assets.sh --list   # check symlink status
 ```

@@ -32,7 +32,7 @@ For contributors who want to edit skills and see changes take effect immediately
 | Tool | Without it | Install |
 | --- | --- | --- |
 | `rtk` | DLC skills still work but use raw git/gh output (higher token cost) | `brew install rtk` |
-| `python3` | `optimize-context` skill cannot detect project framework | pre-installed on macOS |
+| `python3` | `optimize-claude-md` skill cannot detect project framework | pre-installed on macOS |
 | `fd` | Bootstrap agents fall back to Glob (slower) | `brew install fd` |
 | `ast-grep` | Bootstrap agents fall back to Grep (less precise) | `brew install ast-grep` |
 
@@ -46,7 +46,7 @@ cd dev-loop
 ### Step 2 — Link skills, agents, hooks, and output styles
 
 ```bash
-bash scripts/link-skill.sh
+bash scripts/link-assets.sh
 ```
 
 This symlinks all assets to `~/.claude/`:
@@ -65,7 +65,7 @@ claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ### Step 4 — Verify symlinks
 
 ```bash
-bash scripts/link-skill.sh --list
+bash scripts/link-assets.sh --list
 # Expected: all skills, agents, hooks, output-styles show as ✓ linked
 ```
 
@@ -80,7 +80,7 @@ Changes to symlinked files take effect immediately. Restart only needed for sett
 1. Create `skills/<name>/SKILL.md` with YAML frontmatter
 2. Create `skills/<name>/CLAUDE.md` with contributor context (architecture, gotchas, validate commands)
 3. Add `references/` directory for multi-phase skills or skills exceeding ~100 lines — move templates, checklists, and examples there
-4. _(Dev mode only)_ Symlink to test locally: `bash scripts/link-skill.sh <name>`
+4. _(Dev mode only)_ Symlink to test locally: `bash scripts/link-assets.sh <name>`
 5. Lint: `npx markdownlint-cli2 "skills/<name>/**/*.md"`
 
 ### Frontmatter fields
@@ -119,13 +119,13 @@ The pre-commit hook runs `fix-tables.sh` + `markdownlint-cli2 --fix` on staged `
 
 ```bash
 # Link all assets (skills, agents, hooks, output-styles)
-bash scripts/link-skill.sh
+bash scripts/link-assets.sh
 
 # Link one skill only
-bash scripts/link-skill.sh dlc-build
+bash scripts/link-assets.sh dlc-build
 
 # Check all symlinks
-bash scripts/link-skill.sh --list
+bash scripts/link-assets.sh --list
 ```
 
 ---
@@ -141,7 +141,7 @@ dev-loop/
 ├── hooks/                    # Lifecycle hooks
 │   └── hooks.json            # Plugin hook registry
 ├── output-styles/            # Custom output styles
-├── scripts/                  # Dev tooling (link-skill.sh, fix-tables.sh)
+├── scripts/                  # Dev tooling (link-assets.sh, fix-tables.sh)
 └── docs/
     └── references/           # Contributor reference docs (best practices, guides)
 ```

@@ -282,7 +282,7 @@ Output Debug Summary — format: [artifact-templates.md](references/artifact-tem
 
 If a Jira key was identified in Phase 1 Step 2 context:
 
-1. Run `jira-sync` agent — pass `{artifacts_dir}/debug-context.md` as `$ARGUMENTS` (the agent reads from
+1. Run `jira-summary-poster` agent — pass `{artifacts_dir}/debug-context.md` as `$ARGUMENTS` (the agent reads from
    project root but explicit path avoids any ambiguity).
 2. The agent posts an implementation summary to the ticket automatically — no manual drafting needed.
 

@@ -1,4 +1,4 @@
-# optimize-context — Good/Bad Examples
+# optimize-claude-md — Good/Bad Examples
 
 Concrete before/after CLAUDE.md examples. Anti-pattern catalog: [`audit-antipatterns.md`](audit-antipatterns.md). Compression techniques: [`compression-guide.md`](compression-guide.md).
 

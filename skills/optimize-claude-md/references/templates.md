@@ -42,7 +42,7 @@ Use only sections relevant to the project. Not all sections are needed.
 ## Gotchas
 
 - <non-obvious thing>
-- Run `/optimize-context` when this file feels outdated
+- Run `/optimize-claude-md` when this file feels outdated
 ```
 
 ## Template: Comprehensive (Single Project)
@@ -87,7 +87,7 @@ Setup: <steps>
 ## Gotchas
 
 - <gotcha>
-- Run `/optimize-context` when this file feels outdated
+- Run `/optimize-claude-md` when this file feels outdated
 
 ## Workflow
 
@@ -182,7 +182,7 @@ Explore project structure first, then consult docs index for API details.
 ## Gotchas
 
 - <gotcha>
-- Run `/optimize-context` when this file feels outdated
+- Run `/optimize-claude-md` when this file feels outdated
 ```
 
 ## Template: Global User (~/.claude/CLAUDE.md)
@@ -217,7 +217,7 @@ For the user-level global CLAUDE.md. Different purpose from project files: user 
 ## Gotchas
 
 - <cross-project quirk>
-- Run `/optimize-context` when this file feels outdated
+- Run `/optimize-claude-md` when this file feels outdated
 ```
 
 **What to include:** cross-project conventions, global CLI tools, MCP server shortcuts, tone/language preferences, persistent workflow rules.

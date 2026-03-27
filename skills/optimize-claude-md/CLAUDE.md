@@ -1,4 +1,4 @@
-# optimize-context skill
+# optimize-claude-md skill
 
 Audits, scores, and optimizes CLAUDE.md files for maximum agent effectiveness.
 SKILL.md is the agent entry point; references/ provides supporting detail.
@@ -20,28 +20,28 @@ Prefer reading before editing — key references:
 - `SKILL.md` — 5-phase workflow: Discovery → Score → Audit → Update → Verify
 - `references/quality-criteria.md` — CLAUDE.md Quality rubric (8 criteria) + Project Coverage rubric (12 categories)
 - `scripts/pre-scan.sh` — detects framework/scripts/structure in ~30ms; always run first in Phase 1
-- Audit report written to `.claude/optimize-context-report.md` — survives context compaction
+- Audit report written to `.claude/optimize-claude-md-report.md` — survives context compaction
 
 ## Validate After Changes
 
 ```bash
 # Lint all markdown in this skill
-npx markdownlint-cli2 "skills/optimize-context/**/*.md"
+npx markdownlint-cli2 "skills/optimize-claude-md/**/*.md"
 
 # Verify skill symlink exists
-ls -la ~/.claude/skills/optimize-context
+ls -la ~/.claude/skills/optimize-claude-md
 
 # Test pre-scan script
-bash skills/optimize-context/scripts/pre-scan.sh . | jq -c '.'
+bash skills/optimize-claude-md/scripts/pre-scan.sh . | jq -c '.'
 
 # Invoke skill:
-# /optimize-context            → full 5-phase audit + edits
-# /optimize-context --dry-run  → phases 1-3 only (report, no edits)
+# /optimize-claude-md            → full 5-phase audit + edits
+# /optimize-claude-md --dry-run  → phases 1-3 only (report, no edits)
 ```
 
 ## Gotchas
 
-- Run `/optimize-context` when this file feels outdated
+- Run `/optimize-claude-md` when this file feels outdated
 - This CLAUDE.md is **tracked in git** — changes here are shared with the team
 - `pre-scan.sh` targets bash 3.x (macOS default) — no `declare -A`, no `mapfile`
 - `stat -f%z` is macOS/BSD syntax for file size — GNU Linux uses `stat -c%s`

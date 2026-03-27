@@ -116,7 +116,7 @@ These patterns are now scored within the main rubric (Retrieval readiness + Nove
 | Wording style | Explore-first / "Prefer X" framing |
 | Novel content | Post-cutoff APIs detailed, known patterns compressed |
 | Docs index | Pointer to retrievable docs (if framework project) |
-| Self-invocation | Reminder to run `/optimize-context` when stale |
+| Self-invocation | Reminder to run `/optimize-claude-md` when stale |
 | Noise-free | No generic advice, no obvious patterns |
 
 ## Assessment Process

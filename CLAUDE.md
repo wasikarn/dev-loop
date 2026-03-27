@@ -41,7 +41,7 @@ skills/<name>/
 
 | Skill | Purpose |
 | --- | --- |
-| `optimize-context` | Audit and optimize CLAUDE.md files |
+| `optimize-claude-md` | Audit and optimize CLAUDE.md files |
 | `env-heal` | Scan and fix environment variable mismatches |
 | `merge-pr` | Git-flow merge and deploy (feature/hotfix/release modes) |
 | `dlc-build` | Full development loop (Research → Plan → Implement → Review → Ship) |
@@ -54,14 +54,14 @@ skills/<name>/
 | `careful` | Enter careful mode — elevated confirmation threshold for destructive operations |
 | `freeze` | Freeze a file or pattern from being edited for the session |
 | `dlc-status` | Show active DLC session artifacts and current phase |
-| `hook-test` | Run QA check suite to verify all hooks, skills, and plugin structure |
+| `plugin-qa` | Run QA check suite to verify all hooks, skills, and plugin structure |
 | `analyze-claude-features` | Audit project against official Claude Code features and score adoption coverage |
 | `review-rules` | _(background)_ 12-point review framework — preloaded into reviewer agents |
 | `review-conventions` | _(background)_ Comment labels, dedup protocol, PR size thresholds — preloaded into reviewer agents |
 | `review-output-format` | _(background)_ PR review output format templates — preloaded into reviewer agents |
 | `review-examples` | _(background)_ Code pattern examples for all 12 rules — preloaded into reviewer agents |
 | `debate-protocol` | _(background)_ Adversarial debate rules and consensus criteria — preloaded into reviewer agents |
-| `jira-integration` | _(background)_ Jira detection, fetch, and skill-specific integration — preloaded into jira-sync agent |
+| `jira-integration` | _(background)_ Jira detection, fetch, and skill-specific integration — preloaded into jira-summary-poster agent |
 
 ## Agents
 
@@ -76,14 +76,14 @@ Current agents (23):
 | Agent | Model | Purpose |
 | --- | --- | --- |
 | `commit-finalizer` | haiku | Fast git commit with conventional commits format |
-| `dev-loop-bootstrap` | haiku | Pre-gather Phase 2 context before dlc-build explorer spawns |
+| `dlc-build-bootstrap` | haiku | Pre-gather Phase 2 context before dlc-build explorer spawns |
 | `dlc-debug-bootstrap` | haiku | Pre-gather debug context before dlc-debug Investigator spawns |
 | `dlc-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before dlc-respond Fixers spawn |
 | `pr-review-bootstrap` | haiku | Fetch PR diff + Jira AC in one pass before review |
 | `review-consolidator` | haiku | Dedup/sort multi-reviewer findings into single ranked table |
 | `research-validator` | haiku | Validate research.md completeness (file:line evidence gate) before Phase 2→3 |
 | `fix-intent-verifier` | haiku | Verify each dlc-respond fix addresses reviewer intent (ADDRESSED/PARTIAL/MISALIGNED) |
-| `jira-sync` | haiku | Post structured implementation summary to Jira after dlc-build/dlc-debug completes |
+| `jira-summary-poster` | haiku | Post structured implementation summary to Jira after dlc-build/dlc-debug completes |
 | `work-context` | haiku | Session start digest: active sprint tickets + PRs awaiting action + unmerged branches |
 | `merge-preflight` | haiku | Pre-merge go/no-go safety checklist before merge-pr Confirmation Gate |
 | `metrics-analyst` | haiku | Retrospective from dlc-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
@@ -111,7 +111,7 @@ Hooks live at `hooks/`. All hooks are registered in `hooks/hooks.json` and distr
 | `UserPromptSubmit` | — | `skill-routing.sh` |
 | `PreToolUse` | `Edit\|Write` | `protect-files.sh` |
 | `PreToolUse` | `Skill` | `skill-usage-tracker.sh` |
-| `PreToolUse` | `Bash` | `permission-router.sh` |
+| `PreToolUse` | `Bash` | `safe-command-approver.sh` |
 | `PostToolUse` | `Edit\|Write` | _(inline markdownlint)_ |
 | `PostToolUse` | `Write` | `shellcheck-written-scripts.sh` |
 | `TaskCompleted` | `review-debate\|dev-loop\|respond` | `task-gate.sh` |
@@ -175,9 +175,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full step-by-step guide. Key rule
 
 | Task | Command |
 | --- | --- |
-| Link one skill | `bash scripts/link-skill.sh <name>` |
-| Link everything | `bash scripts/link-skill.sh` (skills, agents, hooks, output-styles) |
-| Check link status | `bash scripts/link-skill.sh --list` |
+| Link one skill | `bash scripts/link-assets.sh <name>` |
+| Link everything | `bash scripts/link-assets.sh` (skills, agents, hooks, output-styles) |
+| Check link status | `bash scripts/link-assets.sh --list` |
 
 <important if="editing this repo">
 
@@ -186,6 +186,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full step-by-step guide. Key rule
 - `context: fork` + `agent` field runs skills in isolated subagent — used by `env-heal` (haiku, general-purpose). Other skills avoid it for real-time streaming visibility and follow-up interaction
 - Pre-commit hook auto-fixes staged `.md` files — runs `scripts/fix-tables.sh` + `markdownlint-cli2 --fix`; no manual fix needed before commit
 - `disable-model-invocation: true` removes description from context entirely (skill never auto-triggers); `user-invocable: false` hides from menu but keeps context — different effects
-- Run `/optimize-context` when this file feels stale
+- Run `/optimize-claude-md` when this file feels stale
 
 </important>

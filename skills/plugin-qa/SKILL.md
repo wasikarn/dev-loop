@@ -1,10 +1,10 @@
 ---
-name: hook-test
-description: "Run the QA check suite to verify all hooks, skills, and plugin structure are healthy. Use /hook-test to validate the dev-loop plugin configuration."
+name: plugin-qa
+description: "Run the full QA check suite to verify all hooks, skills, and plugin structure are healthy. Use /plugin-qa to validate the dev-loop plugin configuration."
 user-invocable: true
 ---
 
-# Hook Test
+# Plugin QA
 
 Run the QA check suite to verify all hooks, skills, and plugin structure are healthy.
 

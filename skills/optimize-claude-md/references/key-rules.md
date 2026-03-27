@@ -11,7 +11,7 @@
 - **Prioritize novel content** — APIs/patterns outside training data get more space than well-known ones
 - **Noise reduction** — Remove content that doesn't aid decision-making; unused/irrelevant context may distract the agent (Vercel: skills ignored 56% of the time when not relevant)
 - **Passive over active** — For general framework knowledge, embed in CLAUDE.md (passive) rather than relying on skills (active retrieval). Skills are best for action-specific workflows users explicitly trigger
-- **Self-invocation** — Recommend adding staleness reminder in CLAUDE.md (e.g. "Run `/optimize-context` when CLAUDE.md feels outdated") — CLAUDE.md drifts as codebases evolve; a staleness trigger keeps context self-maintaining without requiring the user to remember
+- **Self-invocation** — Recommend adding staleness reminder in CLAUDE.md (e.g. "Run `/optimize-claude-md` when CLAUDE.md feels outdated") — CLAUDE.md drifts as codebases evolve; a staleness trigger keeps context self-maintaining without requiring the user to remember
 
 ## Phase 4 Proposed Changes Format
 

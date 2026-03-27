@@ -1,5 +1,5 @@
 ---
-name: jira-sync
+name: jira-summary-poster
 description: "Post a structured implementation summary comment to the linked Jira ticket after completing a dev-loop task. Reads dev-loop-context.md or debug-context.md and posts what was implemented, files changed, and any AC deviations. When atlassian-pm plugin is available, generates ADF-formatted comment via story-writer + quality-gate agents. Use at the end of dlc-build Phase 6 or dlc-debug Phase 3 cleanup when a Jira key is present in the context artifact."
 tools: Read, Glob, Bash, mcp__mcp-atlassian__jira_get_issue, mcp__mcp-atlassian__jira_add_comment, mcp__mcp-atlassian__jira_transition_issue, mcp__mcp-atlassian__jira_get_transitions, mcp__plugin_atlassian-pm_atlassian-cache__cache_get_issue, mcp__plugin_atlassian-pm_atlassian-cache__cache_invalidate
 model: haiku
@@ -7,7 +7,7 @@ maxTurns: 15
 skills: [jira-integration]
 ---
 
-# Jira Sync
+# Jira Summary Poster
 
 Post a concise implementation summary to the linked Jira ticket. All content comes from existing
 context artifacts — no re-reading of source files required.

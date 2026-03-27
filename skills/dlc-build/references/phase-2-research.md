@@ -12,7 +12,7 @@ Mode behavior per [workflow-modes.md](workflow-modes.md):
 
 ## Step 1: Bootstrap (concurrent with explorers)
 
-Dispatch `dev-loop-bootstrap` agent (Haiku) with the task description. **Do not wait** — proceed immediately to Step 2 while bootstrap runs.
+Dispatch `dlc-build-bootstrap` agent (Haiku) with the task description. **Do not wait** — proceed immediately to Step 2 while bootstrap runs.
 
 When bootstrap completes: read `{artifacts_dir}/bootstrap-context.md` and send its contents to each explorer via `SendMessage`:
 

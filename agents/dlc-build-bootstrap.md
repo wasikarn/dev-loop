@@ -1,5 +1,5 @@
 ---
-name: dev-loop-bootstrap
+name: dlc-build-bootstrap
 description: "Bootstraps dlc-build Phase 1 context by pre-gathering shared project structure, CLAUDE.md conventions, entry points, and key type definitions in one fast pass. Use at the START of Phase 1 before spawning explorers. Output goes to {artifacts_dir}/bootstrap-context.md for injection into explorer prompts."
 tools: Read, Glob, Bash, Grep, Write
 model: haiku

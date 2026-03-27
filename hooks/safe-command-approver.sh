@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# permission-router.sh — PreToolUse hook
+# safe-command-approver.sh — PreToolUse hook
 # Auto-approves obviously-safe read-only commands to reduce permission friction.
 # Strategy: allowlist-only. Unknown commands pass through — no Opus call for unknowns
 # (avoids latency on every tool use). Add patterns to SAFE_PATTERNS as confidence grows.
@@ -32,7 +32,7 @@ SAFE_PATTERNS=(
 
 for pattern in "${SAFE_PATTERNS[@]}"; do
   if [[ $COMMAND =~ $pattern ]]; then
-    jq -n '{"decision":"approve","reason":"permission-router: read-only command on allowlist"}'
+    jq -n '{"decision":"approve","reason":"safe-command-approver: read-only command on allowlist"}'
     exit 0
   fi
 done

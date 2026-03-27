@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# link-skill.sh — Create ~/.claude/ symlinks for all assets in this repo.
+# link-assets.sh — Create ~/.claude/ symlinks for all assets in this repo.
 # Usage:
-#   bash scripts/link-skill.sh            # link everything
-#   bash scripts/link-skill.sh spec-kit   # link one skill by name
-#   bash scripts/link-skill.sh --list     # show current link status
+#   bash scripts/link-assets.sh            # link everything
+#   bash scripts/link-assets.sh spec-kit   # link one skill by name
+#   bash scripts/link-assets.sh --list     # show current link status
 
 set -euo pipefail
 

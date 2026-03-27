@@ -159,13 +159,13 @@ git clone git@github.com:wasikarn/dev-loop.git && cd dev-loop
 # 2. Install prerequisites (same as Option A)
 
 # 3. Symlink all assets to ~/.claude/
-bash scripts/link-skill.sh
+bash scripts/link-assets.sh
 
 # 4. Enable Agent Teams
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 
 # 5. Verify symlinks
-bash scripts/link-skill.sh --list
+bash scripts/link-assets.sh --list
 # Expected: all assets show as ✓ linked
 ```
 
@@ -452,14 +452,14 @@ Automates the merge and release process: version bumps, CHANGELOG updates, tags,
 
 ---
 
-#### `optimize-context` — Audit CLAUDE.md
+#### `optimize-claude-md` — Audit CLAUDE.md
 
 Scores a CLAUDE.md across quality dimensions, identifies bloat and gaps, and rewrites sections to be more useful for Claude.
 
 ```bash
-/dev-loop:optimize-context
-/dev-loop:optimize-context --dry-run    # preview without editing
-/dev-loop:optimize-context --coverage   # include coverage analysis
+/dev-loop:optimize-claude-md
+/dev-loop:optimize-claude-md --dry-run    # preview without editing
+/dev-loop:optimize-claude-md --coverage   # include coverage analysis
 ```
 
 ---
@@ -544,14 +544,14 @@ Specialized subagents spawned automatically by DLC skills. Can also be invoked d
 | Agent | Model | Invoked by | Purpose |
 | --- | --- | --- | --- |
 | `commit-finalizer` | Haiku | Manually | Fast git commit with conventional commit formatting |
-| `dev-loop-bootstrap` | Haiku | `dlc-build` Phase 2 | Pre-gathers project structure and type definitions |
+| `dlc-build-bootstrap` | Haiku | `dlc-build` Phase 2 | Pre-gathers project structure and type definitions |
 | `dlc-debug-bootstrap` | Haiku | `dlc-debug` Phase 1 | Pre-gathers stack trace context and affected files |
 | `dlc-respond-bootstrap` | Haiku | `dlc-respond` Phase 1 | Pre-gathers open PR threads and affected files |
 | `pr-review-bootstrap` | Haiku | `dlc-review` Phase 1 | Fetches PR diff, Jira AC, and groups changed files |
 | `review-consolidator` | Haiku | `dlc-review` Phase 5 | Deduplicates and ranks findings from multiple reviewers |
 | `research-validator` | Haiku | `dlc-build` Phase 2→3 gate | Validates research.md completeness (file:line evidence) |
 | `fix-intent-verifier` | Haiku | `dlc-respond` Phase 2 | Verifies each fix addresses reviewer intent (ADDRESSED/PARTIAL/MISALIGNED) |
-| `jira-sync` | Haiku | `dlc-build`/`dlc-debug` end | Posts ADF implementation summary to Jira; AC coverage check; optional status transition; spawns atlassian-pm agents when available |
+| `jira-summary-poster` | Haiku | `dlc-build`/`dlc-debug` end | Posts ADF implementation summary to Jira; AC coverage check; optional status transition; spawns atlassian-pm agents when available |
 | `work-context` | Haiku | Session start | Sprint tickets + PRs awaiting action + unmerged branches digest |
 | `merge-preflight` | Haiku | `merge-pr` Confirmation Gate | Pre-merge go/no-go safety checklist |
 | `metrics-analyst` | Haiku | `dlc-metrics` | Retrospective from dlc-metrics.jsonl: iteration patterns and Hard Rule candidates |
@@ -580,7 +580,7 @@ Distributed automatically with the plugin — no manual configuration required.
 | `skill-routing.sh` | `UserPromptSubmit` | Detects workflow keywords and suggests the matching skill |
 | `protect-files.sh` | `PreToolUse[Edit\|Write]` | Blocks Claude from editing `.claude/settings.json` directly |
 | `skill-usage-tracker.sh` | `PreToolUse[Skill]` | Logs skill invocations for analytics and usage tracking |
-| `permission-router.sh` | `PreToolUse[Bash]` | Routes bash commands through permission checks (e.g. `/careful` blocks) |
+| `safe-command-approver.sh` | `PreToolUse[Bash]` | Auto-approves allowlisted read-only commands to reduce permission friction |
 | _(inline)_ | `PostToolUse[Edit\|Write]` | Auto-lints `.md` files with `markdownlint-cli2 --fix` |
 | `shellcheck-written-scripts.sh` | `PostToolUse[Write]` | Auto-validates `.sh` files Claude writes |
 | `task-gate.sh` | `TaskCompleted` | Requires `file:line` evidence before agent tasks are marked complete |
@@ -707,10 +707,10 @@ This is correct — skills installed via plugin are namespaced automatically to 
 Verify symlinks exist:
 
 ```bash
-bash scripts/link-skill.sh --list
+bash scripts/link-assets.sh --list
 ```
 
-Re-run `bash scripts/link-skill.sh` if any are missing.
+Re-run `bash scripts/link-assets.sh` if any are missing.
 
 ---
 
@@ -726,7 +726,7 @@ dev-loop/
 │   ├── dlc-respond/
 │   ├── dlc-debug/
 │   ├── merge-pr/
-│   ├── optimize-context/
+│   ├── optimize-claude-md/
 │   ├── env-heal/
 │   ├── systems-thinking/
 │   ├── dlc-metrics/
@@ -737,7 +737,7 @@ dev-loop/
 ├── hooks/                    # Plugin-distributed lifecycle hook scripts
 │   └── hooks.json            # Plugin hook registry (auto-loaded on install)
 ├── output-styles/            # Custom output styles
-├── scripts/                  # Dev tooling (link-skill.sh, fix-tables.sh, detect-project.sh)
+├── scripts/                  # Dev tooling (link-assets.sh, fix-tables.sh, detect-project.sh)
 └── docs/
     └── references/           # Contributor reference docs (best practices, creation guides)
 ```

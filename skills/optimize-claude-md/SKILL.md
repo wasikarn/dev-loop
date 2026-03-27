@@ -1,6 +1,6 @@
 ---
-name: optimize-context
-description: "Invoke for any request touching a CLAUDE.md or 'context file' — the instructions file that shapes Claude's behavior in a project. Trigger when: the user wants to score or grade their CLAUDE.md quality, clean up a bloated or oversized file, fix a CLAUDE.md that's causing Claude to misbehave or do things wrong, improve messy or ineffective instructions, preview changes without editing (dry-run), create a CLAUDE.md from scratch, or explicitly run /optimize-context. The core signal: something about how Claude is being instructed needs a checkup or fix. Do NOT invoke for AGENTS.md edits, code review, dependency updates, or documentation unrelated to CLAUDE.md."
+name: optimize-claude-md
+description: "Invoke for any request touching a CLAUDE.md or 'context file' — the instructions file that shapes Claude's behavior in a project. Trigger when: the user wants to score or grade their CLAUDE.md quality, clean up a bloated or oversized file, fix a CLAUDE.md that's causing Claude to misbehave or do things wrong, improve messy or ineffective instructions, preview changes without editing (dry-run), create a CLAUDE.md from scratch, or explicitly run /optimize-claude-md. The core signal: something about how Claude is being instructed needs a checkup or fix. Do NOT invoke for AGENTS.md edits, code review, dependency updates, or documentation unrelated to CLAUDE.md."
 argument-hint: "[--dry-run?] [--coverage?]"
 compatibility: "Requires markdownlint-cli2 (npx). Uses standard Unix tools (wc, stat)."
 ---
@@ -19,9 +19,9 @@ You are an **AI Prompt Architect** — specialist in CLAUDE.md quality, compress
 
 ---
 
-# /optimize-context
+# /optimize-claude-md
 
-Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invoke as `/optimize-context [--dry-run]` — add `--dry-run` to run phases 1-3 only (report without edits).
+Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invoke as `/optimize-claude-md [--dry-run]` — add `--dry-run` to run phases 1-3 only (report without edits).
 
 ## References
 
@@ -137,7 +137,7 @@ Audit each section deeply — trace references to actual codebase files, verify 
 
 Load [audit-antipatterns.md](references/audit-antipatterns.md) to systematically detect noise, stale content, redundancy, and missing retrieval patterns.
 
-**Write findings to `.claude/optimize-context-report.md`** so they survive context compaction during long audits.
+**Write findings to `.claude/optimize-claude-md-report.md`** so they survive context compaction during long audits.
 
 | Check | Detection heuristic |
 | ----------------- | ------------------- |

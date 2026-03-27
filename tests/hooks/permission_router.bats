@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-HOOK="$BATS_TEST_DIRNAME/../../hooks/permission-router.sh"
+HOOK="$BATS_TEST_DIRNAME/../../hooks/safe-command-approver.sh"
 
 run_hook() { echo "$1" | bash "$HOOK"; }
 
