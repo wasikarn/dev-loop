@@ -87,3 +87,21 @@ New fields:
 ```json
 {"skill":"dlc-build","date":"{YYYY-MM-DD}","mode":"{mode}","mode_source":"{auto|flag|override}","blast_radius":{N},"iterations":{N},"task":"{task_short}","final_critical":0,"final_warning":{W},"findings_reversed":{falsification_rejected_count},"ac_coverage":"{AC_passed}/{AC_total}","human_confirmed":{true|false}}
 ```
+
+## Step 8: Lens Update Check (Full mode only)
+
+Per [workflow-modes.md](workflow-modes.md): skip entirely for Micro, Quick, and Hotfix modes.
+
+**Full mode only:** Check entry count in `{artifacts_dir}/dlc-metrics.jsonl`:
+
+```bash
+wc -l < {artifacts_dir}/dlc-metrics.jsonl
+```
+
+- Fewer than 5 entries → skip with note: `Lens update check skipped — only {N} entries in history`
+- 5 or more entries → spawn `metrics-analyst` agent with the session artifacts dir as `$ARGUMENTS`:
+  `{artifacts_dir}/{date}-{task-slug}/`
+
+Wait for agent completion. The agent checks current session's `review-findings-*.md` for patterns that recur in the last 5 Full-mode sessions. If it finds a recurring pattern (≥3 of 5 sessions), it creates `lens-update-suggestion.md` and notifies.
+
+**Never block shipping:** If `metrics-analyst` errors or times out, proceed to Done. Log `metrics-analyst skipped — error` in `dev-loop-context.md`. This step is informational only.
