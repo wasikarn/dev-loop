@@ -60,7 +60,7 @@ See [references/operational.md](references/operational.md) for prerequisites, co
 | [references/phase-7-assess.md](references/phase-7-assess.md) | Entering Phase 7 |
 | [references/phase-8-ship.md](references/phase-8-ship.md) | Entering Phase 8 |
 | [references/workflow-modes.md](references/workflow-modes.md) | Phase 1 — mode classification |
-| [references/modes/micro.md](references/modes/micro.md) · [references/modes/feature.md](references/modes/feature.md) · [references/modes/quick.md](references/modes/quick.md) · [references/modes/hotfix.md](references/modes/hotfix.md) | Phase 1 Step 2.5 — load the file matching the confirmed mode |
+| [references/modes/micro.md](references/modes/micro.md) · [references/modes/feature.md](references/modes/feature.md) · [references/modes/quick.md](references/modes/quick.md) · [references/modes/hotfix.md](references/modes/hotfix.md) | Phase 1 Step 4 — load the file matching the confirmed mode |
 | [references/operational.md](references/operational.md) | Phase 1 (degradation) + Phase 4 end (Verification Gate) + on crash |
 | [references/phase-gates.md](references/phase-gates.md) | At each phase transition |
 | [references/explorer-prompts.md](references/explorer-prompts.md) | Entering Phase 2 |
