@@ -14,27 +14,27 @@ Detect at Prerequisite Check and inform user of mode.
 
 | Phase | Agent Teams | Subagent | Solo |
 | --- | --- | --- | --- |
-| Phase 0: Worktree Setup | ✅ | ✅ | ✅ |
-| Phase 0.05A: pr-review-bootstrap | ✅ | ✅ (or fallback) | ❌ skip |
-| Phase 0.05B: Jira fetch (concurrent, if key) | ✅ if Jira key | ✅ if Jira key | ✅ if Jira key |
-| Phase 0.1: Scope Assessment | ✅ | ✅ | ✅ |
-| Phase 1: Project Detection | ✅ | ✅ | ✅ |
-| Phase 2: Independent Review | ✅ (3 teammates) | ✅ (3 subagents) | ✅ (lead only, sequential) |
-| Phase 3: Debate | ✅ | ❌ skip (no messaging) | ❌ skip |
-| Phase 4: Convergence | ✅ | ✅ (lead consolidates) | ✅ (lead consolidates) |
-| Phase 5: Action | ✅ | ✅ | ✅ |
-| Phase 6: Cleanup | ✅ | ✅ | ✅ |
+| Phase 1: Worktree Setup | ✅ | ✅ | ✅ |
+| Phase 1 Bootstrap (pr-review-bootstrap) | ✅ | ✅ (or fallback) | ❌ skip |
+| Phase 1 Bootstrap (Jira fetch, concurrent, if key) | ✅ if Jira key | ✅ if Jira key | ✅ if Jira key |
+| Phase 1 Scope Assessment | ✅ | ✅ | ✅ |
+| Phase 2: Project Detection | ✅ | ✅ | ✅ |
+| Phase 3: Independent Review | ✅ (3 teammates) | ✅ (3 subagents) | ✅ (lead only, sequential) |
+| Phase 4: Debate | ✅ | ❌ skip (no messaging) | ❌ skip |
+| Phase 5: Convergence | ✅ | ✅ (lead consolidates) | ✅ (lead consolidates) |
+| Phase 6: Action | ✅ | ✅ | ✅ |
+| Phase 7: Cleanup | ✅ | ✅ | ✅ |
 
 ## Context Compression Recovery
 
 If session compacts mid-workflow, re-read in order:
 
 1. PR diff (`gh pr diff $0`) — what's being reviewed
-2. Debate summary (if in Phase 3+) — findings and consensus status
+2. Debate summary (if in Phase 4+) — findings and consensus status
 3. Progress tracker in conversation — current phase
-4. Phase 2 progress table from conversation — which teammates completed (prevents re-running finished reviews)
+4. Phase 3 progress table from conversation — which teammates completed (prevents re-running finished reviews)
 5. Re-run `pr-review-bootstrap` agent if `{bootstrap_context}` is lost — avoids 3x diff reads
-6. AC checklist from Phase 0.05 output in conversation — if Jira key was provided
+6. AC checklist from Phase 1 Bootstrap output in conversation — if Jira key was provided
 
 ## Success Criteria
 

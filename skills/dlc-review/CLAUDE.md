@@ -52,6 +52,6 @@ ls -la ~/.claude/skills/dlc-review
 - Max 2 debate rounds enforced by lead — prevents runaway token usage
 - Team cleanup must be done by lead, not teammates
 - One team per session — cannot run multiple dlc-review in parallel
-- Phase 0.05 bootstrap uses `pr-review-bootstrap` agent (Haiku) — if unavailable, teammates gather context themselves
+- Phase 1 Bootstrap uses `pr-review-bootstrap` agent (Haiku) — if unavailable, teammates gather context themselves
 - Pre-Debate Triage skips debate for Auto-pass (Hard Rule + conf ≥90) and Auto-drop (Info + conf <80) findings
 - Dismissed findings persist at `{review_memory_dir}/review-dismissed.md` — cap 50 entries FIFO

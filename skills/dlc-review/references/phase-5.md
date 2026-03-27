@@ -1,39 +1,67 @@
-# Phase 5: Action
+# Phase 5: Convergence
 
-## Author Mode
+## Falsification Pass (before consolidation)
 
-1. Fix AC-related Critical findings first (if Jira), then other Critical, Warning, Info
-2. Run project validate command (detected in Phase 1)
-3. Output fixes table per [review-output-format.md](../../references/review-output-format.md)
-4. If Jira: show AC checklist with pass/fail status
+**Spawn condition:**
 
-## Reviewer Mode
+- Normal/Large PRs → full falsification pass on all debate-surviving findings
+- Massive PRs → lightweight falsification on Hard Rule findings only (no debate findings — pass only the single Correctness reviewer's Hard Rule violations inline)
 
-As **Tech Lead**: focus on architecture, patterns, team standards, and mentoring.
+Spawn `falsification-agent` (defined in `agents/falsification-agent.md`) with the surviving debate findings table inline. The agent challenges each finding on three grounds and returns SUSTAINED / DOWNGRADED / REJECTED verdicts.
 
-1. Collect surviving findings: file path + line number + comment body
-2. Add strengths (1-3, with evidence)
-3. Submit to GitHub in ONE `gh api` call
-4. Comment language: Thai mixed with English technical terms
+Apply verdicts before dispatching `review-consolidator`:
 
-**Comment labels:** Per [review-conventions.md](../../references/review-conventions.md) — prefix every comment with `issue:`/`suggestion:`/`nitpick:`/`praise:`.
+- REJECTED → remove from table
+- DOWNGRADED → update severity (e.g., Critical → Warning)
+- SUSTAINED → pass through unchanged
 
-## Phase 5.5: Comprehension Gate (Author mode only)
+Note rejected count in output summary: `(N findings rejected by Falsification Pass)`.
 
-**Skip in Reviewer mode** — reviewer is already engaged.
+Dispatch `review-consolidator` agent with the surviving debate findings passed inline in
+the prompt. Capture the agent's output as the consolidated findings table.
 
-After fixes are applied in Author mode, before cleanup:
+If agent errors → perform dedup, pattern-cap, sort, and signal-check inline per
+[review-conventions.md](../../references/review-conventions.md).
 
-Call AskUserQuestion:
+Output the consolidated findings table per [review-output-format.md](../../references/review-output-format.md).
 
-- question: "What was the most critical finding in this review, and do you understand the fix applied?"
-- header: "Comprehension Check"
-- options: [
-    { label: "Yes — I understand all changes", description: "Proceed to cleanup" },
-    { label: "Explain the critical finding", description: "Claude walks through the key finding and fix" },
-    { label: "I reviewed the diff myself", description: "Proceed to cleanup" }
-  ]
+**Confirmed Findings Log:** After consolidation, append Critical and Warning findings that survived falsification to `{review_memory_dir}/review-confirmed.md` (cap 30 FIFO). Format:
 
-**If "Explain the critical finding":** Summarize the top Critical finding — what the problem was, why it matters, and what the fix does. Then re-present the options.
+| Date | Finding | File:Line | Severity | Source | Workflow |
+| --- | --- | --- | --- | --- | --- |
+| YYYY-MM-DD | {brief} | {file}:{line} | Critical/Warning | PR #{number} | dlc-review |
 
-**Never block.** If user dismisses, proceed to Phase 6 silently.
+These become positive severity anchors in future reviews (Step 0.9).
+
+**Dismissed Findings Log:** After consolidation, append dropped findings to `{review_memory_dir}/review-dismissed.md` (cap 50 FIFO). Use this canonical format:
+
+| Date | Finding | File:Line | Reason | Source | Workflow |
+| --- | --- | --- | --- | --- | --- |
+| YYYY-MM-DD | {brief} | {file}:{line} | {reason} | PR #{number} | dlc-review |
+
+Replace the "Agents" column with "Consensus":
+
+✅ **Good** — specific file+line, actionable issue, consensus recorded:
+
+```markdown
+**Summary: Critical 1 / Warning 2 / Info 0** (after debate)
+
+#### Findings
+
+| # | Sev | Rule | File | Line | Consensus | Issue |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Critical | #2 | `src/auth/user.service.ts` | 42 | 3/3 | Uses `as any` to bypass user type — add `isUser()` type guard |
+| 2 | Warning | #5 | `src/auth/user.service.ts` | 78 | 2/3 | Nested ternary (depth 3) — extract to `resolveUserStatus()` |
+| 3 | Warning | #8 | `src/utils/format.ts` | 12 | 3/3 | `data` is ambiguous — rename to `userPayload` |
+```
+
+❌ **Bad** — no file path, no line number, vague issue, no consensus:
+
+```markdown
+#### Findings
+
+| # | Sev | Issue |
+| --- | --- | --- |
+| 1 | Critical | Bad typing |
+| 2 | Warning | Nested code |
+```

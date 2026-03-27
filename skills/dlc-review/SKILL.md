@@ -22,7 +22,7 @@ Invoke as `/dlc-review [pr-number] [jira-key?] [Author|Reviewer]`
 
 ## References
 
-**Load immediately** (needed for Phase 0–1):
+**Load immediately** (needed for Phase 1–2):
 
 | File |
 | --- |
@@ -35,12 +35,12 @@ Invoke as `/dlc-review [pr-number] [jira-key?] [Author|Reviewer]`
 
 | File | When |
 | --- | --- |
-| [references/phase-0.md](references/phase-0.md) | Entering Phase 0 (prerequisite check, worktree setup, bootstrap, scope assessment) |
-| [references/phase-1.md](references/phase-1.md) | Entering Phase 1 (project detection, Hard Rules) |
-| [references/phase-2.md](references/phase-2.md) | Entering Phase 2 (team creation, severity calibration, independent review) |
-| [references/phase-3.md](references/phase-3.md) | Entering Phase 3 (adversarial debate) |
-| [references/phase-4.md](references/phase-4.md) | Entering Phase 4 (convergence, falsification, log schemas) |
-| [references/phase-5.md](references/phase-5.md) | Entering Phase 5 (action, comprehension gate) |
+| [references/phase-1.md](references/phase-1.md) | Entering Phase 1 (prerequisite check, worktree setup, bootstrap, scope assessment) |
+| [references/phase-2.md](references/phase-2.md) | Entering Phase 2 (project detection, Hard Rules) |
+| [references/phase-3.md](references/phase-3.md) | Entering Phase 3 (team creation, severity calibration, independent review) |
+| [references/phase-4.md](references/phase-4.md) | Entering Phase 4 (adversarial debate) |
+| [references/phase-5.md](references/phase-5.md) | Entering Phase 5 (convergence, falsification, log schemas) |
+| [references/phase-6.md](references/phase-6.md) | Entering Phase 6 (action, comprehension gate) |
 | [jira-integration.md](../../references/jira-integration.md) | When Jira key detected in arguments |
 | [references/operational.md](references/operational.md) | Graceful degradation, compression recovery, gotchas |
 | [references/examples.md](references/examples.md) | When calibrating finding quality, debate depth, or output format |
@@ -61,9 +61,9 @@ Invoke as `/dlc-review [pr-number] [jira-key?] [Author|Reviewer]`
 **Role:** Tech Lead — improve code health via architecture, mentoring, team standards.
 **Output format:** Follow [review-output-format.md](../../references/review-output-format.md) with debate additions described in phase files.
 
-## Phase 6: Cleanup
+## Phase 7: Cleanup
 
-After Phase 5 completes:
+After Phase 6 completes:
 
 1. Shut down all teammates
 2. Clean up the team
@@ -76,7 +76,7 @@ In Reviewer mode: `git worktree remove /tmp/review-pr-$0`.
 
 - Investigate: read files before making claims — no speculation without evidence
 - Every recommendation must be feasible within the project's patterns
-- Teammates are READ-ONLY during Phase 2-3 — code changes only in Phase 5
+- Teammates are READ-ONLY during Phase 3-4 — code changes only in Phase 6
 - Max 3 teammates — more adds cost without proportional value
 - Max 2 debate rounds — prevents infinite discussion
 - Hard Rules cannot be dropped via debate (only reclassified with evidence)
