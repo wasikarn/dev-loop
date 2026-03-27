@@ -1,7 +1,7 @@
 {
   "name": "anvil",
   "metadata": {
-    "description": "A collection of Claude Code skills for PR review, context optimization, spec-driven development, and deep research workflows. Includes Anvil workflow skills (build, review, respond, debug), utility skills, custom agents, workflow automation hooks, and output styles."
+    "description": "A Claude Code plugin powering structured development workflows — skills for building, reviewing, responding, and debugging. Includes core workflow skills (build, review, respond, debug), utility skills, custom agents, workflow automation hooks, and output styles."
   },
   "owner": {
     "name": "kobig"
@@ -10,22 +10,23 @@
     {
       "name": "anvil",
       "source": "./",
-      "description": "A collection of Claude Code skills for PR review, context optimization, spec-driven development, and deep research workflows. Includes Anvil workflow skills (build, review, respond, debug), utility skills, custom agents, workflow automation hooks, and output styles.",
-      "version": "0.7.1",
+      "description": "A Claude Code plugin powering structured development workflows — skills for building, reviewing, responding, and debugging. Includes core workflow skills (build, review, respond, debug), utility skills, custom agents, workflow automation hooks, and output styles.",
+      "version": "1.0.0",
       "author": {
         "name": "kobig"
       },
       "keywords": [
         "skills",
-        "dlc",
-        "pr-review",
         "anvil",
+        "multi-agent",
+        "agent-teams",
+        "pr-review",
         "debug",
         "productivity",
         "workflow"
       ],
       "category": "productivity",
-      "homepage": "https://github.com/wasikarn/anvil",
+      "homepage": "https://github.com/wasikarn/anvil#readme",
       "repository": "https://github.com/wasikarn/anvil",
       "license": "MIT"
     }
