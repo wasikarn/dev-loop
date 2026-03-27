@@ -20,7 +20,7 @@ When bootstrap completes: read `{artifacts_dir}/bootstrap-context.md` and send i
 BOOTSTRAP CONTEXT: {contents of bootstrap-context.md}
 ```
 
-**Bootstrap fallback:** If bootstrap errors or produces no output within 60s: log "bootstrap timed out" in `dev-loop-context.md` and skip. Explorers continue with `BOOTSTRAP CONTEXT: (not available)`.
+**Bootstrap fallback:** If bootstrap errors or produces no output within 60s: log "bootstrap timed out" in `anvil-context.md` and skip. Explorers continue with `BOOTSTRAP CONTEXT: (not available)`.
 
 ---
 
@@ -118,7 +118,7 @@ READY / NEEDS WORK / NOT READY
 Reason: [based on Risks Found above — not independent opinion]
 ```
 
-Every section must cite file:line references. Update `phase: research` in dev-loop-context.md.
+Every section must cite file:line references. Update `phase: research` in anvil-context.md.
 
 ---
 

@@ -47,7 +47,7 @@ skills/<name>/
 | `dlc-build` | Full development loop (Research → Plan → Implement → Review → Ship) |
 | `dlc-review` | Adversarial PR review with 3-reviewer debate |
 | `dlc-debug` | Parallel root cause analysis + DX hardening |
-| `dlc-metrics` | Run retrospective report from dlc-metrics.jsonl — iteration counts, finding categories, recurrent issues |
+| `dlc-metrics` | Run retrospective report from anvil-metrics.jsonl — iteration counts, finding categories, recurrent issues |
 | `dlc-onboard` | Bootstrap a new project into the dev-loop ecosystem — scaffold hard-rules.md and dlc-build directories |
 | `dlc-respond` | Address PR review comments as author |
 | `systems-thinking` | Causal Loop Diagram analysis for architecture decisions |
@@ -86,7 +86,7 @@ Current agents (23):
 | `jira-summary-poster` | haiku | Post structured implementation summary to Jira after dlc-build/dlc-debug completes |
 | `work-context` | haiku | Session start digest: active sprint tickets + PRs awaiting action + unmerged branches |
 | `merge-preflight` | haiku | Pre-merge go/no-go safety checklist before merge-pr Confirmation Gate |
-| `metrics-analyst` | haiku | Retrospective from dlc-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
+| `metrics-analyst` | haiku | Retrospective from anvil-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
 | `falsification-agent` | sonnet | Challenges review findings before consolidation — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
 | `plan-challenger` | sonnet | Challenges dlc-build Phase 3 plan for YAGNI/scope/ordering issues before implementation |
 | `test-quality-reviewer` | sonnet | Dedicated test quality reviewer (T1–T9): behavior vs implementation, mock fidelity, edge cases, assertion presence (Hard Rule), boundary operators, stale contracts, test isolation |

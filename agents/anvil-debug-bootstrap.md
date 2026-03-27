@@ -30,10 +30,10 @@ Artifacts Dir: {artifacts_dir from dlc-debug skill header}
 ```bash
 # Compute dlc-build base artifacts dir (no suffix — search all ticket subdirs)
 DLCBUILD_DIR=$(bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" dlc-build 2>/dev/null || echo "")
-ls "${DLCBUILD_DIR}"/*/dev-loop-context.md 2>/dev/null | sort -r | head -1
+ls "${DLCBUILD_DIR}"/*/anvil-context.md 2>/dev/null | sort -r | head -1
 ```
 
-If found: read the most recent `*/dev-loop-context.md` (from the sorted glob above) and extract plan items relevant to the bug area
+If found: read the most recent `*/anvil-context.md` (from the sorted glob above) and extract plan items relevant to the bug area
 
 If not found: skip — omit "Recent Build Context" section from output.
 

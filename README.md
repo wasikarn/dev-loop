@@ -490,7 +490,7 @@ Maps causal loops, identifies feedback cycles, and surfaces second-order effects
 
 #### `dlc-metrics` — Retrospective Report
 
-Reads `~/.claude/dlc-metrics.jsonl` and produces a retrospective: iteration counts, critical finding categories, recurrent issues, and Hard Rule candidates.
+Reads `~/.claude/anvil-metrics.jsonl` and produces a retrospective: iteration counts, critical finding categories, recurrent issues, and Hard Rule candidates.
 
 ```bash
 /dev-loop:dlc-metrics
@@ -554,7 +554,7 @@ Specialized subagents spawned automatically by DLC skills. Can also be invoked d
 | `jira-summary-poster` | Haiku | `dlc-build`/`dlc-debug` end | Posts ADF implementation summary to Jira; AC coverage check; optional status transition; spawns atlassian-pm agents when available |
 | `work-context` | Haiku | Session start | Sprint tickets + PRs awaiting action + unmerged branches digest |
 | `merge-preflight` | Haiku | `merge-pr` Confirmation Gate | Pre-merge go/no-go safety checklist |
-| `metrics-analyst` | Haiku | `dlc-metrics` | Retrospective from dlc-metrics.jsonl: iteration patterns and Hard Rule candidates |
+| `metrics-analyst` | Haiku | `dlc-metrics` | Retrospective from anvil-metrics.jsonl: iteration patterns and Hard Rule candidates |
 | `falsification-agent` | Sonnet | `dlc-build` Phase 6, `dlc-review` Phase 5 | Challenges every finding — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
 | `plan-challenger` | Sonnet | `dlc-build` Phase 3 gate | Challenges plan for YAGNI/scope/ordering issues before implementation |
 | `test-quality-reviewer` | Sonnet | `dlc-review` Phase 3 | Test quality (T1–T9): behavior vs implementation, mock fidelity, assertion presence |

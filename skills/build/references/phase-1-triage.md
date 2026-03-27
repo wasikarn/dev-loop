@@ -18,24 +18,24 @@ Step 4: Auto-Transition to In Progress (atlassian-pm, if avail.)   │
     ↓                                                              │
 Step 5: Load Mode File                                             │
     ↓                                                              │
-Step 6: Create dev-loop-context.md artifact                        │
+Step 6: Create anvil-context.md artifact                        │
     ↓                                                              │
 Step 7: Initialize progress tracker ←─────────────────────────────┘
 ```
 
 ## Step 1: Resume Check
 
-Check if `{artifacts_dir}/dev-loop-context.md` exists:
+Check if `{artifacts_dir}/anvil-context.md` exists:
 
 ```text
-{artifacts_dir}/dev-loop-context.md exists AND Phase != "complete"?
+{artifacts_dir}/anvil-context.md exists AND Phase != "complete"?
 ├→ Yes: Show context summary then call AskUserQuestion:
 │   question: "Resume from Phase {N} — {task_description}?"
 │   header: "Resume"
 │   options: [{ label: "Resume", description: "Continue from Phase N" },
 │              { label: "Start fresh", description: "Overwrite context file with new task" }]
 │   ├→ Resume: Skip to the recorded phase. Re-read artifacts in order:
-│   │       1. {artifacts_dir}/dev-loop-context.md
+│   │       1. {artifacts_dir}/anvil-context.md
 │   │       2. Plan file: read plan_file: from YAML; fallback to {artifacts_dir}/{date}-{task-slug}/plan.md if it exists
 │   │       3. {artifacts_dir}/review-findings-*.md (if exists)
 │   └→ Start fresh: Overwrite context file with new task.
@@ -76,7 +76,7 @@ Follow [jira-integration](../../../jira-integration/SKILL.md) §dlc-build:
 
 1. Fetch ticket → extract AC and subtasks
 2. AC items become plan task constraints (Phase 3)
-3. Jira context staged for `dev-loop-context.md` (Step 6)
+3. Jira context staged for `anvil-context.md` (Step 6)
 
 **2d — Duplicate Detection** (skip if no Jira key; run in parallel with 2a–2c):
 
@@ -224,7 +224,7 @@ The mode file contains branch strategy and mode-specific phase pre-steps. Read i
 
 ## Step 6: Create Context Artifact
 
-Write `{artifacts_dir}/dev-loop-context.md` with YAML frontmatter + Markdown body:
+Write `{artifacts_dir}/anvil-context.md` with YAML frontmatter + Markdown body:
 
 ```yaml
 ---
@@ -250,7 +250,7 @@ Markdown body below frontmatter: Hard Rules summary, Jira context (AC items). Up
 
 Post a checkbox list in conversation: Phase 1 (done), Phase 2 (Full/Quick only), Phase 3, Loop iterations 1-3 with nested Phase 4/5/6/7/8, Phase 9. Update checkboxes as each phase completes.
 
-Write dlc-metrics entry to `{artifacts_dir}/dlc-metrics.jsonl` (append, create if missing):
+Write dlc-metrics entry to `{artifacts_dir}/anvil-metrics.jsonl` (append, create if missing):
 
 ```json
 {"ts":"<ISO8601>","phase":"triage","mode":"<mode>","mode_source":"<auto|flag|override>","blast_radius":N,"task_slug":"<slug>"}

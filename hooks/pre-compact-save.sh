@@ -11,20 +11,20 @@ ARTIFACT_DIR=$(bash "$(dirname "${BASH_SOURCE[0]}")/../scripts/artifact-dir.sh" 
 [ -d "$ARTIFACT_DIR" ] || exit 0
 
 # Check for active DLC session artifacts
-CONTEXT_FILE="$ARTIFACT_DIR/dev-loop-context.md"
+CONTEXT_FILE="$ARTIFACT_DIR/anvil-context.md"
 [ -f "$CONTEXT_FILE" ] || exit 0
 
 # Output a reminder about active session — injected into post-compact context
 PHASE=$(grep -m1 '^Phase:' "$CONTEXT_FILE" 2>/dev/null | awk '{print $2}' || echo "unknown")
 
 cat <<EOF
-<dev-loop-pre-compact>
+<anvil-pre-compact>
 Active DLC session detected before compaction.
 Artifact dir: $ARTIFACT_DIR
 Current phase: $PHASE
 Context file preserved at: $CONTEXT_FILE
 After compaction: check artifact files to resume — /dlc-status for current state.
-</dev-loop-pre-compact>
+</anvil-pre-compact>
 EOF
 
 exit 0

@@ -14,7 +14,7 @@ PROJECT: {project_name}
 SCOPE: {targeted_scope}
 (Either: failed must_haves.truths from Phase 5 — fix ONLY the tasks responsible for failed truths.
  Or: Critical/Warning findings from `{artifacts_dir}/review-findings-{N-1}.md`.)
-PLAN CONTEXT: Read `{artifacts_dir}/dev-loop-context.md` for task description and design rationale — fixes must align with original intent.
+PLAN CONTEXT: Read `{artifacts_dir}/anvil-context.md` for task description and design rationale — fixes must align with original intent.
 
 WORKER CONTEXT:
 {worker_context}
@@ -63,4 +63,4 @@ When constructing fixer prompts:
    - Phase 5 re-entry: list only the failed truths + which plan.md tasks cover them — do NOT re-implement passing truths
    - Phase 6 re-entry: ONLY unresolved Critical/Warning findings from the previous review iteration
 4. **`{worker_context}`**: populate with `git log --oneline {base_branch}..HEAD` + brief task descriptions from the plan. This gives the fixer intent context to avoid over-engineering fixes.
-5. **`{validate_command}`**: same command as used by workers — from `dev-loop-context.md` `validate:` field.
+5. **`{validate_command}`**: same command as used by workers — from `anvil-context.md` `validate:` field.

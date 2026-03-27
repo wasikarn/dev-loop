@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # cleanup-artifacts.sh — SessionStart hook (async)
-# Auto-removes artifact files older than DEV_LOOP_ARTIFACT_TTL_DAYS (default: 7).
+# Auto-removes artifact files older than ANVIL_ARTIFACT_TTL_DAYS (default: 7).
 # Silent if nothing to clean. Safe to run on every session start.
 
-TTL_DAYS="${DEV_LOOP_ARTIFACT_TTL_DAYS:-7}"
+TTL_DAYS="${ANVIL_ARTIFACT_TTL_DAYS:-7}"
 # CLAUDE_PLUGIN_DATA: stable per-plugin folder set by Claude Code plugin runtime.
 # Falls back to the conventional path for local dev (symlinked, not installed).
-BASE_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/dev-loop-dev-loop}"
+BASE_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/anvil-anvil}"
 
 [ -d "$BASE_DIR" ] || exit 0
 

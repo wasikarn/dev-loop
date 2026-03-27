@@ -6,7 +6,7 @@
 
 # NOTE: no set -euo pipefail — hook must exit 0 on all failures
 
-PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/dev-loop-dev-loop}"
+PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/anvil-anvil}"
 
 [ -d "$PLUGIN_DATA_BASE" ] || exit 0
 

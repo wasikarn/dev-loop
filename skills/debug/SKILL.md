@@ -288,7 +288,7 @@ If a Jira key was identified in Phase 1 Step 2 context:
 
 ### Step 4: Metrics (optional)
 
-Append one JSON line to `~/.claude/dlc-metrics.jsonl`:
+Append one JSON line to `~/.claude/anvil-metrics.jsonl`:
 
 ```json
 {"skill":"dlc-debug","date":"{YYYY-MM-DD}","mode":"debug","severity":"{P0|P1|P2}","task":"{bug_short}","fix_plan_items":{N},"dx_findings":{D}}

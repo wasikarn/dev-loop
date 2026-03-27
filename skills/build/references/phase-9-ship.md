@@ -38,7 +38,7 @@ Load [pr-template.md](pr-template.md) for PR title format, description template 
 ## Step 4: PR Description Draft (if user chose "Create PR")
 
 If `pr-description-writer` agent (atlassian-pm plugin) is available AND a Jira key is present in
-`dev-loop-context.md`:
+`anvil-context.md`:
 
 1. Spawn `pr-description-writer` — pass `<branch-name> <jira-key>` as arguments
 2. Capture the output: description draft + any scope drift findings
@@ -51,10 +51,10 @@ If `pr-description-writer` is not available, fall back to `pr-template.md` manua
 ## Step 5: Cleanup
 
 1. Shut down all remaining teammates and clean up the team
-2. Update `Phase: complete` in `{artifacts_dir}/{date}-{task-slug}/dev-loop-context.md`
-3. Delete checkpoint tags: `git tag -d $(git tag -l 'dlc-checkpoint-iter-*')`
+2. Update `Phase: complete` in `{artifacts_dir}/{date}-{task-slug}/anvil-context.md`
+3. Delete checkpoint tags: `git tag -d $(git tag -l 'anvil-checkpoint-iter-*')`
 4. Archive artifacts to final location:
-   - All artifacts already live at `{artifacts_dir}/{date}-{task-slug}/` from Phase 1 (plan.md, research.md, verify-results.md, review-findings-*.md, dev-loop-context.md)
+   - All artifacts already live at `{artifacts_dir}/{date}-{task-slug}/` from Phase 1 (plan.md, research.md, verify-results.md, review-findings-*.md, anvil-context.md)
    - After ship: move the entire folder to `{artifacts_dir}/archive/{date}-{task-slug}/`
 
 ```bash
@@ -63,9 +63,9 @@ mv {artifacts_dir}/{date}-{task-slug}/ {artifacts_dir}/archive/{date}-{task-slug
 
 ## Step 6: Jira Sync (optional)
 
-If a Jira key is present in `dev-loop-context.md`:
+If a Jira key is present in `anvil-context.md`:
 
-1. Run `jira-summary-poster` agent — pass `{artifacts_dir}/dev-loop-context.md` as `$ARGUMENTS`. The agent reads the context artifact and posts implementation summary comment (what was built, files changed, AC deviations) automatically.
+1. Run `jira-summary-poster` agent — pass `{artifacts_dir}/anvil-context.md` as `$ARGUMENTS`. The agent reads the context artifact and posts implementation summary comment (what was built, files changed, AC deviations) automatically.
 2. **After the PR is merged** (by CI or manually) — if `pr-review-jira-sync` agent (atlassian-pm plugin)
    is available, run it with the Jira key to: transition the subtask to Done, post the PR link, and
    check whether all sibling subtasks are complete (signal for parent story closure).
@@ -75,7 +75,7 @@ to their post-merge checklist if atlassian-pm is installed.
 
 ## Step 7: Metrics
 
-Append one JSON line to `{artifacts_dir}/dlc-metrics.jsonl` (create if absent) for future analysis.
+Append one JSON line to `{artifacts_dir}/anvil-metrics.jsonl` (create if absent) for future analysis.
 Lead writes directly — not via hook (metrics data not available at hook time).
 
 New fields:
@@ -92,10 +92,10 @@ New fields:
 
 Per [workflow-modes.md](workflow-modes.md): skip entirely for Micro, Quick, and Hotfix modes.
 
-**Full mode only:** Check entry count in `{artifacts_dir}/dlc-metrics.jsonl`:
+**Full mode only:** Check entry count in `{artifacts_dir}/anvil-metrics.jsonl`:
 
 ```bash
-wc -l < {artifacts_dir}/dlc-metrics.jsonl
+wc -l < {artifacts_dir}/anvil-metrics.jsonl
 ```
 
 - Fewer than 5 entries → skip with note: `Lens update check skipped — only {N} entries in history`
@@ -104,4 +104,4 @@ wc -l < {artifacts_dir}/dlc-metrics.jsonl
 
 Wait for agent completion. The agent checks current session's `review-findings-*.md` for patterns that recur in the last 5 Full-mode sessions. If it finds a recurring pattern (≥3 of 5 sessions), it creates `lens-update-suggestion.md` and notifies.
 
-**Never block shipping:** If `metrics-analyst` errors or times out, proceed to Done. Log `metrics-analyst skipped — error` in `dev-loop-context.md`. This step is informational only.
+**Never block shipping:** If `metrics-analyst` errors or times out, proceed to Done. Log `metrics-analyst skipped — error` in `anvil-context.md`. This step is informational only.

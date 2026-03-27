@@ -1,12 +1,12 @@
 ---
 name: dlc-status
-description: "Show active Development Loop Cycle artifacts from the current session — artifact directory, phase progress, and which DLC files exist. Use /dlc-status to check the current DLC session state."
+description: "Show active anvil workflow artifacts from the current session — artifact directory, phase progress, and which DLC files exist. Use /dlc-status to check the current DLC session state."
 user-invocable: true
 ---
 
 # DLC Status
 
-Show active Development Loop Cycle artifacts from the current session.
+Show active anvil workflow artifacts from the current session.
 
 Run this command now:
 

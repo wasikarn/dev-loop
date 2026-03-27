@@ -21,11 +21,11 @@ PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 
 cat <<EOF
-<dev-loop-reviewer-context>
+<anvil-reviewer-context>
 Project root: $PROJECT_ROOT
 Git branch: $BRANCH
 Skills preloaded: review-conventions, review-rules (see agent frontmatter)
-</dev-loop-reviewer-context>
+</anvil-reviewer-context>
 EOF
 
 exit 0

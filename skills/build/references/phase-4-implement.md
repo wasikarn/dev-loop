@@ -1,6 +1,6 @@
 # Phase 4: Implement
 
-Before starting each iteration: `git tag dlc-checkpoint-iter-{N}` — enables instant rollback via `git checkout dlc-checkpoint-iter-{N}`.
+Before starting each iteration: `git tag anvil-checkpoint-iter-{N}` — enables instant rollback via `git checkout anvil-checkpoint-iter-{N}`.
 
 ## WorkerContext Schema
 
@@ -42,7 +42,7 @@ The worker contract is bidirectional. Lead uses these schemas when spawning work
 Lead reads `assigned_tasks_status` to update `completed_tasks[]` for the next wave.
 PARTIAL or BLOCKED tasks are re-queued as sequential (no [P] marker).
 Lead infers TDD compliance from the SEQUENCE ORDER — not from the label alone.
-If VIOLATED: log in `dev-loop-context.md` under `tdd_violations[]`; surface to user at Phase 8 summary (informational, not a blocker).
+If VIOLATED: log in `anvil-context.md` under `tdd_violations[]`; surface to user at Phase 8 summary (informational, not a blocker).
 
 ---
 
@@ -56,7 +56,7 @@ Load [worker-prompts.md](worker-prompts.md) now. Worker count by mode:
 
 **Effort by mode:** Micro=`effort: low`, Quick=`effort: medium`, Full=`effort: high`.
 
-Lead provides full WorkerContext (spawn schema above). Workers follow TDD: failing test → verify it fails for right reason → minimal impl → pass → commit. After each commit, worker sends `<worker_completion>` message; lead updates `tasks_completed:` in dev-loop-context.md.
+Lead provides full WorkerContext (spawn schema above). Workers follow TDD: failing test → verify it fails for right reason → minimal impl → pass → commit. After each commit, worker sends `<worker_completion>` message; lead updates `tasks_completed:` in anvil-context.md.
 
 **Per-commit spot-check (async):** Worker continues to next task immediately after sending completion — do NOT wait for lead acknowledgement. Lead processes asynchronously: run `git show {commit_hash} --stat` to verify file scope matches task. If unintended files found: SendMessage to worker to revert and re-implement scoped to assigned files. If worker already moved on: lead reverts via `git revert {hash}` and re-queues the task.
 

@@ -33,7 +33,7 @@ RULES:
 1. Follow the plan exactly — no scope creep
 2. Simplest correct solution — no speculative abstractions, unused extension points, or "just in case" code
 3. TDD: write failing test → implement → green (for non-trivial logic; see TDD ENFORCEMENT above)
-4. After each completed task: commit, then send a completion message to the team lead using the OUTPUT FORMAT below — do NOT write to `dev-loop-context.md` directly (lead manages that file)
+4. After each completed task: commit, then send a completion message to the team lead using the OUTPUT FORMAT below — do NOT write to `anvil-context.md` directly (lead manages that file)
 5. Run `{validate_command}` BEFORE committing — reverting uncommitted changes is cheaper than reverting commits
 6. If blocked, message the team lead with specifics — do not guess
 7. Domain-specific implementation standards — apply when your task touches these areas:
@@ -86,4 +86,4 @@ When constructing worker prompts:
 5. **Copy full task text** into each worker prompt — workers should not need to read the plan independently
 6. Commit messages: workers can delegate commit creation to the `commit-finalizer` agent (Haiku) after completing each task. Commit message format: `{type}({scope}): {description}` — e.g. `feat(auth): add JWT refresh token endpoint`, `fix(users): handle null profile on first login`. Types: feat, fix, refactor, test, chore. Saves Sonnet cost on mechanical commit work.
    Before delegating: run `git add` to stage all changed files. Worker teammates have access to the `Agent` tool for this purpose. Pass a short commit message hint as `$ARGUMENTS`.
-7. **Lead is sole writer of `dev-loop-context.md`** — when a worker sends completion via SendMessage, lead updates `tasks_completed:` in the context file. This prevents YAML race conditions when parallel workers run concurrently.
+7. **Lead is sole writer of `anvil-context.md`** — when a worker sends completion via SendMessage, lead updates `tasks_completed:` in the context file. This prevents YAML race conditions when parallel workers run concurrently.

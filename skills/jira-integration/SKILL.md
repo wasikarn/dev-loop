@@ -82,7 +82,7 @@ When using `issue-bootstrap` (option 1), all fields above are already extracted 
 1. Fetch ticket per Detection & Fetch above
 2. Extract AC → each becomes a task item constraint for Phase 2 plan
 3. Extract subtasks → map to plan structure if subtasks exist
-4. Add to `dev-loop-context.md`:
+4. Add to `anvil-context.md`:
 
    ```markdown
    ## Jira Ticket

@@ -1,6 +1,6 @@
 ---
 name: metrics-analyst
-description: "Reads dlc-metrics.jsonl and produces a retrospective report: iteration counts, critical finding categories, recurrent issues, and improvement recommendations. Use after multiple dlc-build or dlc-review runs to identify recurring workflow patterns and surface candidates for new Hard Rules."
+description: "Reads anvil-metrics.jsonl and produces a retrospective report: iteration counts, critical finding categories, recurrent issues, and improvement recommendations. Use after multiple dlc-build or dlc-review runs to identify recurring workflow patterns and surface candidates for new Hard Rules."
 tools: Bash, Read, Write
 model: haiku
 disallowedTools: Edit
@@ -9,7 +9,7 @@ maxTurns: 5
 
 # Metrics Analyst
 
-Turn accumulated dlc-metrics.jsonl data into actionable retrospective insights.
+Turn accumulated anvil-metrics.jsonl data into actionable retrospective insights.
 
 ## Steps
 
@@ -22,10 +22,10 @@ If `$ARGUMENTS` is empty or not a valid directory path: set `session_dir = null`
 
 Derive `metrics_file`:
 
-- If `session_dir` is set: `metrics_file = dirname(session_dir)/dlc-metrics.jsonl`
+- If `session_dir` is set: `metrics_file = dirname(session_dir)/anvil-metrics.jsonl`
   (e.g. if `session_dir = /path/to/dlc-build/2026-03-27-task-slug/`, then
-  `metrics_file = /path/to/dlc-build/dlc-metrics.jsonl`)
-- If `session_dir` is null: `metrics_file = ~/.claude/dlc-metrics.jsonl` (standalone invocation)
+  `metrics_file = /path/to/dlc-build/anvil-metrics.jsonl`)
+- If `session_dir` is null: `metrics_file = ~/.claude/anvil-metrics.jsonl` (standalone invocation)
 
 ### 1. Read Metrics File
 
@@ -127,12 +127,12 @@ files exist in session_dir.
 
 **5b. Check for recurrence across last 5 Full-mode sessions:**
 
-From dlc-metrics.jsonl entries already read in Step 1, filter to the 5 most recent entries
+From anvil-metrics.jsonl entries already read in Step 1, filter to the 5 most recent entries
 where `"mode": "full"` (or `"Full"`). Extract their date values.
 
-For each category from 5a: scan the dlc-metrics.jsonl entries for those 5 dates for
+For each category from 5a: scan the anvil-metrics.jsonl entries for those 5 dates for
 any matching category signal. Note: if finding-category data is not present in
-dlc-metrics.jsonl entries (older format), count only the current session as 1 hit and
+anvil-metrics.jsonl entries (older format), count only the current session as 1 hit and
 note the limitation. A category needs ≥3 hits across the 5 sessions to trigger.
 
 **5c. If ANY category hits ≥3 of the last 5 Full-mode sessions:**
@@ -169,7 +169,7 @@ Then output to conversation:
 Suggestion saved to: {session_dir}/lens-update-suggestion.md
 ```
 
-**5d. If fewer than 5 Full-mode entries in dlc-metrics.jsonl:**
+**5d. If fewer than 5 Full-mode entries in anvil-metrics.jsonl:**
 
 Output: `Lens update check skipped — fewer than 5 Full-mode sessions in history ({count} found).`
 Then exit Step 5.

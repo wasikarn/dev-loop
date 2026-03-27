@@ -20,7 +20,7 @@ Stage 1 checks (in order):
 
 **Stage 1 FAIL:** Return to Phase 4 immediately. Do NOT proceed to Stage 2.
 Mandatory path: Phase 4 (fix) → **Phase 5 (verify again)** → Phase 6 Stage 1 (check again).
-Increment `iteration_count` in dev-loop-context.md before returning to Phase 4.
+Increment `iteration_count` in anvil-context.md before returning to Phase 4.
 
 **Stage 1 PASS:** Proceed to Stage 2.
 
@@ -128,7 +128,7 @@ If agent errors → dedup, pattern-cap, sort, and signal-check inline per [revie
 **Phase 6 status line** (output before findings table — no prose paragraph):
 `### Phase 6 Complete — N findings consolidated · Proceeding to Phase 8`
 
-**GATE:** Findings consolidated → update `Phase: review` in dev-loop-context.md → proceed to Assess.
+**GATE:** Findings consolidated → update `Phase: review` in anvil-context.md → proceed to Assess.
 
 ## Phase 7: Falsification Pass (Full mode iter 1 only)
 
@@ -157,9 +157,9 @@ Then proceed to dispatch `review-consolidator` with the post-verdict findings ta
 
 **Task context injection (B1):** When constructing reviewer prompts, populate `TASK_CONTEXT` from:
 
-- `Description`: task description from `dev-loop-context.md` → `task:` field
-- `AC items`: Jira AC list from `dev-loop-context.md` → Jira context section, or "none"
-- `Plan summary`: read plan file path from `dev-loop-context.md` → `plan_file:` field; read that file and extract top 5 task titles (one line, max 10 words each). If `plan_file` is empty, set Plan summary to "plan file path not in context."
+- `Description`: task description from `anvil-context.md` → `task:` field
+- `AC items`: Jira AC list from `anvil-context.md` → Jira context section, or "none"
+- `Plan summary`: read plan file path from `anvil-context.md` → `plan_file:` field; read that file and extract top 5 task titles (one line, max 10 words each). If `plan_file` is empty, set Plan summary to "plan file path not in context."
 
 **Severity calibration injection (SA):** Before spawning reviewers, construct a `SEVERITY CALIBRATION` block and inject it into each reviewer prompt:
 

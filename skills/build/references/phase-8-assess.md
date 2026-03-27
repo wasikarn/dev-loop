@@ -6,7 +6,7 @@ Count Critical/Warning/Info from the `## Summary` header. If Jira: verify each A
 
 ## Iteration Count (Shared)
 
-There is ONE shared `iteration_count` in `dev-loop-context.md` (max 3). All loop types increment the same counter:
+There is ONE shared `iteration_count` in `anvil-context.md` (max 3). All loop types increment the same counter:
 
 | Event | Increments iteration_count? |
 | ------- | :---------------------------: |
@@ -31,7 +31,7 @@ When dropping a finding (false positive, accepted risk), append it to the `## Di
 
 FIFO cap: 50 entries total — if file exceeds 50 rows (excluding header), remove the oldest entry before appending. Duplicate entries (same File:Line) do not need to be deduplicated on write; readers treat same File:Line as the same finding.
 
-**GATE:** Loop decision made → update `Phase: assess` (or `Phase: ship` if exiting) in dev-loop-context.md → proceed accordingly.
+**GATE:** Loop decision made → update `Phase: assess` (or `Phase: ship` if exiting) in anvil-context.md → proceed accordingly.
 
 ## Step 1: Simplification Pass (Ship path only)
 
@@ -55,10 +55,10 @@ Call AskUserQuestion:
 
 **If "Run simplification":**
 
-1. Note changed file list: `git diff {base_branch}...HEAD --name-only` (read `base_branch` from `dev-loop-context.md`)
+1. Note changed file list: `git diff {base_branch}...HEAD --name-only` (read `base_branch` from `anvil-context.md`)
 2. Spawn `code-simplifier` agent with task text: `"Simplify changed files: <space-separated file list>"` — the agent treats the task text as its `$ARGUMENTS` and uses it instead of its fallback git diff scope
 3. Wait for agent completion
-4. Run validate command from `dev-loop-context.md` → `validate:` field — confirm no regressions introduced. If `validate:` is empty, use fallback: `npx tsc --noEmit && npx eslint . --ext .ts,.tsx`
+4. Run validate command from `anvil-context.md` → `validate:` field — confirm no regressions introduced. If `validate:` is empty, use fallback: `npx tsc --noEmit && npx eslint . --ext .ts,.tsx`
 5. If validate passes → proceed to Phase 9
 6. If validate fails → revert simplifier changes (`git checkout HEAD -- <changed-files>`), note in context, proceed to Phase 9 with original code
 

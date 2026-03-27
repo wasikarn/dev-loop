@@ -41,7 +41,7 @@ English, under 70 chars, start with verb — derived from the plan problem state
 {ABC-XXXX หรือ N/A}
 
 ## AC Checklist
-{แสดงก็ต่อเมื่อมี Jira key — ดึงจาก {artifacts_dir}/dev-loop-context.md}
+{แสดงก็ต่อเมื่อมี Jira key — ดึงจาก {artifacts_dir}/anvil-context.md}
 - [x] {AC1 description}
 - [x] {AC2 description}
 
