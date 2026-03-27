@@ -56,16 +56,28 @@ EXISTING (conf ≥75):
 
 THRESHOLD: HARD RULE items → always. All others: conf ≥75.
 
-TYPE DESIGN SCORING (required for new/modified type definitions):
-For each new `interface`, `type`, or `enum` introduced in the diff, score on 4 dimensions:
+4-DIMENSION TYPE SCORING (when diff adds or modifies type definitions):
 
-| Dimension | Score 1–10 | Question |
-| --- | :---: | --- |
-| Encapsulation | | Can internals change without breaking consumers? |
-| Invariant Expression | | Does the type make invalid states unrepresentable? |
-| Usefulness | | Does it add value over primitive types? |
-| Enforcement | | Does TypeScript actually enforce the constraints? |
+Score each new/modified `interface`, `type` alias, or `enum` in the diff (1-10):
+
+| Dimension          | Score | Question                                               |
+|--------------------|-------|--------------------------------------------------------|
+| Encapsulation      |       | Can internals change without breaking consumers?       |
+| Invariant Express  |       | Does the type make invalid states unrepresentable?     |
+| Usefulness         |       | Does it add value over using primitive types?          |
+| Enforcement        |       | Does TypeScript actually enforce the constraints?      |
 
 Overall type health = average of 4 dimensions.
-Any dimension < 5 = emit as a finding (🟡 Warning minimum).
+Score <5 in ANY dimension = Warning finding citing the specific gap.
+Score >=8 average = note as strength (no action required).
+
+Low-score examples:
+- Encapsulation=2: `type Config = { dbHost: string; dbPort: number }` -- caller knows internals
+  Fix: opaque type or branded type to hide structure
+- Invariant=1: `type Status = 'active' | 'inactive' | string` -- `string` widens away the invariant
+  Fix: `type Status = 'active' | 'inactive'`
+- Usefulness=2: `type Id = number` without branding -- no safety over bare `number`
+  Fix: `type UserId = number & { __brand: 'UserId' }`
+- Enforcement=1: `interface Response { data: unknown }` -- TS cannot enforce shape at compile time
+  Fix: Zod schema + `z.infer<typeof ResponseSchema>`
 ```
