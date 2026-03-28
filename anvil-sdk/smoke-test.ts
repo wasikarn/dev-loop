@@ -8,6 +8,9 @@ import { triage } from './src/review/triage.js'
 import { consolidate } from './src/review/consolidator.js'
 import { formatJson, formatMarkdown } from './src/review/output.js'
 import type { Finding, ReviewReport } from './src/types.js'
+import { ChallengeResultSchema } from './src/plan/schemas/challenge.js'
+import { InvestigationResultSchema } from './src/investigate/schemas/investigation.js'
+import { parsePlanChallengeArgs, parseInvestigateArgs, parseFalsifyArgs } from './src/cli.js'
 
 let passed = 0
 let failed = 0
@@ -160,6 +163,98 @@ test('formatMarkdown contains verdict', () => {
 test('formatMarkdown contains cost', () => {
   const md = formatMarkdown(mockReport)
   assert(md.includes('0.1234'), 'cost missing')
+})
+
+// --- plan/schemas/challenge ---
+console.log('\nplan/schemas/challenge')
+test('ChallengeResultSchema parses valid output', () => {
+  const result = ChallengeResultSchema.safeParse({
+    minimal: [
+      { taskNumber: 1, taskName: 'Add repo', verdict: 'SUSTAINED', ground: '—', rationale: 'Required by Truth 1' },
+      { taskNumber: 2, taskName: 'Extract base', verdict: 'CHALLENGED', ground: 'YAGNI', rationale: 'Only one use case' },
+    ],
+    missingTasks: ['Migration rollback not in plan'],
+    dependencyIssues: [],
+    clean: [
+      { area: 'AuthService', issue: 'Returns generic Error', evidence: 'research.md:45', recommendation: 'Add AuthError type first' },
+    ],
+    recommendation: 'READY after addressing 2 items',
+  })
+  assert(result.success, `schema failed: ${JSON.stringify(result.error?.issues)}`)
+})
+test('ChallengeResultSchema rejects missing recommendation', () => {
+  const result = ChallengeResultSchema.safeParse({ minimal: [], missingTasks: [], dependencyIssues: [], clean: [] })
+  assert(!result.success, 'should fail without recommendation')
+})
+
+// --- investigate/schemas/investigation ---
+console.log('\ninvestigate/schemas/investigation')
+test('InvestigationResultSchema parses valid output', () => {
+  const result = InvestigationResultSchema.safeParse({
+    rootCause: {
+      hypothesis: 'Null pointer in UserService.findById',
+      confidence: 'high',
+      evidence: [{ file: 'src/user.service.ts', line: 42, snippet: 'return user.profile.name' }],
+      alternativeHypotheses: [],
+    },
+    dxFindings: [
+      { severity: 'warning', category: 'error-handling', file: 'src/user.service.ts', line: 42, issue: 'No null guard', recommendation: 'Add optional chaining' },
+    ],
+    fixPlan: [
+      { type: 'bug', description: 'Add null guard on user.profile', file: 'src/user.service.ts', line: 42 },
+      { type: 'test', description: 'Add test for null profile case', file: 'src/user.service.spec.ts', line: null },
+    ],
+  })
+  assert(result.success, `schema failed: ${JSON.stringify(result.error?.issues)}`)
+})
+test('InvestigationResultSchema rejects invalid confidence', () => {
+  const result = InvestigationResultSchema.safeParse({
+    rootCause: { hypothesis: 'x', confidence: 'very-high', evidence: [], alternativeHypotheses: [] },
+    dxFindings: [],
+    fixPlan: [],
+  })
+  assert(!result.success, 'should reject invalid confidence level')
+})
+
+// --- plan-challenge CLI args ---
+console.log('\nplan-challenge CLI args')
+test('parsePlanChallengeArgs returns plan path', () => {
+  const result = parsePlanChallengeArgs(['--plan-file', 'plan.md'])
+  assert(result.planFile === 'plan.md', `expected plan.md, got ${result.planFile}`)
+})
+test('parsePlanChallengeArgs returns research path', () => {
+  const result = parsePlanChallengeArgs(['--plan-file', 'plan.md', '--research-file', 'research.md'])
+  assert(result.researchFile === 'research.md', `expected research.md, got ${result.researchFile}`)
+})
+test('parsePlanChallengeArgs defaults researchFile to undefined', () => {
+  const result = parsePlanChallengeArgs(['--plan-file', 'plan.md'])
+  assert(result.researchFile === undefined, 'expected undefined researchFile')
+})
+
+// --- investigate CLI args ---
+console.log('\ninvestigate CLI args')
+test('parseInvestigateArgs returns bug description', () => {
+  const result = parseInvestigateArgs(['--bug', 'NPE in UserService'])
+  assert(result.bug === 'NPE in UserService', `got ${result.bug}`)
+})
+test('parseInvestigateArgs defaults quick to false', () => {
+  const result = parseInvestigateArgs(['--bug', 'test'])
+  assert(result.quick === false, 'expected quick=false')
+})
+test('parseInvestigateArgs parses --quick flag', () => {
+  const result = parseInvestigateArgs(['--bug', 'test', '--quick'])
+  assert(result.quick === true, 'expected quick=true')
+})
+
+// --- falsify CLI args ---
+console.log('\nfalsify CLI args')
+test('parseFalsifyArgs returns findings file path', () => {
+  const result = parseFalsifyArgs(['--findings-file', '/tmp/findings.json'])
+  assert(result.findingsFile === '/tmp/findings.json', `got ${result.findingsFile}`)
+})
+test('parseFalsifyArgs defaults findingsFile to undefined', () => {
+  const result = parseFalsifyArgs([])
+  assert(result.findingsFile === undefined, 'expected undefined findingsFile')
 })
 
 // --- summary ---

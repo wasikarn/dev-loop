@@ -170,11 +170,32 @@ If agent errors → dedup, pattern-cap, sort, and signal-check inline per [revie
 
 **GATE:** Findings consolidated → update `Phase: review` in anvil-context.md → proceed to Assess.
 
-## Phase 7: Falsification Pass (Agent Teams fallback, Full mode iter 1 only)
+## Phase 7: Falsification Pass (Full mode iter 1 only)
 
 > Skip this phase if Stage 2 used the SDK Review Engine — falsification was already applied internally.
 
-After debate completes but **before** dispatching `review-consolidator`, spawn the `falsification-agent` (defined in `agents/falsification-agent.md`) with the raw pre-consolidation findings table inline.
+After debate completes but **before** dispatching `review-consolidator`, try the SDK Falsifier first:
+
+```bash
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+
+if [ ! -d "$SDK_DIR/node_modules" ]; then
+  (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
+fi
+
+FINDINGS_FILE=$(mktemp /tmp/anvil-findings-XXXXXX.json)
+# Write pre-consolidation findings as JSON array to $FINDINGS_FILE
+
+sdk_result=$(cd "$SDK_DIR" && node_modules/.bin/tsx src/cli.ts falsify \
+  --findings-file "$FINDINGS_FILE" \
+  2>&1)
+sdk_exit=$?
+rm -f "$FINDINGS_FILE"
+```
+
+If `sdk_exit=0` and `sdk_result` is valid JSON: apply verdicts from `sdk_result.verdicts[]` (REJECTED=remove, DOWNGRADED=update severity, SUSTAINED=keep). Note rejected count. Proceed to `review-consolidator`.
+
+**If `sdk_exit != 0` or not valid JSON**, fall back to Agent Teams: spawn the `falsification-agent` (defined in `agents/falsification-agent.md`) with the raw pre-consolidation findings table inline.
 
 **Spawn condition:** Full mode iter 1 only (3 reviewers). Skip for: Quick/Hotfix mode, iter 2+ reviews.
 

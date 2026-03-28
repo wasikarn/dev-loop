@@ -71,7 +71,34 @@ Update `plan_file:` in `{artifacts_dir}/anvil-context.md` to `{artifacts_dir}/{d
 
 **Micro and Quick:** Skip plan-challenger entirely. Proceed to Step 3.
 
-**Full mode only:** Immediately spawn `plan-challenger` agent with the plan file path + `{artifacts_dir}/research.md`. Do **not** wait — continue to Step 3 (readiness gate) while plan-challenger runs.
+**Full mode only:** Try the SDK Plan-Challenger first (faster, lower token cost):
+
+```bash
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+
+if [ ! -d "$SDK_DIR/node_modules" ]; then
+  (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
+fi
+
+sdk_result=$(cd "$SDK_DIR" && node_modules/.bin/tsx src/cli.ts plan-challenge \
+  --plan-file {plan_file_path} \
+  --research-file {artifacts_dir}/research.md \
+  2>&1)
+sdk_exit=$?
+```
+
+If `sdk_exit=0` and `sdk_result` is valid JSON (starts with `{`):
+
+**Use SDK output directly:**
+
+- Parse `sdk_result` as `ChallengeResult` JSON
+- Present challenge findings inline — `minimal[]` as Minimal-Lens table, `clean[]` as Clean-Lens table
+- Report: `SDK Plan-Challenger: {challenged} tasks challenged · {missingTasks.length} missing tasks`
+- **Skip Agent Teams `plan-challenger` spawn** — proceed to Step 3 with the SDK findings applied
+
+**If `sdk_exit != 0` or result is not valid JSON**, log `SDK plan-challenge failed (exit {sdk_exit}) — falling back to Agent Teams` and continue:
+
+**Agent Teams fallback:** Immediately spawn `plan-challenger` agent with the plan file path + `{artifacts_dir}/research.md`. Do **not** wait — continue to Step 3 (readiness gate) while plan-challenger runs.
 
 Plan-challenger uses **dual-lens** challenge (see [agents/plan-challenger.md](../../../agents/plan-challenger.md)):
 

@@ -9,7 +9,9 @@ import { runReview } from './review/orchestrator.js'
 import { triage } from './review/triage.js'
 import type { ReviewReport } from './types.js'
 
-interface ParsedArgs {
+// ─── review subcommand ────────────────────────────────────────────────────────
+
+interface ParsedReviewArgs {
   pr: number | undefined
   branch: string | undefined
   baseBranch: string | undefined
@@ -20,8 +22,8 @@ interface ParsedArgs {
   dismissedPatternsPath: string | undefined
 }
 
-function parseArgs(args: string[]): ParsedArgs {
-  const result: ParsedArgs = {
+function parseArgs(args: string[]): ParsedReviewArgs {
+  const result: ParsedReviewArgs = {
     pr: undefined,
     branch: undefined,
     baseBranch: undefined,
@@ -141,9 +143,7 @@ function loadDismissedPatterns(path: string | undefined): string {
   return readFileSync(path, 'utf8')
 }
 
-async function main(): Promise<void> {
-  const argv = process.argv
-  const args = argv.length > 2 ? argv.slice(2) : []
+async function runReviewCommand(args: string[]): Promise<void> {
   const parsed = parseArgs(args)
 
   const hardRules = loadHardRules(parsed.hardRulesPath)
@@ -170,7 +170,7 @@ async function main(): Promise<void> {
 
   if (files.length === 0) {
     console.error(
-      'No diff found. Make sure you are in a git repo with uncommitted changes or specify --branch.'
+      'No diff found. Make sure you are in a git repo with uncommitted changes or specify --branch.',
     )
     process.exit(1)
   }
@@ -240,8 +240,215 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err: unknown) => {
-  const message = err instanceof Error ? err.message : String(err)
-  console.error('[sdk-review] fatal:', message)
-  process.exit(1)
-})
+// ─── plan-challenge subcommand ────────────────────────────────────────────────
+
+interface ParsedPlanChallengeArgs {
+  planFile: string | undefined
+  researchFile: string | undefined
+  output: 'json'
+  budget: number | undefined
+}
+
+export function parsePlanChallengeArgs(args: string[]): ParsedPlanChallengeArgs {
+  const result: ParsedPlanChallengeArgs = {
+    planFile: undefined,
+    researchFile: undefined,
+    output: 'json',
+    budget: undefined,
+  }
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (arg === undefined) continue
+    const next = args[i + 1]
+    if (arg === '--plan-file') {
+      if (next === undefined) {
+        console.error('[sdk-plan-challenge] --plan-file requires a value')
+        process.exit(1)
+      }
+      result.planFile = next
+      i++
+    } else if (arg === '--research-file') {
+      if (next === undefined) {
+        console.error('[sdk-plan-challenge] --research-file requires a value')
+        process.exit(1)
+      }
+      result.researchFile = next
+      i++
+    } else if (arg === '--budget') {
+      if (next !== undefined) {
+        const n = parseFloat(next)
+        if (!Number.isNaN(n)) {
+          result.budget = n
+          i++
+        }
+      }
+    }
+  }
+  return result
+}
+
+async function runPlanChallengeCommand(args: string[]): Promise<void> {
+  const parsed = parsePlanChallengeArgs(args)
+  if (parsed.planFile === undefined) {
+    console.error('[sdk-plan-challenge] --plan-file is required')
+    process.exit(1)
+  }
+  if (!existsSync(parsed.planFile)) {
+    console.error(`[sdk-plan-challenge] plan file not found: ${parsed.planFile}`)
+    process.exit(1)
+  }
+  if (parsed.researchFile !== undefined && !existsSync(parsed.researchFile)) {
+    console.error(`[sdk-plan-challenge] research file not found: ${parsed.researchFile}`)
+    process.exit(1)
+  }
+  const config = resolveConfig({ ...(parsed.budget !== undefined && { budgetUsd: parsed.budget }) })
+  const { runPlanChallenge } = await import('./plan/agents/challenger.js')
+  const result = await runPlanChallenge({
+    planPath: parsed.planFile,
+    researchPath: parsed.researchFile,
+    config,
+  })
+  console.log(JSON.stringify(result, null, 2))
+}
+
+// ─── investigate subcommand ───────────────────────────────────────────────────
+
+interface ParsedInvestigateArgs {
+  bug: string | undefined
+  quick: boolean
+  output: 'json'
+  budget: number | undefined
+}
+
+export function parseInvestigateArgs(args: string[]): ParsedInvestigateArgs {
+  const result: ParsedInvestigateArgs = { bug: undefined, quick: false, output: 'json', budget: undefined }
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (arg === undefined) continue
+    if (arg === '--quick') {
+      result.quick = true
+      continue
+    }
+    const next = args[i + 1]
+    if (arg === '--bug') {
+      if (next === undefined) {
+        console.error('[sdk-investigate] --bug requires a value')
+        process.exit(1)
+      }
+      result.bug = next
+      i++
+    } else if (arg === '--budget') {
+      if (next !== undefined) {
+        const n = parseFloat(next)
+        if (!Number.isNaN(n)) {
+          result.budget = n
+          i++
+        }
+      }
+    }
+  }
+  return result
+}
+
+async function runInvestigateCommand(args: string[]): Promise<void> {
+  const parsed = parseInvestigateArgs(args)
+  if (parsed.bug === undefined) {
+    console.error('[sdk-investigate] --bug is required')
+    process.exit(1)
+  }
+  const config = resolveConfig({ ...(parsed.budget !== undefined && { budgetUsd: parsed.budget }) })
+  const { runInvestigation } = await import('./investigate/agents/investigation.js')
+  const result = await runInvestigation({
+    bugDescription: parsed.bug,
+    quickMode: parsed.quick,
+    config,
+  })
+  console.log(JSON.stringify(result, null, 2))
+}
+
+// ─── falsify subcommand ───────────────────────────────────────────────────────
+
+interface ParsedFalsifyArgs {
+  findingsFile: string | undefined
+  output: 'json'
+  budget: number | undefined
+}
+
+export function parseFalsifyArgs(args: string[]): ParsedFalsifyArgs {
+  const result: ParsedFalsifyArgs = { findingsFile: undefined, output: 'json', budget: undefined }
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (arg === undefined) continue
+    const next = args[i + 1]
+    if (arg === '--findings-file') {
+      if (next === undefined) {
+        console.error('[sdk-falsify] --findings-file requires a value')
+        process.exit(1)
+      }
+      result.findingsFile = next
+      i++
+    } else if (arg === '--budget') {
+      if (next !== undefined) {
+        const n = parseFloat(next)
+        if (!Number.isNaN(n)) {
+          result.budget = n
+          i++
+        }
+      }
+    }
+  }
+  return result
+}
+
+async function runFalsifyCommand(args: string[]): Promise<void> {
+  const parsed = parseFalsifyArgs(args)
+  if (parsed.findingsFile === undefined) {
+    console.error('[sdk-falsify] --findings-file is required')
+    process.exit(1)
+  }
+  if (!existsSync(parsed.findingsFile)) {
+    console.error(`[sdk-falsify] findings file not found: ${parsed.findingsFile}`)
+    process.exit(1)
+  }
+  const raw = JSON.parse(readFileSync(parsed.findingsFile, 'utf8')) as unknown
+  // Accept either { findings: [...] } or [...] directly
+  const findings = Array.isArray(raw)
+    ? raw
+    : (raw as Record<string, unknown>).findings ?? []
+  const config = resolveConfig({ ...(parsed.budget !== undefined && { budgetUsd: parsed.budget }) })
+  const verdicts = await runFalsification({ findings: findings as Parameters<typeof runFalsification>[0]['findings'], config })
+  console.log(JSON.stringify({ verdicts }, null, 2))
+}
+
+// ─── main dispatcher ──────────────────────────────────────────────────────────
+
+async function main(): Promise<void> {
+  const argv = process.argv
+  const subcommand = argv[2]
+  const args = argv.length > 3 ? argv.slice(3) : []
+
+  if (subcommand === 'plan-challenge') {
+    await runPlanChallengeCommand(args)
+    return
+  }
+  if (subcommand === 'investigate') {
+    await runInvestigateCommand(args)
+    return
+  }
+  if (subcommand === 'falsify') {
+    await runFalsifyCommand(args)
+    return
+  }
+
+  // Default: review (existing behavior — pass all args from argv[2] onwards)
+  await runReviewCommand(argv.length > 2 ? argv.slice(2) : [])
+}
+
+// Only run when executed directly (not when imported by smoke-test or other modules)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err: unknown) => {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[sdk] fatal:', message)
+    process.exit(1)
+  })
+}

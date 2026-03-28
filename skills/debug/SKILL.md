@@ -178,7 +178,46 @@ SHARED CONTEXT: {contents of ## Shared Context section from debug-context.md}
 
 **Call-site fallback:** If bootstrap errors → execute inline: `rtk git log --oneline -10`, list primary affected files (max 5) from the error/stack trace, read key sections, then append `## Shared Context` to `debug-context.md` and send via `SendMessage` to teammates. Teammates begin with `SHARED CONTEXT: (pending — gathering inline)` until the SendMessage arrives.
 
-### Step 1: Create Team
+### Step 1: SDK Investigation Fast-Path (try before spawning Agent Teams)
+
+**Try the SDK Investigator first (faster, lower token cost):**
+
+```bash
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+
+if [ ! -d "$SDK_DIR/node_modules" ]; then
+  (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
+fi
+
+# Full mode: runs Investigator + DX Analyst concurrently
+# Quick mode: Investigator only (--quick flag)
+SDK_MODE_FLAG=""
+[ "{mode}" = "Quick" ] && SDK_MODE_FLAG="--quick"
+
+sdk_result=$(cd "$SDK_DIR" && node_modules/.bin/tsx src/cli.ts investigate \
+  --bug "{bug_description}" \
+  $SDK_MODE_FLAG \
+  2>&1)
+sdk_exit=$?
+```
+
+If `sdk_exit=0` and `sdk_result` is valid JSON (starts with `{`):
+
+**Use SDK output directly:**
+
+- Parse `sdk_result` as `InvestigationResult` JSON
+- Map to `investigation.md` format per [artifact-templates.md](references/artifact-templates.md#investigation.md):
+  - Root Cause section from `rootCause` (hypothesis, confidence, evidence[])
+  - DX Findings table from `dxFindings[]` (Quick mode: empty)
+  - Fix Plan from `fixPlan[]` (type: bug/test/dx)
+- Report: `SDK Investigator: confidence={rootCause.confidence} · {dxFindings.length} DX findings · {fixPlan.length} fix items`
+- **Skip Agent Teams spawning** — proceed directly to Step 2 (wait) using SDK result as investigation output
+
+**If confidence is "low"** in SDK result — escalate to user regardless of source. Present `alternativeHypotheses` and ask for additional context.
+
+**If `sdk_exit != 0` or result is not valid JSON**, log `SDK investigate failed (exit {sdk_exit}) — falling back to Agent Teams` and continue:
+
+### Step 1 (fallback): Create Team
 
 Create team `debug-{branch}` with 1-2 teammates using prompts from [teammate-prompts.md](references/teammate-prompts.md):
 

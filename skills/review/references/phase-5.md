@@ -5,9 +5,41 @@
 **Spawn condition:**
 
 - Normal/Large PRs → full falsification pass on all debate-surviving findings
-- Massive PRs → lightweight falsification on Hard Rule findings only (no debate findings — pass only the single Correctness reviewer's Hard Rule violations inline)
+- Massive PRs → lightweight falsification on Hard Rule findings only
 
-Spawn `falsification-agent` (defined in `agents/falsification-agent.md`) with the surviving debate findings table inline. The agent challenges each finding on three grounds and returns SUSTAINED / DOWNGRADED / REJECTED verdicts.
+**Try the SDK Falsifier first (faster, lower token cost):**
+
+```bash
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+
+if [ ! -d "$SDK_DIR/node_modules" ]; then
+  (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
+fi
+
+# Serialize surviving debate findings to a temp JSON file
+FINDINGS_FILE=$(mktemp /tmp/anvil-findings-XXXXXX.json)
+# Write findings as JSON array: [{"severity":"critical","rule":"...","file":"...","line":N,"confidence":N,"issue":"...","fix":"...","isHardRule":true}, ...]
+# echo '[...]' > "$FINDINGS_FILE"
+
+sdk_result=$(cd "$SDK_DIR" && node_modules/.bin/tsx src/cli.ts falsify \
+  --findings-file "$FINDINGS_FILE" \
+  2>&1)
+sdk_exit=$?
+rm -f "$FINDINGS_FILE"
+```
+
+If `sdk_exit=0` and `sdk_result` is valid JSON (starts with `{`):
+
+**Apply SDK verdicts directly:**
+
+- Parse `sdk_result.verdicts[]` — each has `findingIndex`, `verdict` (SUSTAINED/DOWNGRADED/REJECTED), `newSeverity?`, `rationale`
+- REJECTED → remove finding; DOWNGRADED → update severity; SUSTAINED → pass through unchanged
+- Report: `SDK Falsifier: {rejected} rejected · {downgraded} downgraded`
+- **Skip Agent Teams `falsification-agent`** — proceed to `review-consolidator`
+
+**If `sdk_exit != 0` or not valid JSON**, log `SDK falsify failed (exit {sdk_exit}) — falling back to Agent Teams` and continue:
+
+**Agent Teams fallback:** Spawn `falsification-agent` (defined in `agents/falsification-agent.md`) with the surviving debate findings table inline. The agent challenges each finding on three grounds and returns SUSTAINED / DOWNGRADED / REJECTED verdicts.
 
 Apply verdicts before dispatching `review-consolidator`:
 
