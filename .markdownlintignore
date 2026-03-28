@@ -4,3 +4,6 @@ skill-creator-workspace/
 
 # Local-only prompts (gitignored)
 prompts/
+
+# Node dependencies — not plugin source
+anvil-sdk/node_modules/

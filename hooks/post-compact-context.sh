@@ -52,7 +52,7 @@ fi
 PLUGIN_DATA="${HOME}/.claude/plugins/data/anvil-anvil"
 if [ -d "$PLUGIN_DATA" ]; then
   # Find most recently modified .md file (macOS-compatible: ls -t on find output)
-  # shellcheck disable=SC2012
+  # shellcheck disable=SC2012,SC2038
   LAST_ARTIFACT=$(find "$PLUGIN_DATA" -maxdepth 5 -name "*.md" 2>/dev/null \
     | xargs ls -t1 2>/dev/null | head -1 || true)
   if [ -n "$LAST_ARTIFACT" ] && [ -f "$LAST_ARTIFACT" ]; then

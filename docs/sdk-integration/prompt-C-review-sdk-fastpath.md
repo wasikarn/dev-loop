@@ -36,7 +36,7 @@ sdk_exit=$?
 
 Parse as `ReviewReport` JSON and use directly:
 
-- Map `findings[]` → review table per [review-output-format](../../review-output-format/SKILL.md)
+- Map `findings[]` → review table per [review-output-format](../../skills/review-output-format/SKILL.md)
 - Map `strengths[]` → Strengths section
 - Use `verdict` field (`"APPROVE"` | `"REQUEST_CHANGES"`) for final decision
 - Use `summary` for counts: `critical`, `warning`, `info`

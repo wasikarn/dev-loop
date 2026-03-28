@@ -1003,7 +1003,7 @@ If `sdk_exit=0` and `sdk_result` is valid JSON (starts with `{`):
 
 **Use SDK output directly:**
 - Parse `sdk_result` as the InvestigationResult JSON
-- Map to `investigation.md` format per [artifact-templates.md](references/artifact-templates.md#investigation.md)
+- Map to `investigation.md` format per artifact-templates.md#investigation.md
 - Root Cause from `rootCause`, DX Findings from `dxFindings`, Fix Plan from `fixPlan`
 - Report: `SDK Investigator: confidence={confidence} · {dxFindings.length} DX findings · {fixPlan.length} fix items`
 - **Skip Agent Teams spawning** — proceed directly to Phase 2 Step 3 (Convergence) using the SDK results

@@ -5,6 +5,8 @@
     "*-workspace/**/*.md",
     "docs/superpowers/**/*.md",
     "docs/specs/**/*.md",
-    "docs/eval/*.local.md"
+    "docs/eval/*.local.md",
+    "anvil-sdk/node_modules/**/*.md",
+    "node_modules/**/*.md"
   ]
 }
