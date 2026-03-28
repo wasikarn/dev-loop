@@ -95,7 +95,7 @@ export function readDiff(target: { branch?: string; baseBranch?: string }): File
 
   let mergeBase: string
   try {
-    mergeBase = execSync(`git merge-base HEAD ${base}`, { encoding: 'utf8' }).trim()
+    mergeBase = execSync(`git merge-base HEAD ${base}`, { encoding: 'utf8', maxBuffer: 1024 * 1024 }).trim()
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     throw new Error(`git merge-base failed: ${message}`)
@@ -103,7 +103,7 @@ export function readDiff(target: { branch?: string; baseBranch?: string }): File
 
   let output: string
   try {
-    output = execSync(`git diff ${mergeBase}...HEAD`, { encoding: 'utf8' })
+    output = execSync(`git diff ${mergeBase}...HEAD`, { encoding: 'utf8', maxBuffer: 100 * 1024 * 1024 })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     throw new Error(`git diff failed: ${message}`)
@@ -123,7 +123,7 @@ export function readPrDiff(prNumber: number): FileDiff[] {
 
   let output: string
   try {
-    output = execSync(`gh pr diff ${prNumber}`, { encoding: 'utf8' })
+    output = execSync(`gh pr diff ${prNumber}`, { encoding: 'utf8', maxBuffer: 100 * 1024 * 1024 })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     throw new Error(`gh pr diff ${prNumber} failed: ${message}`)
