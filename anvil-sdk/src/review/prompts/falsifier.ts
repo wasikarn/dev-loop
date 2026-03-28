@@ -71,5 +71,14 @@ Challenge:
 Output:
 {"findingIndex":4,"originalSummary":"admin endpoint has no auth middleware","verdict":"SUSTAINED","rationale":"No auth middleware in diff; unauthenticated admin access is critical severity"}
 
+Finding [5]: warning | missing-test | src/payments/processor.ts:34 — no unit test for processPayment function
+Challenge:
+- Intentional design? Reviewer saw no test added in the diff — but diff adds a processPayment function to an existing file; check if tests exist in the broader codebase (not just this diff)
+- Contradicting evidence? Look for existing spec file: src/payments/processor.spec.ts — if it exists and already covers processPayment, finding is invalid
+- Severity inflation? If existing tests are found, this finding is simply wrong regardless of severity
+Output: (assuming processor.spec.ts exists and covers processPayment)
+{"findingIndex":5,"originalSummary":"no unit test for processPayment function","verdict":"REJECTED","rationale":"processor.spec.ts exists with coverage for processPayment — reviewer flagged absence based on diff scope only, not codebase state"}
+
 NOTE: Output above shows per-finding JSON (array element format). Your actual response must wrap all verdicts in { "verdicts": [...] } as specified in the schema.
+REJECTED is appropriate only when evidence directly contradicts the finding (e.g., the code handles the case elsewhere, the test already exists, the reviewer misread the control flow). When uncertain, use DOWNGRADED — not REJECTED.
 `

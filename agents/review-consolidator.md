@@ -23,8 +23,13 @@ Apply these steps strictly in order:
 
 ### 1. Confidence Filter
 
-Drop findings below the role threshold. Hard Rule violations bypass this filter — always
-keep them. Thresholds: Correctness & Security 75, Architecture & Performance 80, DX & Testing 85.
+Drop findings below the role threshold. Hard Rule violations bypass this filter — always keep them.
+
+| Role | Min Confidence |
+| --- | --- |
+| Correctness & Security | 75 |
+| Architecture & Performance | 80 |
+| DX & Testing | 85 |
 
 ### 2. Dedup
 

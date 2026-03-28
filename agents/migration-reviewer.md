@@ -26,9 +26,18 @@ Read all migration files in the diff (`.migration.ts`, `*_migration.ts`, files c
 
 Also read any corresponding model/entity files to understand the full schema context.
 
+If no migration files are found in the provided list, output:
+
+```markdown
+**Summary: ✅ No migration files in this PR** — migration checklist skipped.
+```
+
+and stop.
+
 ### 2. Apply Migration Safety Checklist
 
-**M1 — Reversibility (Down Migration)**
+#### M1 — Reversibility (Down Migration)
+
 Every `up` migration should have a corresponding `down` migration. Check:
 
 - Is `down()` / `rollback()` implemented?
@@ -39,7 +48,8 @@ Every `up` migration should have a corresponding `down` migration. Check:
 
 Flag as Critical if `down` is empty, missing, or only contains `// TODO`.
 
-**M2 — Destructive DDL Without Safety**
+#### M2 — Destructive DDL Without Safety
+
 Flag any operation that can cause irreversible data loss:
 
 - `DROP TABLE` without a preceding data backup mechanism
@@ -48,13 +58,15 @@ Flag any operation that can cause irreversible data loss:
 
 Severity: Critical unless there is evidence the data is ephemeral or already migrated.
 
-**M3 — Missing Index on Foreign Key**
+#### M3 — Missing Index on Foreign Key
+
 Every new foreign key column should have an index. Check:
 
 - `addColumn` with FK relationship → is there a corresponding `addIndex` for that column?
 - Joins on the new FK will cause full table scans without the index
 
-**M4 — Table Lock Risk**
+#### M4 — Table Lock Risk
+
 Operations that lock large tables cause production downtime:
 
 - `ALTER TABLE ADD COLUMN NOT NULL WITHOUT DEFAULT` — locks the entire table while backfilling
@@ -64,7 +76,8 @@ Operations that lock large tables cause production downtime:
 For tables expected to have >100k rows (check model name / existing usage patterns), flag as
 Critical. For small/new tables, Info.
 
-**M5 — Zero-Downtime Migration Violations**
+#### M5 — Zero-Downtime Migration Violations
+
 Multi-step deployments (old code + new code running simultaneously) require:
 
 - New column added as nullable first, then made NOT NULL in a later migration
@@ -78,21 +91,24 @@ Multi-step deployments (old code + new code running simultaneously) require:
 - Unique constraint on column that may have existing duplicates → migration will fail at runtime
 - FK to a column that is not indexed in the parent table
 
-**M7 — Expand/Contract Completeness**
+#### M7 — Expand/Contract Completeness
+
 When a column is both added and removed in the same PR:
 
 - New column added AND old column removed in same PR → ZDT violation
 - Search source files for usages of the removed column name before approving removal
 - Removal must be separate migration/PR after code cutover is deployed
 
-**M8 — Data Migration Batching**
+#### M8 — Data Migration Batching
+
 Large tables require batched loop. Flag when:
 
 - Single `UPDATE ... WHERE condition` (no LIMIT) → lock for full duration
   Fix: `WHERE id IN (SELECT id ... LIMIT 1000)` loop — must be idempotent
 - Data migration inside same TX as DDL → DDL lock held for entire backfill
 
-**M9 — Index Type Correctness**
+#### M9 — Index Type Correctness
+
 Beyond "FK has an index":
 
 - JSONB filtered/searched → `USING gin(col)`, not default B-tree
@@ -101,7 +117,8 @@ Beyond "FK has an index":
   (`WHERE status='active' AND created_at > X` → index on `(status, created_at)`)
 - Partial index when query always includes same predicate (e.g. `WHERE deleted_at IS NULL`)
 
-**M10 — Deadlock Risk**
+#### M10 — Deadlock Risk
+
 When TX modifies multiple tables:
 
 - Check if other code paths lock same tables in reverse order
