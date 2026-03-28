@@ -49,6 +49,9 @@ Each line is a JSON object. Common fields:
 - `findings_reversed` — count of findings rejected by falsification-agent (0 if absent in older entries)
 - `ac_coverage` — string fraction e.g. "3/4" (empty string or absent if no Jira)
 - `human_confirmed` — boolean; true if user engaged Comprehension Gate (absent in older entries — treat as unknown)
+- `finding_categories` — array of bracket-label strings e.g. `["TYPE_SAFETY","NULL_CHECK"]` (absent in older entries — treat as unknown)
+- `plan_challenged` — boolean; true if plan-challenger was invoked (absent in older entries — treat as unknown)
+- `plan_challenge_count` — number of issues raised by plan-challenger (0 or absent = not invoked)
 
 ### 3. Aggregate Metrics
 
@@ -58,10 +61,11 @@ Compute:
 - **Average iterations** (overall + by mode)
 - **High-iteration tasks** (iterations >= 3 — suggest architectural complexity)
 - **Tasks with final_critical > 0** — review loop didn't catch critical issues before ship
-- **Finding trends** — if finding categories are recorded, count top recurring categories
+- **Finding category frequency** — from `finding_categories` arrays: count top recurring categories across all entries; absent entries contribute 0 (note limitation if <50% have data)
 - **Findings reversed rate** — avg `findings_reversed` per run; values >2 suggest agent overconfidence
 - **Human confirmed rate** — percentage of runs where `human_confirmed = true`; <50% suggests rubber-stamp pattern
 - **AC coverage** — parse fraction strings, compute average; <75% avg suggests spec quality issues
+- **Plan challenge effectiveness** — compare avg iterations for `plan_challenged=true` vs `plan_challenged=false` entries; if challenged tasks average fewer iterations, plan-challenger is preventing rework
 
 ### 4. Output Retrospective Report
 
@@ -99,8 +103,12 @@ Compute:
 | Avg findings reversed/run | {avg} | >2 = agent overconfidence | 🟢/🟡/🔴 |
 | Human confirmed rate | {pct}% | <50% = rubber-stamp risk | 🟢/🟡/🔴 |
 | Avg AC coverage | {pct}% | <75% = spec quality issues | 🟢/🟡/🔴 |
+| Plan challenge rate | {pct}% | <30% = skipping Full-mode gate | 🟢/🟡/🔴 |
+| Avg iterations (challenged) | {avg} | compare vs unchallenged | — |
+| Avg iterations (unchallenged) | {avg} | higher = plan-challenger prevents rework | — |
 
 Omit this table if fewer than 3 data points have the relevant fields (older entries won't have them).
+Omit plan challenge rows if fewer than 3 entries have `plan_challenged` field.
 
 ### Recommendations
 1. {specific improvement based on data — e.g., "5 tasks required 3 iterations — consider adding
@@ -130,10 +138,12 @@ files exist in session_dir.
 From anvil-metrics.jsonl entries already read in Step 1, filter to the 5 most recent entries
 where `"mode": "full"` (or `"Full"`). Extract their date values.
 
-For each category from 5a: scan the anvil-metrics.jsonl entries for those 5 dates for
-any matching category signal. Note: if finding-category data is not present in
-anvil-metrics.jsonl entries (older format), count only the current session as 1 hit and
-note the limitation. A category needs ≥3 hits across the 5 sessions to trigger.
+For each category from 5a: check the `finding_categories` array in the 5 most recent Full-mode
+anvil-metrics.jsonl entries. A category is "present" in a session if it appears in that entry's
+`finding_categories` array. If an entry lacks `finding_categories` (older format), fall back to
+scanning `review-findings-*.md` files for that session's date in the artifacts dir — if the files
+are absent, count 0 hits for that session and note the limitation. A category needs ≥3 hits
+across the 5 sessions to trigger.
 
 **5c. If ANY category hits ≥3 of the last 5 Full-mode sessions:**
 

@@ -78,14 +78,17 @@ to their post-merge checklist if atlassian-pm is installed.
 Append one JSON line to `{artifacts_dir}/anvil-metrics.jsonl` (create if absent) for future analysis.
 Lead writes directly — not via hook (metrics data not available at hook time).
 
-New fields:
+Fields:
 
 - `findings_reversed` — count of findings rejected by falsification-agent (signals agent overconfidence)
 - `ac_coverage` — AC items verified vs total (e.g. "3/4"); use "N/A" if no Jira
 - `human_confirmed` — whether user engaged with Comprehension Gate (Step 2)
+- `finding_categories` — array of bracket-label strings from final review-findings file (e.g. `["TYPE_SAFETY","NULL_CHECK"]`). Extract from `[LABEL]` prefixes in review-findings. Use `[]` if no labels present.
+- `plan_challenged` — boolean; true if plan-challenger agent was invoked in Phase 3
+- `plan_challenge_count` — number of issues raised by plan-challenger (0 if not invoked)
 
 ```json
-{"skill":"build","date":"{YYYY-MM-DD}","mode":"{mode}","mode_source":"{auto|flag|override}","blast_radius":{N},"iterations":{N},"task":"{task_short}","final_critical":0,"final_warning":{W},"findings_reversed":{falsification_rejected_count},"ac_coverage":"{AC_passed}/{AC_total}","human_confirmed":{true|false}}
+{"skill":"build","date":"{YYYY-MM-DD}","mode":"{mode}","mode_source":"{auto|flag|override}","blast_radius":{N},"iterations":{N},"task":"{task_short}","final_critical":0,"final_warning":{W},"findings_reversed":{falsification_rejected_count},"ac_coverage":"{AC_passed}/{AC_total}","human_confirmed":{true|false},"finding_categories":["{CATEGORY}"],"plan_challenged":{true|false},"plan_challenge_count":{N}}
 ```
 
 ## Step 8: Lens Update Check (Full mode only)

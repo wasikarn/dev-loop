@@ -26,7 +26,7 @@ export async function runFalsification(params: {
       userMessage: `Challenge each of the following ${params.findings.length} findings. Return verdicts as JSON.\n\nFINDINGS:\n${findingsSummary}`,
       allowedTools: ['Read', 'Grep', 'Glob'],
       outputSchema: verdictResultJsonSchema as Record<string, unknown>,
-      maxTurns: 1,
+      maxTurns: 3,
       maxBudgetUsd: params.config.maxBudgetFalsification,
       model: MODEL_ID[params.config.model],
     })
