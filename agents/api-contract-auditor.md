@@ -4,6 +4,7 @@ description: "Detects API-breaking changes in PR diffs (A1–A10): removed/renam
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high
+paths: ["**/routes/**", "**/controllers/**", "**/handlers/**", "**/*.routes.ts", "**/*.controller.ts", "**/*.handler.ts"]
 disallowedTools: Edit, Write
 maxTurns: 10
 skills: [review-conventions, review-rules]

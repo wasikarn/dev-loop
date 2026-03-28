@@ -4,6 +4,7 @@ description: "Reviews database migration files for safety, reversibility, and pe
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high
+paths: ["**/migrations/**", "**/*migration*.{ts,js,sql}", "**/*.sql", "**/db/**/*.ts"]
 disallowedTools: Edit, Write
 maxTurns: 10
 skills: [review-conventions, review-rules]

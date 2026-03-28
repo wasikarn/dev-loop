@@ -3,6 +3,7 @@ name: project-onboarder
 description: "Bootstraps a new project into the anvil ecosystem. Detects the project stack, scaffolds .claude/skills/review-rules/hard-rules.md with stack-appropriate starter rules, and writes .claude/build/validate-command.md as project config. Artifact paths are managed by scripts/artifact-dir.sh. Run once on a new project before the first build or review invocation."
 tools: Read, Glob, Grep, Bash, Write
 model: sonnet
+effort: medium
 maxTurns: 15
 ---
 

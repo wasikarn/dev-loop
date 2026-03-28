@@ -24,6 +24,7 @@ export async function runFalsification(params: {
     result = await runClaudeSubprocess({
       systemPrompt: FALSIFICATION_PROMPT,
       userMessage: `Challenge each of the following ${params.findings.length} findings. Return verdicts as JSON.\n\nFINDINGS:\n${findingsSummary}`,
+      allowedTools: ['Read', 'Grep', 'Glob'],
       outputSchema: verdictResultJsonSchema as Record<string, unknown>,
       maxTurns: 1,
       maxBudgetUsd: params.config.maxBudgetFalsification,

@@ -4,6 +4,7 @@ description: "Dedicated test quality reviewer for PR diffs. Checks (T1–T9): be
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high
+paths: ["**/*.spec.ts", "**/*.test.ts", "**/*.spec.tsx", "**/*.test.tsx", "**/__tests__/**"]
 disallowedTools: Edit, Write
 maxTurns: 10
 skills: [review-conventions, review-rules, review-examples]

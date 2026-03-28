@@ -24,6 +24,7 @@ description: |
   </example>
 tools: Read, Glob, Grep, Bash
 model: sonnet
+effort: medium
 # memory intentionally omitted — stateless: operates on $ARGUMENTS, no cross-session state needed
 ---
 
