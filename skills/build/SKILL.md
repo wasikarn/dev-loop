@@ -70,6 +70,7 @@ See [references/operational.md](references/operational.md) for prerequisites, co
 | [references/reviewer-prompts.md](references/reviewer-prompts.md) | Entering Phase 6 |
 | [references/reviewer-shared-rules.md](references/reviewer-shared-rules.md) | Phase 6 — shared reviewer rules/output format (referenced by reviewer templates) |
 | [references/review-lenses/frontend.md](references/review-lenses/frontend.md) · [security.md](references/review-lenses/security.md) · [database.md](references/review-lenses/database.md) · [performance.md](references/review-lenses/performance.md) · [typescript.md](references/review-lenses/typescript.md) · [error-handling.md](references/review-lenses/error-handling.md) · [api-design.md](references/review-lenses/api-design.md) · [observability.md](references/review-lenses/observability.md) | Phase 6 — domain lenses injected per diff content (see Lens Selection in reviewer-prompts.md) |
+| `build-research-summarizer` agent | Phase 2 Step 5b (Full mode) — compress research.md to summary written to anvil-context.md |
 | `review-consolidator` agent | Phase 6 iter 1 (3 reviewers) and iter 2+ (2 reviewers) — consolidate findings |
 | [review-conventions](../review-conventions/SKILL.md) | Entering Phase 6 |
 | [review-output-format](../review-output-format/SKILL.md) | Entering Phase 6 |

@@ -124,7 +124,21 @@ Every section must cite file:line references. Update `phase: research` in anvil-
 
 ## Step 5: Research Validator Gate
 
-Run `research-validator` agent with path `{artifacts_dir}/research.md`. If result is FAIL → re-dispatch the relevant explorer with a targeted prompt before proceeding. If PASS → proceed.
+Run `research-validator` agent with path `{artifacts_dir}/research.md`. If result is FAIL → re-dispatch the relevant explorer with a targeted prompt before proceeding. If PASS → proceed to Step 5b.
+
+## Step 5b: Compress Summary (Full mode only)
+
+After validator PASS, run `build-research-summarizer` agent with `{artifacts_dir}/research.md` as `$ARGUMENTS`. When it completes, append the JSON output as a `research_summary:` field to `{artifacts_dir}/anvil-context.md`:
+
+```yaml
+research_summary: '{"oneSentenceSummary":"...","keyFiles":[...],"primaryRisk":"...","verdict":"READY"}'
+```
+
+**Quick mode:** Skip Step 5b — research.md is short enough to re-read directly.
+
+At Phase 3/4/5/6 gates, reference `research_summary` from anvil-context.md for context instead of
+re-reading research.md in full. Re-read research.md only when a `[NEEDS CLARIFICATION]` token or
+specific file:line evidence is needed.
 
 ---
 

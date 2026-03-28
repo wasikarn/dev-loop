@@ -71,12 +71,13 @@ Key fields: `description` (include "proactively" to auto-trigger), `memory` (`us
 
 > **Plugin limitation:** `hooks`, `mcpServers`, and `permissionMode` are silently ignored when agents are loaded from a plugin. To use these fields, copy the agent to `.claude/agents/` instead.
 
-Current agents (23):
+Current agents (24):
 
 | Agent | Model | Purpose |
 | --- | --- | --- |
 | `commit-finalizer` | haiku | Fast git commit with conventional commits format |
 | `anvil-build-bootstrap` | haiku | Pre-gather Phase 2 context before build explorer spawns |
+| `build-research-summarizer` | haiku | Compress research.md to JSON summary after Phase 2 gate — eliminates re-reads at later phases |
 | `anvil-debug-bootstrap` | haiku | Pre-gather debug context before debug Investigator spawns |
 | `anvil-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before respond Fixers spawn |
 | `pr-review-bootstrap` | haiku | Fetch PR diff + Jira AC in one pass before review |

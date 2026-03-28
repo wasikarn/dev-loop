@@ -176,7 +176,7 @@ Drop findings below the role threshold before consolidation. Hard Rule violation
 
 Write findings to `{artifacts_dir}/review-findings-{iteration}.md` per [review-output-format](../../review-output-format/SKILL.md).
 
-- **Iter 1 (3 reviewers):** After falsification pass (Phase 7), dispatch `review-consolidator` with the post-verdict findings table.
+- **Iter 1 (3 reviewers):** Dispatch `review-consolidator` and run falsification in parallel (see Phase 7). Merge verdicts into consolidated output.
 - **Iter 2+ (2 reviewers):** Dispatch `review-consolidator` immediately when the second reviewer's findings arrive — lead reads findings while agent runs in parallel. No falsification pass.
 - **1 reviewer:** Lead consolidates inline (no agent).
 
@@ -191,7 +191,16 @@ If agent errors → dedup, pattern-cap, sort, and signal-check inline per [revie
 
 > Skip this phase if Stage 2 used the SDK Review Engine — falsification was already applied internally.
 
-After debate completes but **before** dispatching `review-consolidator`, try the SDK Falsifier first:
+**Run consolidation and falsification in parallel** — they operate independently on the same raw
+findings. Dispatch both immediately after debate completes; merge results when both finish.
+
+### Step 1: Dispatch consolidator (do not wait)
+
+Dispatch `review-consolidator` agent with the raw findings table from all reviewers. **Do not wait** — proceed immediately to Step 2 while consolidator runs.
+
+### Step 2: Run falsifier concurrently
+
+Try the SDK Falsifier while the consolidator runs:
 
 ```bash
 SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
@@ -210,28 +219,29 @@ sdk_exit=$?
 rm -f "$FINDINGS_FILE"
 ```
 
-If `sdk_exit=0` and `sdk_result` is valid JSON: apply verdicts from `sdk_result.verdicts[]` (REJECTED=remove, DOWNGRADED=update severity, SUSTAINED=keep). Note rejected count. Proceed to `review-consolidator`.
+If `sdk_exit=0` and `sdk_result` is valid JSON: verdicts are in `sdk_result.verdicts[]`.
 
-**If `sdk_exit != 0` or not valid JSON**, fall back to Agent Teams: spawn the `falsification-agent` (defined in `agents/falsification-agent.md`) with the raw pre-consolidation findings table inline.
+**If `sdk_exit != 0` or not valid JSON**, fall back to Agent Teams: spawn `falsification-agent` with the raw findings table inline. Wait for it to complete.
 
-**Spawn condition:** Full mode iter 1 only (3 reviewers). Skip for: Quick/Hotfix mode, iter 2+ reviews.
+**Spawn condition:** Full mode iter 1 only. Skip for: Quick/Hotfix mode, iter 2+ reviews.
 
-Pass to the agent:
+### Step 3: Wait for both and merge
 
-- Raw findings table from all reviewers (inline in the prompt)
-- Diff access via the agent's Read/Grep/Glob tools
+Wait for the consolidator agent to complete (if not already done). Then merge:
 
-**Apply verdicts before dispatching `review-consolidator`:**
+For each verdict in the falsifier output, apply it to the **consolidated findings** by `file:line` key:
 
-| Verdict | Action |
+| Verdict | Action on consolidated output |
 | --- | --- |
-| SUSTAINED | Pass through unchanged |
-| DOWNGRADED {new severity} | Update severity in findings table |
-| REJECTED | Remove from findings table |
+| SUSTAINED | No change |
+| DOWNGRADED | Update severity in the consolidated row matching that file:line |
+| REJECTED | Remove the consolidated row matching that file:line |
 
-Note rejected count in the Phase 6 status line: `(N findings rejected by Falsification Pass)`.
+If multiple raw findings share the same `file:line` (consolidated into one row): apply the harshest
+verdict — if any raw finding was REJECTED and the rest were also REJECTED, remove the row; if any
+was SUSTAINED, keep the row (REJECTED of one duplicate finding does not remove a corroborated finding).
 
-Then proceed to dispatch `review-consolidator` with the post-verdict findings table.
+Note the final REJECTED count in the Phase 6 status line: `(N findings rejected by Falsification Pass)`.
 
 ## Lead Notes
 

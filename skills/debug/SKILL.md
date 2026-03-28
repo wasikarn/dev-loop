@@ -212,6 +212,7 @@ If `sdk_exit=0` and `sdk_result` is valid JSON (starts with `{`):
   - Fix Plan from `fixPlan[]` (type: bug/test/dx)
 - Report: `SDK Investigator: confidence={rootCause.confidence} · {dxFindings.length} DX findings · {fixPlan.length} fix items`
 - **Skip Agent Teams spawning** — proceed directly to Step 2 (wait) using SDK result as investigation output
+- **Do not wait for bootstrap** — proceed to Phase 3 immediately. When bootstrap completes, its `## Shared Context` is written to `debug-context.md` automatically (there are no teammates to SendMessage to). No lead action needed.
 
 **If confidence is "low"** in SDK result — escalate to user regardless of source. Present `alternativeHypotheses` and ask for additional context.
 
