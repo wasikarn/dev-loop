@@ -68,8 +68,12 @@ export function formatMarkdown(report: ReviewReport): string {
       ? report.findings.map(formatFinding).join('\n\n')
       : '_No findings._'
 
+  const complexityNote = report.complexity === 'trivial'
+    ? '\n> ⚡ Trivial PR — single reviewer (< 50 diff lines, 1 domain). Findings show 1/1 consensus.'
+    : ''
+
   const sections = [
-    `# PR Review — ${report.pr}`,
+    `# PR Review — ${report.pr}${complexityNote}`,
     '',
     '## Summary',
     summaryTable,

@@ -1,9 +1,7 @@
 import type { ResolvedConfig } from '../config.js'
-import type { DiffBucket, FileDiff, ReviewerResult, ReviewRole } from '../types.js'
+import type { DiffBucket, FileDiff, PRComplexity, ReviewerResult, ReviewRole } from '../types.js'
 import { runReviewer } from './agents/reviewer.js'
 import { mapToDomains } from './domain-mapper.js'
-
-export type PRComplexity = 'trivial' | 'standard' | 'complex'
 
 const ADONIS_PATH_RE = /(?:app\/(?:controllers|models|validators|services)|start\/routes)/
 

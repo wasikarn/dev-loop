@@ -5,6 +5,7 @@ import type { Finding } from './review/schemas/finding.js'
 import type { Verdict } from './review/schemas/verdict.js'
 
 export type ReviewRole = 'correctness' | 'architecture' | 'dx'
+export type PRComplexity = 'trivial' | 'standard' | 'complex'
 export type Severity = Finding['severity']
 export type VerdictType = Verdict['verdict']
 
@@ -34,6 +35,8 @@ export interface ReviewReport {
   strengths: string[]
   verdict: 'APPROVE' | 'REQUEST_CHANGES'
   noiseWarning?: boolean
+  /** Complexity classification used to determine reviewer count. trivial = 1 reviewer ran. */
+  complexity: PRComplexity
   cost: { total_usd: number; per_reviewer: number[]; falsification_usd: number }
   tokens: { total: number; per_reviewer: number[]; falsification: number }
 }

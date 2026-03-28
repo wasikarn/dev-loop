@@ -21,6 +21,7 @@ function makeReport(overrides: Partial<ReviewReport> = {}): ReviewReport {
     ],
     strengths: ['Good test coverage'],
     verdict: 'REQUEST_CHANGES',
+    complexity: 'standard',
     cost: { total_usd: 0.0150, per_reviewer: [0.0100, 0.0030, 0.0010], falsification_usd: 0.0010 },
     tokens: { total: 5000, per_reviewer: [3000, 1500, 500], falsification: 500 },
     ...overrides,
@@ -95,8 +96,9 @@ describe('formatMarkdown', () => {
   })
 
   it('omits line number when line is null', () => {
-    const report = makeReport()
-    report.findings[0]!.line = null
+    const finding = makeReport().findings[0]
+    if (finding === undefined) throw new Error('fixture missing finding')
+    const report = makeReport({ findings: [{ ...finding, line: null }] })
     const md = formatMarkdown(report)
     expect(md).toContain('src/foo.ts\n')
   })

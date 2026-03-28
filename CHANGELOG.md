@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] — 2026-03-29
+
+### feat(sdk): two-phase triage, per-phase cost visibility, reviewer calibration
+
+- **feat(sdk/orchestrator):** classify PR complexity — trivial (<50 lines, ≤1 domain) runs 1 reviewer instead of 3; markdown output shows ⚡ trivial note with 1/1 consensus explanation
+- **feat(sdk/types):** `ReviewReport.complexity` field (`trivial|standard|complex`) — consumers can detect single-reviewer runs
+- **feat(sdk/output):** per-phase cost breakdown — `Reviewers: $X | Falsification: $X | Total: $X | Tokens: N`
+- **feat(sdk/cli):** falsification cost/tokens now included in `ReviewReport.cost.total_usd`; `cost.falsification_usd` tracks phase separately
+- **feat(sdk/cli):** reviewer calibration — per-role stats (submitted/sustained/rejected/downgraded) appended to `~/.claude/anvil-reviewer-calibration.jsonl` after each falsification run
+- **feat(metrics-analyst):** Step 6 reads calibration file and reports per-reviewer accuracy/rejection rates with ⚠️/✅ signals — runs after every build session and standalone `/metrics`
+- **test(sdk):** 51 unit tests across consolidator, triage, domain-mapper, output — vitest added as devDependency
+
 ## [1.2.0] — 2026-03-29
 
 ### fix(sdk): add 'max' effort level — opus model, 30 turns, $0.60/reviewer budget

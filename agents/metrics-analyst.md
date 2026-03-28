@@ -211,9 +211,7 @@ Then exit Step 5.
 
 Silent pass — output nothing.
 
-### 6. Reviewer Calibration Analysis (optional — runs standalone only)
-
-Skip this step if `session_dir` is set (Step 0 set it). Only run when invoked standalone (no arguments).
+### 6. Reviewer Calibration Analysis (always runs — global data)
 
 ```bash
 tail -200 ~/.claude/anvil-reviewer-calibration.jsonl 2>/dev/null

@@ -305,6 +305,7 @@ async function runReviewCommand(args: string[]): Promise<void> {
     strengths,
     verdict: critical > 0 ? 'REQUEST_CHANGES' : 'APPROVE',
     ...(noiseWarning && { noiseWarning: true }),
+    complexity,
     cost: {
       total_usd: totalCost + falsificationCost,
       per_reviewer: results.map(r => r.cost),
