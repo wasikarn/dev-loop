@@ -20,9 +20,6 @@ function formatFinding(f: ConsolidatedFinding): string {
   if (f.patternNote) {
     lines.push(`**Pattern:** ${f.patternNote}`)
   }
-  if (f.crossDomain) {
-    lines.push(`> Cross-domain: ${f.crossDomain}`)
-  }
   return lines.join('\n')
 }
 

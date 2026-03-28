@@ -11,7 +11,10 @@ export async function runFalsification(params: {
   if (params.findings.length === 0) return []
 
   const findingsSummary = params.findings
-    .map((f, i) => `[${i}] ${f.severity} | ${f.rule} | ${f.file}:${f.line ?? '?'} — ${f.issue}`)
+    .map((f, i) => {
+      const key = `${f.file}:${f.line ?? 'null'}:${f.rule}`
+      return `[${i}] ${f.severity} | ${f.rule} | ${f.file}:${f.line ?? '?'} — ${f.issue} [key:${key}]`
+    })
     .join('\n')
 
   let result: Awaited<ReturnType<typeof runClaudeSubprocess>>

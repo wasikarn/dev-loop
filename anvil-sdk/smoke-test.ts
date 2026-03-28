@@ -12,6 +12,8 @@ import type { Finding, ReviewReport, ReviewRole } from './src/types.js'
 import { ChallengeResultSchema } from './src/plan/schemas/challenge.js'
 import { InvestigationResultSchema } from './src/investigate/schemas/investigation.js'
 import { parsePlanChallengeArgs, parseInvestigateArgs, parseFalsifyArgs } from './src/cli.js'
+import { resolveConfig } from './src/config.js'
+import { FindingSchema } from './src/review/schemas/finding.js'
 
 let passed = 0
 let failed = 0
@@ -334,6 +336,82 @@ test('parseFalsifyArgs returns findings file path', () => {
 test('parseFalsifyArgs defaults findingsFile to undefined', () => {
   const result = parseFalsifyArgs([])
   assert(result.findingsFile === undefined, 'expected undefined findingsFile')
+})
+
+// --- Prompt E: effort presets + config-aware triage ---
+console.log('\neffort presets (Prompt E)')
+test('resolveConfig() defaults to high effort', () => {
+  const cfg = resolveConfig()
+  assert(cfg.effort === 'high', `expected high, got ${cfg.effort}`)
+  assert(cfg.model === 'sonnet', `expected sonnet, got ${cfg.model}`)
+})
+test('resolveConfig({ effort: low }) → haiku, 8 turns, $0.10/reviewer', () => {
+  const cfg = resolveConfig({ effort: 'low' })
+  assert(cfg.model === 'haiku', `expected haiku, got ${cfg.model}`)
+  assert(cfg.maxTurnsReviewer === 8, `expected 8, got ${cfg.maxTurnsReviewer}`)
+  assert(cfg.maxBudgetPerReviewer === 0.10, `expected 0.10, got ${cfg.maxBudgetPerReviewer}`)
+})
+test('resolveConfig({ effort: medium }) → sonnet, 15 turns', () => {
+  const cfg = resolveConfig({ effort: 'medium' })
+  assert(cfg.model === 'sonnet', `expected sonnet, got ${cfg.model}`)
+  assert(cfg.maxTurnsReviewer === 15, `expected 15, got ${cfg.maxTurnsReviewer}`)
+})
+test('resolveConfig({ effort: low, budgetUsd: 2.0 }) → budget overrides preset', () => {
+  const cfg = resolveConfig({ effort: 'low', budgetUsd: 2.0 })
+  // model stays haiku (from preset), budget is overridden
+  assert(cfg.model === 'haiku', `model should stay haiku, got ${cfg.model}`)
+  assert(Math.abs(cfg.maxBudgetPerReviewer - (2.0 * 0.8 / 3)) < 0.001, `budget override failed: ${cfg.maxBudgetPerReviewer}`)
+})
+test('resolveConfig has no confidenceThreshold field', () => {
+  const cfg = resolveConfig() as unknown as Record<string, unknown>
+  assert(!('confidenceThreshold' in cfg), 'dead field confidenceThreshold should not exist')
+})
+test('resolveConfig has no maxTurnsFalsification field', () => {
+  const cfg = resolveConfig() as unknown as Record<string, unknown>
+  assert(!('maxTurnsFalsification' in cfg), 'dead field maxTurnsFalsification should not exist')
+})
+test('triage with custom autoPassThreshold=85', () => {
+  const f: Finding = { severity: 'critical', rule: 'HR-1', file: 'x.ts', line: 1, confidence: 87, issue: 'x', fix: 'y', isHardRule: true }
+  // default autoPassThreshold=90 → mustFalsify; custom 85 → autoPass
+  const { autoPass: ap1 } = triage([f])
+  assert(ap1.length === 0, `default threshold should not autoPass conf=87 (threshold=90)`)
+  const { autoPass: ap2 } = triage([f], { autoPassThreshold: 85 })
+  assert(ap2.length === 1, `custom threshold 85 should autoPass conf=87`)
+})
+
+// --- Prompt G: crossDomain removal + findingKey verdict safety ---
+console.log('\nstructural fixes (Prompt G)')
+test('FindingSchema has no crossDomain field', () => {
+  const result = FindingSchema.safeParse({
+    severity: 'warning', rule: 'R1', file: 'a.ts', line: 1, confidence: 80, issue: 'x', fix: 'y', isHardRule: false,
+    crossDomain: 'security',   // should be silently stripped by Zod (not fail)
+  })
+  assert(result.success, 'parse should succeed even with extra crossDomain field')
+  assert(!('crossDomain' in (result.data as Record<string, unknown>)), 'crossDomain should be stripped from parsed output')
+})
+test('consolidate REJECTED verdict by findingKey ignores findingIndex', () => {
+  // Two findings with different file — findingIndex=0 points to finding A, key points to finding B
+  const findingA: Finding = { severity: 'warning', rule: 'R-key', file: 'a.ts', line: 1, confidence: 80, issue: 'x', fix: 'y', isHardRule: false }
+  const findingB: Finding = { severity: 'warning', rule: 'R-key', file: 'b.ts', line: 2, confidence: 80, issue: 'x', fix: 'y', isHardRule: false }
+  const result = consolidate({
+    // perReviewer has [findingA, findingB] — flatMap produces [findingA(0), findingB(1)]
+    perReviewer: [
+      { role: 'correctness' as ReviewRole, findings: [findingA, findingB] },
+    ],
+    autoPass: [],
+    // findingIndex=0 (would reject findingA) but findingKey points to findingB
+    verdicts: [{
+      findingIndex: 0,
+      findingKey: 'b.ts:2:R-key',
+      originalSummary: 'x',
+      verdict: 'REJECTED',
+      rationale: 'false positive',
+    }],
+    patternCapCount: 3,
+  })
+  // findingB should be rejected (key match), findingA should survive
+  assert(result.length === 1, `expected 1 surviving finding, got ${result.length}`)
+  assert(result[0]?.file === 'a.ts', `expected a.ts to survive, got ${result[0]?.file}`)
 })
 
 // --- no SDK imports ---

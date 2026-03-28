@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const VerdictSchema = z.object({
   findingIndex: z.number().int().min(0),
+  findingKey: z.string().optional(),   // "file:line:rule" — preferred over index for matching
   originalSummary: z.string(),
   verdict: z.enum(['SUSTAINED', 'DOWNGRADED', 'REJECTED']),
   newSeverity: z.enum(['critical', 'warning', 'info']).optional(),
@@ -23,6 +24,7 @@ export const verdictResultJsonSchema = {
         type: 'object',
         properties: {
           findingIndex: { type: 'integer', minimum: 0 },
+          findingKey: { type: 'string' },    // optional: "file:line:rule" key from input [key:...]
           originalSummary: { type: 'string' },
           verdict: { type: 'string', enum: ['SUSTAINED', 'DOWNGRADED', 'REJECTED'] },
           newSeverity: { type: 'string', enum: ['critical', 'warning', 'info'] },

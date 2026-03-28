@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync } from 'node:fs'
-import { resolveConfig } from './config.js'
+import { resolveConfig, type EffortLevel } from './config.js'
 import { runFalsification } from './review/agents/falsifier.js'
 import { consolidate, findingKey } from './review/consolidator.js'
 import { readDiff, readPrDiff } from './review/diff-reader.js'
@@ -8,6 +8,95 @@ import { formatJson, formatMarkdown } from './review/output.js'
 import { runReview } from './review/orchestrator.js'
 import { triage } from './review/triage.js'
 import type { ReviewReport } from './types.js'
+
+// ─── generic flag parser ──────────────────────────────────────────────────────
+
+type FlagType = 'string' | 'positiveInt' | 'positiveFloat' | 'boolean' | 'enum'
+
+interface FlagSpec {
+  flag: string
+  field: string
+  type: FlagType
+  enum?: string[]
+  required?: boolean
+  errorPrefix: string
+  onError?: 'exit' | 'warn'
+  /** boolean flags only: sets field to false instead of true */
+  negate?: boolean
+}
+
+function parseFlags<T extends Record<string, unknown>>(
+  args: string[],
+  specs: FlagSpec[],
+  defaults: T,
+): T {
+  const result = { ...defaults }
+  const specByFlag = new Map(specs.map(s => [s.flag, s]))
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (arg === undefined) continue
+    const spec = specByFlag.get(arg)
+    if (spec === undefined) {
+      if (arg.startsWith('--')) console.warn(`unknown flag: ${arg}`)
+      continue
+    }
+
+    if (spec.type === 'boolean') {
+      ;(result as Record<string, unknown>)[spec.field] = spec.negate !== true
+      continue
+    }
+
+    const next = args[i + 1]
+    if (next === undefined || next.startsWith('--')) {
+      const msg = `${spec.errorPrefix} ${spec.flag} requires a value`
+      if (spec.required === true || spec.onError === 'exit') {
+        console.error(msg); process.exit(1)
+      } else {
+        console.warn(msg + ' — using default')
+      }
+      continue
+    }
+
+    let parsed: unknown
+    if (spec.type === 'string') {
+      parsed = next
+    } else if (spec.type === 'enum') {
+      if (spec.enum?.includes(next) === true) {
+        parsed = next
+      } else {
+        const msg = `${spec.errorPrefix} ${spec.flag} must be ${spec.enum?.join('|')}, got: ${next}`
+        if (spec.required === true || spec.onError === 'exit') { console.error(msg); process.exit(1) }
+        else { console.warn(msg + ' — using default'); continue }
+      }
+    } else if (spec.type === 'positiveInt') {
+      const n = parseInt(next, 10)
+      if (Number.isNaN(n) || n <= 0) {
+        const msg = `${spec.errorPrefix} ${spec.flag} must be a positive integer, got: ${next}`
+        if (spec.required === true || spec.onError === 'exit') { console.error(msg); process.exit(1) }
+        else { console.warn(msg + ' — using default'); continue }
+      } else {
+        parsed = n
+      }
+    } else if (spec.type === 'positiveFloat') {
+      const n = parseFloat(next)
+      if (Number.isNaN(n) || n <= 0) {
+        const msg = `${spec.errorPrefix} ${spec.flag} must be a positive number, got: ${next}`
+        if (spec.onError === 'exit') { console.error(msg); process.exit(1) }
+        else { console.warn(msg + ' — using default'); continue }
+      } else {
+        parsed = n
+      }
+    }
+
+    if (parsed !== undefined) {
+      ;(result as Record<string, unknown>)[spec.field] = parsed
+      i++
+    }
+  }
+
+  return result
+}
 
 // ─── review subcommand ────────────────────────────────────────────────────────
 
@@ -20,102 +109,31 @@ interface ParsedReviewArgs {
   hardRulesPath: string | undefined
   budget: number | undefined
   dismissedPatternsPath: string | undefined
+  effort: EffortLevel | undefined
 }
 
 function parseArgs(args: string[]): ParsedReviewArgs {
-  const result: ParsedReviewArgs = {
-    pr: undefined,
-    branch: undefined,
-    baseBranch: undefined,
-    output: 'json',
-    falsification: true,
-    hardRulesPath: undefined,
-    budget: undefined,
-    dismissedPatternsPath: undefined,
-  }
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i]
-    if (arg === undefined) continue
-
-    if (arg === '--no-falsification') {
-      result.falsification = false
-      continue
-    }
-
-    // Flags that consume the next argument
-    const next = args[i + 1]
-
-    if (arg === '--pr') {
-      if (next === undefined) {
-        console.error(`[sdk-review] --pr requires a value`)
-        process.exit(1)
-      }
-      const n = parseInt(next, 10)
-      if (Number.isNaN(n) || n <= 0) {
-        console.error(`[sdk-review] --pr must be a positive integer, got: ${next}`)
-        process.exit(1)
-      }
-      result.pr = n
-      i++
-    } else if (arg === '--branch') {
-      if (next === undefined) {
-        console.error(`[sdk-review] --branch requires a value`)
-        process.exit(1)
-      }
-      result.branch = next
-      i++
-    } else if (arg === '--base-branch') {
-      if (next === undefined) {
-        console.error(`[sdk-review] --base-branch requires a value`)
-        process.exit(1)
-      }
-      result.baseBranch = next
-      i++
-    } else if (arg === '--output') {
-      if (next === undefined) {
-        console.error(`[sdk-review] --output requires a value`)
-        process.exit(1)
-      }
-      if (next === 'json' || next === 'markdown') {
-        result.output = next
-      } else {
-        console.error(`[sdk-review] Unknown --output value: ${next}. Expected json or markdown.`)
-        process.exit(1)
-      }
-      i++
-    } else if (arg === '--hard-rules') {
-      if (next === undefined) {
-        console.error(`[sdk-review] --hard-rules requires a value`)
-        process.exit(1)
-      }
-      result.hardRulesPath = next
-      i++
-    } else if (arg === '--budget') {
-      if (next === undefined) {
-        console.error(`[sdk-review] --budget requires a value`)
-        process.exit(1)
-      }
-      const parsed = parseFloat(next)
-      if (Number.isNaN(parsed) || parsed <= 0) {
-        console.error(`[sdk-review] --budget must be a positive number, got: ${next}`)
-        process.exit(1)
-      }
-      result.budget = parsed
-      i++
-    } else if (arg === '--dismissed') {
-      if (next === undefined) {
-        console.error('[sdk-review] --dismissed requires a path')
-        process.exit(1)
-      }
-      result.dismissedPatternsPath = next
-      i++
-    } else if (arg.startsWith('--')) {
-      console.warn(`[sdk-review] unknown flag: ${arg}`)
-    }
-  }
-
-  return result
+  return parseFlags(args, [
+    { flag: '--pr', field: 'pr', type: 'positiveInt', errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--branch', field: 'branch', type: 'string', errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--base-branch', field: 'baseBranch', type: 'string', errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--output', field: 'output', type: 'enum', enum: ['json', 'markdown'], errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--hard-rules', field: 'hardRulesPath', type: 'string', errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--budget', field: 'budget', type: 'positiveFloat', errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--dismissed', field: 'dismissedPatternsPath', type: 'string', errorPrefix: '[sdk-review]', onError: 'exit' },
+    { flag: '--no-falsification', field: 'falsification', type: 'boolean', negate: true, errorPrefix: '[sdk-review]' },
+    { flag: '--effort', field: 'effort', type: 'enum', enum: ['low', 'medium', 'high'], errorPrefix: '[sdk-review]', onError: 'exit' },
+  ], {
+    pr: undefined as number | undefined,
+    branch: undefined as string | undefined,
+    baseBranch: undefined as string | undefined,
+    output: 'json' as 'json' | 'markdown',
+    falsification: true as boolean,
+    hardRulesPath: undefined as string | undefined,
+    budget: undefined as number | undefined,
+    dismissedPatternsPath: undefined as string | undefined,
+    effort: undefined as EffortLevel | undefined,
+  })
 }
 
 function loadHardRules(path: string | undefined): string {
@@ -148,7 +166,9 @@ async function runReviewCommand(args: string[]): Promise<void> {
 
   const hardRules = loadHardRules(parsed.hardRulesPath)
   const config = resolveConfig({
+    ...(parsed.effort !== undefined && { effort: parsed.effort }),
     ...(parsed.budget !== undefined && { budgetUsd: parsed.budget }),
+    ...(parsed.hardRulesPath !== undefined && { hardRulesPath: parsed.hardRulesPath }),
     noFalsification: !parsed.falsification,
   })
 
@@ -192,7 +212,10 @@ async function runReviewCommand(args: string[]): Promise<void> {
   })
 
   // Triage merged findings to find autoPass/mustFalsify split
-  const { autoPass, autoDrop: _autoDrop, mustFalsify } = triage(perReviewer.flatMap(r => r.findings))
+  const { autoPass, autoDrop: _autoDrop, mustFalsify } = triage(
+    perReviewer.flatMap(r => r.findings),
+    { autoPassThreshold: config.autoPassThreshold, autoDropThreshold: config.autoDropThreshold },
+  )
 
   // Falsification
   let verdicts: Awaited<ReturnType<typeof runFalsification>> = []
@@ -263,41 +286,16 @@ interface ParsedPlanChallengeArgs {
 }
 
 export function parsePlanChallengeArgs(args: string[]): ParsedPlanChallengeArgs {
-  const result: ParsedPlanChallengeArgs = {
-    planFile: undefined,
-    researchFile: undefined,
-    output: 'json',
-    budget: undefined,
-  }
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i]
-    if (arg === undefined) continue
-    const next = args[i + 1]
-    if (arg === '--plan-file') {
-      if (next === undefined) {
-        console.error('[sdk-plan-challenge] --plan-file requires a value')
-        process.exit(1)
-      }
-      result.planFile = next
-      i++
-    } else if (arg === '--research-file') {
-      if (next === undefined) {
-        console.error('[sdk-plan-challenge] --research-file requires a value')
-        process.exit(1)
-      }
-      result.researchFile = next
-      i++
-    } else if (arg === '--budget') {
-      if (next !== undefined) {
-        const n = parseFloat(next)
-        if (!Number.isNaN(n)) {
-          result.budget = n
-          i++
-        }
-      }
-    }
-  }
-  return result
+  return parseFlags(args, [
+    { flag: '--plan-file', field: 'planFile', type: 'string', required: true, errorPrefix: '[sdk-plan-challenge]', onError: 'exit' },
+    { flag: '--research-file', field: 'researchFile', type: 'string', errorPrefix: '[sdk-plan-challenge]', onError: 'exit' },
+    { flag: '--budget', field: 'budget', type: 'positiveFloat', errorPrefix: '[sdk-plan-challenge]' },
+  ], {
+    planFile: undefined as string | undefined,
+    researchFile: undefined as string | undefined,
+    output: 'json' as const,
+    budget: undefined as number | undefined,
+  })
 }
 
 async function runPlanChallengeCommand(args: string[]): Promise<void> {
@@ -334,33 +332,16 @@ interface ParsedInvestigateArgs {
 }
 
 export function parseInvestigateArgs(args: string[]): ParsedInvestigateArgs {
-  const result: ParsedInvestigateArgs = { bug: undefined, quick: false, output: 'json', budget: undefined }
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i]
-    if (arg === undefined) continue
-    if (arg === '--quick') {
-      result.quick = true
-      continue
-    }
-    const next = args[i + 1]
-    if (arg === '--bug') {
-      if (next === undefined) {
-        console.error('[sdk-investigate] --bug requires a value')
-        process.exit(1)
-      }
-      result.bug = next
-      i++
-    } else if (arg === '--budget') {
-      if (next !== undefined) {
-        const n = parseFloat(next)
-        if (!Number.isNaN(n)) {
-          result.budget = n
-          i++
-        }
-      }
-    }
-  }
-  return result
+  return parseFlags(args, [
+    { flag: '--bug', field: 'bug', type: 'string', required: true, errorPrefix: '[sdk-investigate]', onError: 'exit' },
+    { flag: '--quick', field: 'quick', type: 'boolean', errorPrefix: '[sdk-investigate]' },
+    { flag: '--budget', field: 'budget', type: 'positiveFloat', errorPrefix: '[sdk-investigate]' },
+  ], {
+    bug: undefined as string | undefined,
+    quick: false as boolean,
+    output: 'json' as const,
+    budget: undefined as number | undefined,
+  })
 }
 
 async function runInvestigateCommand(args: string[]): Promise<void> {
@@ -388,29 +369,14 @@ interface ParsedFalsifyArgs {
 }
 
 export function parseFalsifyArgs(args: string[]): ParsedFalsifyArgs {
-  const result: ParsedFalsifyArgs = { findingsFile: undefined, output: 'json', budget: undefined }
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i]
-    if (arg === undefined) continue
-    const next = args[i + 1]
-    if (arg === '--findings-file') {
-      if (next === undefined) {
-        console.error('[sdk-falsify] --findings-file requires a value')
-        process.exit(1)
-      }
-      result.findingsFile = next
-      i++
-    } else if (arg === '--budget') {
-      if (next !== undefined) {
-        const n = parseFloat(next)
-        if (!Number.isNaN(n)) {
-          result.budget = n
-          i++
-        }
-      }
-    }
-  }
-  return result
+  return parseFlags(args, [
+    { flag: '--findings-file', field: 'findingsFile', type: 'string', errorPrefix: '[sdk-falsify]', onError: 'exit' },
+    { flag: '--budget', field: 'budget', type: 'positiveFloat', errorPrefix: '[sdk-falsify]' },
+  ], {
+    findingsFile: undefined as string | undefined,
+    output: 'json' as const,
+    budget: undefined as number | undefined,
+  })
 }
 
 async function runFalsifyCommand(args: string[]): Promise<void> {
@@ -442,45 +408,15 @@ interface ParsedFixIntentVerifyArgs {
 }
 
 export function parseFixIntentVerifyArgs(args: string[]): ParsedFixIntentVerifyArgs {
-  const result: ParsedFixIntentVerifyArgs = { pr: undefined, triageFile: undefined, budget: undefined }
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i]
-    if (arg === undefined) continue
-    const next = args[i + 1]
-    if (arg === '--pr') {
-      if (next === undefined) {
-        console.error('[sdk-fix-intent-verify] --pr requires a value')
-        process.exit(1)
-      }
-      const n = parseInt(next, 10)
-      if (Number.isNaN(n) || n <= 0) {
-        console.error(`[sdk-fix-intent-verify] --pr must be a positive integer, got: ${next}`)
-        process.exit(1)
-      }
-      result.pr = n
-      i++
-    } else if (arg === '--triage-file') {
-      if (next === undefined) {
-        console.error('[sdk-fix-intent-verify] --triage-file requires a value')
-        process.exit(1)
-      }
-      result.triageFile = next
-      i++
-    } else if (arg === '--budget') {
-      if (next === undefined || next.startsWith('--')) {
-        console.warn('[sdk-fix-intent-verify] --budget requires a value — using default')
-      } else {
-        const n = parseFloat(next)
-        if (Number.isNaN(n) || n <= 0) {
-          console.warn(`[sdk-fix-intent-verify] --budget must be a positive number, got: ${next} — using default`)
-        } else {
-          result.budget = n
-          i++
-        }
-      }
-    }
-  }
-  return result
+  return parseFlags(args, [
+    { flag: '--pr', field: 'pr', type: 'positiveInt', required: true, errorPrefix: '[sdk-fix-intent-verify]', onError: 'exit' },
+    { flag: '--triage-file', field: 'triageFile', type: 'string', required: true, errorPrefix: '[sdk-fix-intent-verify]', onError: 'exit' },
+    { flag: '--budget', field: 'budget', type: 'positiveFloat', errorPrefix: '[sdk-fix-intent-verify]' },
+  ], {
+    pr: undefined as number | undefined,
+    triageFile: undefined as string | undefined,
+    budget: undefined as number | undefined,
+  })
 }
 
 async function runFixIntentVerifyCommand(args: string[]): Promise<void> {

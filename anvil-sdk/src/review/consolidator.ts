@@ -29,9 +29,15 @@ const ROLE_CONFIDENCE: Record<ReviewRole, number> = {
  * - No verdict → keep unchanged
  */
 function applyVerdicts(findings: Finding[], verdicts: Verdict[]): Finding[] {
+  // Key-based lookup preferred (order-independent); index fallback for older verdicts without key
+  const verdictByKey = new Map<string, Verdict>()
   const verdictByIndex = new Map<number, Verdict>()
   for (const v of verdicts) {
-    verdictByIndex.set(v.findingIndex, v)
+    if (v.findingKey !== undefined) {
+      verdictByKey.set(v.findingKey, v)
+    } else {
+      verdictByIndex.set(v.findingIndex, v)
+    }
   }
 
   const result: Finding[] = []
@@ -39,7 +45,9 @@ function applyVerdicts(findings: Finding[], verdicts: Verdict[]): Finding[] {
     const finding = findings[i]
     if (finding === undefined) continue
 
-    const verdict = verdictByIndex.get(i)
+    const key = findingKey(finding)
+    const verdict = verdictByKey.get(key) ?? verdictByIndex.get(i)
+
     if (verdict === undefined || verdict.verdict === 'SUSTAINED') {
       result.push(finding)
     } else if (verdict.verdict === 'DOWNGRADED') {

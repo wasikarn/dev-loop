@@ -18,6 +18,7 @@ Return a JSON object:
   "verdicts": [
     {
       "findingIndex": <number>,
+      "findingKey": "<copy of the [key:...] value from the finding line>",
       "originalSummary": "<copy of finding summary>",
       "verdict": "SUSTAINED" | "DOWNGRADED" | "REJECTED",
       "newSeverity": "critical" | "warning" | "info",  (only if DOWNGRADED)

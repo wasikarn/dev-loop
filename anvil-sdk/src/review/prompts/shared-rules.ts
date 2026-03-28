@@ -50,10 +50,9 @@ OUTPUT: Return a JSON object with two fields:
   "file": "<file path>",
   "line": <number or null>,
   "confidence": <0-100>,
-  "issue": "<what is wrong with evidence>",
+  "issue": "<what is wrong with evidence — include [CROSS-DOMAIN: domain] prefix if outside your primary domain>",
   "fix": "<concrete fix>",
-  "isHardRule": <true|false>,
-  "crossDomain": "<domain>" (optional)
+  "isHardRule": <true|false>
 }]
 
 "strengths" — array of 1-3 specific things done well in this diff, within your domain.

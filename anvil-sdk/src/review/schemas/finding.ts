@@ -9,7 +9,6 @@ export const FindingSchema = z.object({
   issue: z.string(),
   fix: z.string(),
   isHardRule: z.boolean(),
-  crossDomain: z.string().optional(),
 })
 
 export const FindingArraySchema = z.array(FindingSchema)
@@ -23,6 +22,7 @@ export const FindingResultSchema = z.object({
 // Manually crafted JSON schema for Claude API outputFormat.
 // Avoids z.toJSONSchema() quirks: $schema field, anyOf for nullable, large integer bounds.
 // line is omitted from required (Claude sends null → Zod coerces to null, validation still works).
+// crossDomain removed: reviewers embed [CROSS-DOMAIN: domain] in the issue string instead.
 export const findingResultJsonSchema = {
   type: 'object',
   properties: {
@@ -39,7 +39,6 @@ export const findingResultJsonSchema = {
           issue: { type: 'string' },
           fix: { type: 'string' },
           isHardRule: { type: 'boolean' },
-          crossDomain: { type: 'string' },
         },
         required: ['severity', 'rule', 'file', 'confidence', 'issue', 'fix', 'isHardRule'],
       },
