@@ -33,6 +33,10 @@ export interface SubprocessResult {
   text: string
   /** Parsed structured output — present when --json-schema was used */
   structuredOutput: unknown
+  /** Total cost in USD from total_cost_usd field */
+  costUsd: number
+  /** Total tokens: input + output (excludes cache tokens) */
+  tokens: number
 }
 
 interface ClaudeJsonOutput {
@@ -41,6 +45,11 @@ interface ClaudeJsonOutput {
   result?: string
   structured_output?: unknown
   is_error?: boolean
+  total_cost_usd?: number
+  usage?: {
+    input_tokens?: number
+    output_tokens?: number
+  }
 }
 
 export async function runClaudeSubprocess(params: SubprocessParams): Promise<SubprocessResult> {
@@ -100,6 +109,8 @@ export async function runClaudeSubprocess(params: SubprocessParams): Promise<Sub
     return {
       text: output.result ?? '',
       structuredOutput: output.structured_output,
+      costUsd: output.total_cost_usd ?? 0,
+      tokens: (output.usage?.input_tokens ?? 0) + (output.usage?.output_tokens ?? 0),
     }
   } finally {
     unlink(tmpPath).catch(() => { /* ignore cleanup errors */ })

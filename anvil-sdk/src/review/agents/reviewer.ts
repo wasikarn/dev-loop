@@ -102,7 +102,7 @@ export async function runReviewer(params: {
   return {
     findings: parsed.data.findings,
     strengths: parsed.data.strengths ?? [],
-    cost: 0,
-    tokens: 0,
+    cost: result.costUsd,
+    tokens: result.tokens,
   }
 }
