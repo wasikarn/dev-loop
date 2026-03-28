@@ -38,7 +38,7 @@ export interface SubprocessResult {
   structuredOutput: unknown
   /** Total cost in USD from total_cost_usd field */
   costUsd: number
-  /** Total tokens: input + output (excludes cache tokens) */
+  /** Total tokens processed: input + cache_creation + cache_read + output */
   tokens: number
 }
 
@@ -52,6 +52,8 @@ interface ClaudeJsonOutput {
   usage?: {
     input_tokens?: number
     output_tokens?: number
+    cache_creation_input_tokens?: number
+    cache_read_input_tokens?: number
   }
 }
 
@@ -66,6 +68,7 @@ export async function runClaudeSubprocess(params: SubprocessParams): Promise<Sub
       '--output-format', 'json',
       '--system-prompt-file', tmpPath,
       '--dangerously-skip-permissions',
+      '--no-session-persistence',
     ]
 
     if (params.allowedTools && params.allowedTools.length > 0) {
@@ -117,7 +120,10 @@ export async function runClaudeSubprocess(params: SubprocessParams): Promise<Sub
       text: output.result ?? '',
       structuredOutput: output.structured_output,
       costUsd: output.total_cost_usd ?? 0,
-      tokens: (output.usage?.input_tokens ?? 0) + (output.usage?.output_tokens ?? 0),
+      tokens: (output.usage?.input_tokens ?? 0)
+        + (output.usage?.cache_creation_input_tokens ?? 0)
+        + (output.usage?.cache_read_input_tokens ?? 0)
+        + (output.usage?.output_tokens ?? 0),
     }
   } finally {
     unlink(tmpPath).catch(() => { /* ignore cleanup errors */ })

@@ -3,6 +3,7 @@ name: migration-reviewer
 description: "Reviews database migration files for safety, reversibility, and performance impact (M1–M10): irreversible DDL, missing FK indexes, table-lock risk, zero-downtime violations, constraint correctness, expand/contract completeness, data migration batching, index type correctness (GIN/partial), sequence exhaustion, and deadlock risk. Spawned conditionally in review Phase 2 when infrastructure/migration files are detected in the PR diff."
 tools: Read, Grep, Glob, Bash
 model: sonnet
+effort: high
 disallowedTools: Edit, Write
 maxTurns: 10
 skills: [review-conventions, review-rules]

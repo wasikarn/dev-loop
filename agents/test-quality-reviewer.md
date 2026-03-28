@@ -3,6 +3,7 @@ name: test-quality-reviewer
 description: "Dedicated test quality reviewer for PR diffs. Checks (T1–T9): behavior-over-implementation, mock fidelity, edge case coverage, missing tests for new logic, test naming clarity, zero-assertion/mock-call-only/not.toThrow() detection (T6 Hard Rule), boundary operator coverage, stale mock contracts, and test isolation. Spawned conditionally in review Phase 2 when test files or new exported functions without spec changes are detected. Also usable standalone after any test-writing session."
 tools: Read, Grep, Glob, Bash
 model: sonnet
+effort: high
 disallowedTools: Edit, Write
 maxTurns: 10
 skills: [review-conventions, review-rules, review-examples]

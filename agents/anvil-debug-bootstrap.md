@@ -2,6 +2,7 @@
 name: anvil-debug-bootstrap
 description: "Pre-gather shared debug context before debug Phase 1: reads build artifacts when present, maps affected files from stack trace or description, collects recent commits and code structure. Run at the start of any debug session to avoid redundant reads by Investigator agents."
 model: haiku
+background: true
 tools: Read, Glob, Bash, Grep, Write
 maxTurns: 15
 ---

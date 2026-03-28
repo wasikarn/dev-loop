@@ -3,6 +3,7 @@ name: plan-challenger
 description: "Challenges a build Phase 2 plan before implementation begins. Uses dual-lens challenge: Minimal-lens (YAGNI/scope/ordering) and Clean-lens (pre-work/debt). Called by build lead at the Phase 2 approval gate — Full mode only."
 tools: Read, Grep, Glob
 model: sonnet
+effort: medium
 disallowedTools: Edit, Write, Bash
 maxTurns: 5
 ---

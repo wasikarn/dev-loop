@@ -4,6 +4,7 @@ description: "Respond to PR review comments — reads all open GitHub review thr
 argument-hint: "[pr-number] [jira-key?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
 disable-model-invocation: true
+effort: high
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash(git *), Bash(gh *)
 ---
 

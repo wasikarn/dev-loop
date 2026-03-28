@@ -3,6 +3,7 @@ name: anvil-respond-bootstrap
 description: "Bootstraps respond Phase 1 by pre-gathering all open PR review threads, affected file contents, and recent git context in one fast pass. Use at the START of respond before spawning Fixers. Returns structured context block for injection into Fixer prompts."
 tools: Bash, Read, Grep, Glob
 model: haiku
+background: true
 disallowedTools: Edit, Write
 maxTurns: 15
 ---

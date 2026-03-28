@@ -3,6 +3,7 @@ name: jira-summary-poster
 description: "Post a structured implementation summary comment to the linked Jira ticket after completing an anvil task. Reads anvil-context.md or debug-context.md and posts what was implemented, files changed, and any AC deviations. When atlassian-pm plugin is available, generates ADF-formatted comment via story-writer + quality-gate agents. Use at the end of build Phase 6 or debug Phase 3 cleanup when a Jira key is present in the context artifact."
 tools: Read, Glob, Bash, mcp__mcp-atlassian__jira_get_issue, mcp__mcp-atlassian__jira_add_comment, mcp__mcp-atlassian__jira_transition_issue, mcp__mcp-atlassian__jira_get_transitions, mcp__plugin_atlassian-pm_atlassian-cache__cache_get_issue, mcp__plugin_atlassian-pm_atlassian-cache__cache_invalidate
 model: haiku
+background: true
 maxTurns: 15
 skills: [jira-integration]
 ---

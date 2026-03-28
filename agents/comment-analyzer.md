@@ -24,6 +24,7 @@ description: |
   </example>
 tools: Read, Glob, Grep, Bash
 model: sonnet
+effort: low
 # memory intentionally omitted — stateless: operates on git diff, no cross-session state needed
 skills: [review-conventions]
 ---

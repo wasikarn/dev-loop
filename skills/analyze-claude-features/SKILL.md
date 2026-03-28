@@ -3,6 +3,7 @@ name: analyze-claude-features
 description: "Audit this project against all official Claude Code features and score adoption coverage. Fetches docs from code.claude.com, verifies project structure, identifies gaps, and produces Analysis Quality + Project Coverage scores. Use /analyze-claude-features to check how well the project uses Claude Code features."
 user-invocable: true
 disable-model-invocation: false
+effort: medium
 ---
 
 # Analyze Claude Features
