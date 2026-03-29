@@ -1,25 +1,6 @@
 ---
 name: migration-reviewer
-description: |
-  Reviews database migration files for safety, reversibility, and performance impact (M1–M10): irreversible DDL, missing FK indexes, table-lock risk, zero-downtime violations, constraint correctness, expand/contract completeness, data migration batching, index type correctness (GIN/partial), sequence exhaustion, and deadlock risk. Spawned conditionally in review Phase 2 when infrastructure/migration files are detected in the PR diff.
-
-  <example>
-  Context: Review lead detects migration files in a PR diff.
-  user: "[Review lead Phase 2 dispatch] — diff contains db/migrations/20240315_add_sessions_table.ts"
-  assistant: "Spawning migration-reviewer to audit the database migration against M1–M10 checklist."
-  <commentary>
-  Review lead proactively dispatches migration-reviewer when migration files appear in the diff. It audits for reversibility, destructive DDL, lock risks, zero-downtime patterns, and data batching.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Developer wants a review of their migration before opening a PR.
-  user: "review this database migration" or "check my migration file"
-  assistant: "I'll use migration-reviewer to audit the migration against the M1–M10 checklist."
-  <commentary>
-  User explicitly requesting a migration review triggers this agent. M1 (missing down migration) and M2 (destructive DDL) are Hard Rules — they flag regardless of confidence level.
-  </commentary>
-  </example>
+description: "Reviews database migration files for safety, reversibility, and performance impact (M1–M10): irreversible DDL, missing FK indexes, table-lock risk, zero-downtime violations, constraint correctness, expand/contract completeness, data migration batching, index type correctness (GIN/partial), sequence exhaustion, and deadlock risk. Spawned conditionally in review Phase 2 when infrastructure/migration files are detected in the PR diff."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high

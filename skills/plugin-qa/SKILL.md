@@ -1,7 +1,6 @@
 ---
 name: plugin-qa
-description: "Run the full QA check suite to verify hooks, skills, and plugin structure are healthy. Use when validating the devflow plugin, before publishing, after adding skills/hooks, or when something seems broken. Triggers: validate plugin, check hooks, verify skills, health check, is devflow working, plugin broken, something wrong with devflow, /plugin-qa."
-disable-model-invocation: true
+description: "Run full QA check suite to verify hooks, skills, and plugin structure are healthy. Use before releasing a devflow version."
 effort: low
 ---
 

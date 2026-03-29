@@ -1,6 +1,6 @@
 ---
 name: build
-description: "Primary development workflow — use /build for any coding task: new features, bug fixes, refactors, schema changes, CI failures, production hotfixes, or implementing Jira tickets. Runs Research → Plan → Implement → Verify → Review → Ship with iterative fix-review loop and Agent Teams. Auto-detects ceremony level via blast-radius scoring (Micro/Quick/Full) — no flag required. Pass a Jira key (ABC-XXXX) to auto-extract acceptance criteria into plan tasks AND automatically transition the card to In Progress (if atlassian-pm is installed). Modes: --micro for isolated zero-blast-radius tasks; --quick for small fixes; --full for cross-cutting changes; --hotfix for urgent production incidents (branches from main). Review scales by diff size. Triggers on: implement this feature, write the code for, fix this bug, create a new endpoint, scaffold this module, add tests for, TDD, CI is failing. When in doubt which dev workflow to use, start here."
+description: "Full development loop for any coding task — features, bug fixes, refactors, hotfixes, or Jira tickets. Research → Plan → Implement → Verify → Review → Ship with Agent Teams and auto-detected ceremony level. Pass Jira key to extract AC. Start here when unsure which workflow to use."
 argument-hint: "[task-description-or-jira-key] [--micro?] [--quick?] [--full?] [--hotfix?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
 disable-model-invocation: true
@@ -53,11 +53,13 @@ See [references/operational.md](references/operational.md) for prerequisites, co
 | File / Agent | Load when |
 | --- | --- |
 | [references/phase-1-triage.md](references/phase-1-triage.md) | Entering Phase 1 |
+| [references/jira-triage.md](references/jira-triage.md) | Phase 1 Step 2c — only when Jira key in `$ARGUMENTS` |
 | [references/phase-2-research.md](references/phase-2-research.md) | Entering Phase 2 (Quick/Full mode) |
 | [references/phase-3-plan.md](references/phase-3-plan.md) | Entering Phase 3 |
 | [references/phase-4-implement.md](references/phase-4-implement.md) | Entering Phase 4 |
 | [references/phase-5-verify.md](references/phase-5-verify.md) | Entering Phase 5 |
-| [references/phase-6-review.md](references/phase-6-review.md) | Entering Phase 6 and Phase 7 (Falsification Pass) |
+| [references/phase-6-review.md](references/phase-6-review.md) | Entering Phase 6 (Stage 1 + Stage 2) |
+| [references/phase-7-falsification.md](references/phase-7-falsification.md) | Full mode iter 1 only — Falsification Pass |
 | [references/phase-8-assess.md](references/phase-8-assess.md) | Entering Phase 8 |
 | [references/phase-9-ship.md](references/phase-9-ship.md) | Entering Phase 9 |
 | [references/workflow-modes.md](references/workflow-modes.md) | Phase 1 — mode classification |

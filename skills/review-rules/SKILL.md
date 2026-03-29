@@ -1,6 +1,6 @@
 ---
 name: review-rules
-description: "Core 12-point review framework used across code-reviewer, build, and review agents — rule definitions, security coverage, team vs solo reviewer assignment"
+description: "Core 12-point review framework used across code-reviewer, build, and review agents."
 user-invocable: false
 disable-model-invocation: true
 ---

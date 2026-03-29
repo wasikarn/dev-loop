@@ -21,8 +21,7 @@ if [ -n "$COMPACT_SUMMARY" ]; then
 fi
 
 echo "## Post-Compaction Context"
-echo "- Re-read CLAUDE.md for project conventions (auto-loaded)"
-echo "- Check todo list for in-progress tasks"
+echo "- Todo list: check for in-progress tasks (CLAUDE.md auto-loaded)"
 
 # Dynamic: current git state
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || :
@@ -37,17 +36,6 @@ if [ -n "$BRANCH" ]; then
   fi
 fi
 
-# Re-inject project Hard Rules if present (may have been evicted by compaction)
-PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || :
-if [ -n "$PROJECT_ROOT" ]; then
-  HARD_RULES="$PROJECT_ROOT/.claude/skills/review-rules/hard-rules.md"
-  if [ -f "$HARD_RULES" ]; then
-    echo ""
-    echo "### ⚠️ Hard Rules (re-injected after compaction)"
-    cat "$HARD_RULES"
-  fi
-fi
-
 # Re-inject last artifact state (top 5 lines of most recently modified devflow artifact)
 PLUGIN_DATA="${HOME}/.claude/plugins/data/devflow-devflow"
 if [ -d "$PLUGIN_DATA" ]; then
@@ -56,8 +44,22 @@ if [ -d "$PLUGIN_DATA" ]; then
   LAST_ARTIFACT=$(find "$PLUGIN_DATA" -maxdepth 5 -name "*.md" 2>/dev/null \
     | xargs ls -t1 2>/dev/null | head -1 || true)
   if [ -n "$LAST_ARTIFACT" ] && [ -f "$LAST_ARTIFACT" ]; then
-    echo ""
-    echo "### Last Artifact State ($(basename "$LAST_ARTIFACT"))"
-    head -5 "$LAST_ARTIFACT"
+    # Only show if artifact is fresh (< 2 hours old)
+    _now=$(date +%s)
+    _mtime=$(stat -f%m "$LAST_ARTIFACT" 2>/dev/null || stat -c%Y "$LAST_ARTIFACT" 2>/dev/null || echo 0)
+    if [ $(( _now - _mtime )) -lt 7200 ]; then
+      echo ""
+      echo "### Last Artifact ($(basename "$LAST_ARTIFACT"))"
+      ARTIFACT_NAME=$(basename "$LAST_ARTIFACT")
+      if [[ "$ARTIFACT_NAME" == "devflow-context.md" ]]; then
+        # Extract task and phase from YAML frontmatter
+        TASK=$(grep '^task:' "$LAST_ARTIFACT" 2>/dev/null | head -1 | sed 's/^task: *//')
+        PHASE=$(grep '^phase:' "$LAST_ARTIFACT" 2>/dev/null | head -1 | sed 's/^phase: *//')
+        [ -n "$TASK" ] && echo "Task: $TASK"
+        [ -n "$PHASE" ] && echo "Phase: $PHASE"
+      else
+        head -5 "$LAST_ARTIFACT"
+      fi
+    fi
   fi
 fi

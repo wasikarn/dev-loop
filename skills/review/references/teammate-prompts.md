@@ -170,7 +170,7 @@ You are reviewing PR #[PR_NUMBER] for architecture and performance issues.
 YOUR FOCUS: N+1 prevention (#3), DRY & simplicity (#4), flatten structure (#5), small functions & SOLID (#6), elegance (#7), and all Hard Rules.
 
 DRY & SIMPLICITY (#4) — patterns to flag:
-- Copy-paste variation: same logic in 2+ places with minor differences (different variable names, different hardcoded values) — extract shared function with parameter
+- Copy-paste variation: same logic in 2+ places with minor differences → extract shared function with parameter
 - Parallel conditionals: `if (type === 'A') { doX() }` ... `if (type === 'A') { doY() }` in separate places → consolidate into one type-dispatch
 - Re-implementing framework built-ins: manual date formatting when Luxon/dayjs exists, manual array dedup when `Set` works
 - Over-abstraction: interface/base class with only one implementation, factory that creates one type, generic util used in one place — YAGNI
@@ -183,7 +183,7 @@ FLATTEN STRUCTURE (#5) — patterns to flag:
 
 SOLID (#6) — patterns to flag:
 - Single Responsibility: one class/function doing validation + DB + notification + caching in one body → split responsibilities
-- Open/Closed: switch/if-else chain that must be extended to add new types (instead of using polymorphism / registry pattern)
+- Open/Closed: switch/if-else chain that must be extended to add new types instead of using polymorphism / registry pattern
 - Dependency Inversion: service instantiates its own dependencies (`new EmailService()` in constructor body) → inject via constructor parameter so it can be swapped/mocked
 - Interface Segregation: one interface with 10+ methods where callers use only 2–3 → split into focused interfaces
 - God object: class with 5+ unrelated public methods or 200+ lines → extract responsibilities
@@ -212,7 +212,7 @@ YOUR FOCUS: Clear naming (#8), documentation (#9), testability (#11), debugging-
 
 NAMING (#8) — patterns to flag:
 - Generic names: `data`, `result`, `tmp`, `obj`, `item`, `value` in non-trivial scopes — must communicate intent
-- Abbreviations where full words fit: `usr`, `ord`, `cfg`, `mgr`, `svc` — flag unless they're established project conventions
+- Abbreviations where full words fit: `usr`, `ord`, `cfg`, `mgr`, `svc` — flag unless established project conventions
 - Boolean variables/functions named as nouns: `const active = ...` → `const isActive = ...`; `function user()` → `function isUser()` or `getUser()`
 - Inconsistent casing across the file: `userId` vs `user_id` in the same module
 - Function name doesn't match what it does: `getUser()` that modifies the user is misleading

@@ -1,6 +1,6 @@
 ---
 name: review-conventions
-description: "Shared review conventions for devflow skills — comment labels (issue/suggestion/nitpick/praise/question), PR size thresholds, consolidation rules, strengths format, reviewer focus areas"
+description: "Shared review conventions — comment labels, dedup protocol, strengths, and PR size thresholds."
 user-invocable: false
 disable-model-invocation: true
 ---

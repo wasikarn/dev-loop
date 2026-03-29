@@ -1,27 +1,6 @@
 ---
 name: code-simplifier
-description: |
-  Simplifies changed code for clarity, consistency, and maintainability while preserving all functionality. Invoke explicitly when asked to simplify or clean up code, or when build Phase 5 offers the optional simplification step. Focuses only on recently modified code (git diff HEAD) unless specific files are provided as $ARGUMENTS.
-
-  Examples:
-
-  <example>
-  Context: The user asks to clean up code after implementing a feature.
-  user: "Can you simplify this implementation before I ship it?"
-  assistant: "I'll use the code-simplifier agent to improve clarity and maintainability."
-  <commentary>
-  User explicitly requested simplification — invoke code-simplifier with the changed files.
-  </commentary>
-  </example>
-
-  <example>
-  Context: build Phase 5 assessed zero Critical findings — user chose "Run simplification".
-  user: (chose simplification option in AskUserQuestion)
-  assistant: "Spawning code-simplifier agent on changed files before shipping."
-  <commentary>
-  build integrates code-simplifier as an optional Step 5.5 after zero-Critical review outcome.
-  </commentary>
-  </example>
+description: "Simplifies changed code for clarity, consistency, and maintainability while preserving all functionality. Invoke explicitly when asked to simplify or clean up code, or when build Phase 5 offers the optional simplification step. Focuses only on recently modified code (git diff HEAD) unless specific files are provided as $ARGUMENTS."
 tools: Read, Grep, Glob, Bash, Edit
 model: sonnet
 effort: low

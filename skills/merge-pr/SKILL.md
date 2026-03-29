@@ -1,6 +1,6 @@
 ---
 name: merge-pr
-description: "Automates git-flow merge and deploy for any project. Use /merge-pr to merge a feature/bugfix PR, deploy a hotfix to production, or cut a release. Handles version bumps, CHANGELOG updates, tags, backport PRs, and post-merge verification. Three modes: (1) feature/bugfix → merge to develop; (2) hotfix → deploy to production + backport; (3) release → deploy to production + backport. Requires gh CLI and a clean working tree."
+description: "Automated git-flow merge and deploy — feature, hotfix, and release modes with pre-merge safety checks. Use to merge a branch to main/develop."
 argument-hint: "[pr-number?] [--hotfix?] [--release?] [jira-key?]"
 disable-model-invocation: true
 effort: medium

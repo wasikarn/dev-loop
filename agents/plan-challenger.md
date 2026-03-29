@@ -1,25 +1,6 @@
 ---
 name: plan-challenger
-description: |
-  Challenges a build Phase 2 plan before implementation begins. Uses dual-lens challenge: Minimal-lens (YAGNI/scope/ordering) and Clean-lens (pre-work/debt). Called by build lead at the Phase 2 approval gate — Full mode only.
-
-  <example>
-  Context: Build lead is at Phase 2 approval gate (Full mode) with a completed plan.
-  user: "[Build lead Phase 2 gate — Full mode] — plan ready for challenge"
-  assistant: "Dispatching plan-challenger to review the plan for YAGNI violations and scope issues."
-  <commentary>
-  Build lead dispatches plan-challenger at Phase 2 in Full mode only. Agent applies Minimal lens (≥2 findings) and Clean lens (≥1 finding) and returns a structured challenge report.
-  </commentary>
-  </example>
-
-  <example>
-  Context: User wants to stress-test a plan before starting implementation.
-  user: "challenge this plan before I implement it"
-  assistant: "I'll use plan-challenger to review the plan for unnecessary scope, wrong ordering, and YAGNI violations."
-  <commentary>
-  User explicitly requesting a plan challenge triggers this agent. It reads the plan and research context, applies dual-lens analysis, and returns challenges with evidence from the plan text.
-  </commentary>
-  </example>
+description: "Challenges a build Phase 2 plan before implementation begins. Uses dual-lens challenge: Minimal-lens (YAGNI/scope/ordering) and Clean-lens (pre-work/debt). Called by build lead at the Phase 2 approval gate — Full mode only."
 tools: Read, Grep, Glob
 model: sonnet
 color: yellow

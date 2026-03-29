@@ -1,6 +1,6 @@
 ---
 name: systems-thinking
-description: "Deep Systems Thinking analysis using Causal Loop Diagrams. Use this skill whenever facing architecture decisions, major feature planning, recurring problem diagnosis, or evaluating new tools/processes. Always invoke when the user asks to think systemically, analyze second-order effects, or wants to understand why a problem keeps coming back. Teaches Claude to map systems, find feedback loops, predict bottleneck shifts, and apply Critical Thinking before deciding. Triggers: systems thinking, analyze system, bottleneck analysis, causal loop, second-order effects, why does this keep happening, think systemically, CLD."
+description: "Deep Systems Thinking analysis using Causal Loop Diagrams. Use for architecture decisions, scaling problems, or any situation with feedback loops and second-order effects."
 argument-hint: "[topic/scenario]"
 compatibility: "No external tools required."
 effort: max

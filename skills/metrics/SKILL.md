@@ -1,7 +1,6 @@
 ---
 name: metrics
-description: "Run a retrospective report from devflow-metrics.jsonl — iteration counts, finding categories, recurrent issues, and improvement recommendations. Use when: reviewing devflow workflow patterns, identifying recurring issues, surfacing Hard Rule candidates, measuring team velocity, or analyzing why certain issues keep appearing across multiple builds. Triggers: metrics, metrics report, retrospective, show metrics, workflow analysis, iteration report, how many iterations, recurring findings, what keeps failing."
-disable-model-invocation: true
+description: "Retrospective report from devflow-metrics.jsonl — iteration counts, finding categories, recurrent issues, Hard Rule candidates. Use after multiple build or review sessions."
 context: fork
 agent: metrics-analyst
 ---

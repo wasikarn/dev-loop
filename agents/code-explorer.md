@@ -1,27 +1,6 @@
 ---
 name: code-explorer
-description: |
-  Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, understanding patterns and abstractions, and documenting dependencies. Use when you need to understand how a feature works before modifying or extending it. Invoke explicitly via "explore", "trace", "how does X work", "map implementation of", or "understand [feature]".
-
-  Examples:
-
-  <example>
-  Context: Developer wants to understand how authentication works before extending it.
-  user: "Trace how the authentication flow works in this codebase"
-  assistant: "I'll use the code-explorer agent to trace the authentication implementation."
-  <commentary>
-  User explicitly asked to trace a feature — invoke code-explorer with the feature area as $ARGUMENTS.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Developer is about to add caching and needs to understand the data layer first.
-  user: "Before I add caching, explore how the data layer and repository pattern work here"
-  assistant: "Launching code-explorer to map the data layer architecture."
-  <commentary>
-  Explicit exploration request before implementation — invoke code-explorer with the feature area.
-  </commentary>
-  </example>
+description: "Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, understanding patterns and abstractions, and documenting dependencies. Use when you need to understand how a feature works before modifying or extending it. Invoke explicitly via \"explore\", \"trace\", \"how does X work\", \"map implementation of\", or \"understand [feature]\"."
 tools: Read, Glob, Grep, Bash
 model: sonnet
 effort: medium

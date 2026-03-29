@@ -1,25 +1,6 @@
 ---
 name: build-research-summarizer
-description: |
-  Compress research.md into a compact JSON summary after Phase 2 gate passes. Called by build lead after research-validator returns PASS. Output is written to devflow-context.md as research_summary — subsequent phase gates reference this summary instead of re-reading research.md in full.
-
-  <example>
-  Context: Build lead receives PASS from research-validator and needs a compressed summary for Phase 3+.
-  user: "[Build lead internal dispatch] — research-validator returned PASS, artifacts at .devflow/build/session-42/"
-  assistant: "Dispatching build-research-summarizer to compress research.md into devflow-context.md JSON summary."
-  <commentary>
-  Build lead always dispatches this agent immediately after research-validator PASS at the Phase 1→2 gate. The JSON summary prevents re-reading the full research.md at every subsequent phase.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Lead provides a research.md path directly.
-  user: "[Build lead] summarise .devflow/build/session-7/research.md"
-  assistant: "Running build-research-summarizer on the provided path."
-  <commentary>
-  Agent reads the research.md, detects tier (Lite vs Deep), extracts key fields, and outputs a compact JSON summary. Never guesses — only extracts from document content.
-  </commentary>
-  </example>
+description: "Compress research.md into a compact JSON summary after Phase 2 gate passes. Called by build lead after research-validator returns PASS. Output is written to devflow-context.md as research_summary — subsequent phase gates reference this summary instead of re-reading research.md in full."
 tools: Read
 model: haiku
 disallowedTools: Edit, Write, Bash, Grep, Glob

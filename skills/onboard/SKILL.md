@@ -1,7 +1,6 @@
 ---
 name: onboard
-description: "Bootstrap the current project into the devflow ecosystem — scaffold hard-rules.md and build artifact directories. Use once per new project before the first build or review invocation. Run this first when starting a new project, setting up devflow for the first time, or when hard-rules.md is missing. Triggers: onboard, onboard project, bootstrap devflow, setup devflow, first time setup, initialize devflow, scaffold hard rules, new project setup."
-disable-model-invocation: true
+description: "Bootstrap current project into devflow ecosystem — scaffold hard-rules.md and build directories. Use once per new project."
 context: fork
 agent: project-onboarder
 ---

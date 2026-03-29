@@ -1,25 +1,6 @@
 ---
 name: review-consolidator
-description: |
-  Deduplicates, caps, sorts, and signal-checks multi-reviewer findings tables into a single ranked output. Use after Devflow review debate to consolidate raw findings. Called by build Phase 4 iter 1 (3 reviewers) and iter 2+ (2 reviewers), and review Phase 4 Convergence.
-
-  <example>
-  Context: Build Phase 4 has three reviewers that have completed their findings.
-  user: "[Build lead Phase 4 dispatch] — 3 reviewers complete, consolidate findings (iteration 1)"
-  assistant: "Dispatching review-consolidator to deduplicate and rank all findings."
-  <commentary>
-  Build lead dispatches review-consolidator after all reviewer agents complete (and after falsification-agent if Phase 4.5 ran). It deduplicates by root cause, filters by confidence thresholds, and produces a single ranked findings table.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Review Phase 4 Convergence needs final consolidated output.
-  user: "[Review lead Phase 4 Convergence] — consolidate post-debate findings"
-  assistant: "Running review-consolidator on the post-debate findings."
-  <commentary>
-  review-consolidator is the final aggregation step. Output is the structured findings table that becomes the review report's core content.
-  </commentary>
-  </example>
+description: "Deduplicates, caps, sorts, and signal-checks multi-reviewer findings tables into a single ranked output. Use after Devflow review debate to consolidate raw findings. Called by build Phase 4 iter 1 (3 reviewers) and iter 2+ (2 reviewers), and review Phase 4 Convergence."
 model: haiku
 color: cyan
 effort: low

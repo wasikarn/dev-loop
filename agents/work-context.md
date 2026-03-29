@@ -1,25 +1,6 @@
 ---
 name: work-context
-description: |
-  Fetches active sprint tickets from Jira, open PRs awaiting your action, and recent unmerged local branches into a prioritized daily action table. Use proactively at session start or when resuming work after an interruption.
-
-  <example>
-  Context: Developer starts a new Claude Code session and wants orientation.
-  user: "work context" or "what am I working on?" or "catch me up"
-  assistant: "I'll use work-context to show active sprint tickets, open PRs, and recent branches."
-  <commentary>
-  User typing "work context" or asking for a session orientation at the start of a session triggers work-context. It fetches Jira sprint items, open PRs awaiting action, and recent git branches — then outputs a prioritised daily action table.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Developer is resuming work after an interruption and needs a quick refresh.
-  user: "what should I work on?" or "show me my PRs and tickets"
-  assistant: "Running work-context to pull your current sprint and PR status."
-  <commentary>
-  Any request for an overview of current work state, active tickets, or pending PRs triggers work-context. Sections are omitted if empty — no noise for clean states.
-  </commentary>
-  </example>
+description: "Fetches active sprint tickets from Jira, open PRs awaiting your action, and recent unmerged local branches into a prioritized daily action table. Use proactively at session start or when resuming work after an interruption."
 tools: Bash, Read, mcp__mcp-atlassian__jira_search
 model: haiku
 color: green

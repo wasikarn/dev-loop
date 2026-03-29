@@ -7,7 +7,7 @@ Write `{artifacts_dir}/{date}-{task-slug}/plan.md` directly — do NOT use `Ente
 **Source material by mode:**
 
 | Mode | Plan source |
-| ------ | ------------ |
+| --- | --- |
 | Micro | Task description only |
 | Quick | Task description + research.md WHAT/WHY |
 | Full | Task description + research.md (ADDED/MODIFIED/REMOVED + clarifications) |

@@ -1,25 +1,6 @@
 ---
 name: pr-review-bootstrap
-description: |
-  Bootstraps PR review context by fetching PR diff, Jira issue, and AC in one fast pass. Use at the START of any PR review session before dispatching review agents. Accepts PR number or branch name as input. Returns structured review context: changed files, Jira AC, PR description, and file groups for parallel agent dispatch.
-
-  <example>
-  Context: Review skill is starting a PR review session with a PR number.
-  user: "devflow: review 123" or "/review 123"
-  assistant: "Dispatching pr-review-bootstrap to fetch PR diff and Jira context before reviewer agents spawn."
-  <commentary>
-  Review lead always dispatches pr-review-bootstrap at session start to fetch the PR diff, categorise changed files by concern type, and extract the Jira ticket (if any) — all in one pass before spawning parallel reviewers.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Review skill is starting with a branch name instead of PR number.
-  user: "review branch feature/TP-456-user-auth"
-  assistant: "Starting pr-review-bootstrap to gather context from branch feature/TP-456-user-auth."
-  <commentary>
-  pr-review-bootstrap accepts either a PR number or a branch name. It extracts the Jira key from the branch name pattern (TP-NNN), fetches issue context, and writes review-context.md for downstream reviewer agents.
-  </commentary>
-  </example>
+description: "Bootstraps PR review context by fetching PR diff, Jira issue, and AC in one fast pass. Use at the START of any PR review session before dispatching review agents. Accepts PR number or branch name as input. Returns structured review context: changed files, Jira AC, PR description, and file groups for parallel agent dispatch."
 tools: Bash, Read, mcp__mcp-atlassian__jira_get_issue
 model: haiku
 color: green

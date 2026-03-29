@@ -10,7 +10,7 @@ All phase files reference this matrix — do not redefine mode behavior inline.
 Lead evaluates 5 factors from task description + live context:
 
 | Factor | Score 1 if… |
-| -------- | ------------- |
+| --- | --- |
 | **Scope** | Task touches >1 module or service boundary |
 | **Risk** | Task involves auth / payment / DB migration / public API |
 | **Novelty** | Pattern doesn't exist in codebase (new abstraction, new dependency) |
@@ -20,7 +20,7 @@ Lead evaluates 5 factors from task description + live context:
 **Score → Mode:**
 
 | Score | Mode |
-| ------- | ------ |
+| --- | --- |
 | 0–2 | **Micro** |
 | 3 | **Quick** |
 | 4–5 | **Full** |
@@ -33,7 +33,7 @@ Lead presents result: `"Task scored X/5 → suggesting [mode]. Proceed or overri
 ## Flag vs. Score Precedence
 
 | Situation | Result |
-| ----------- | -------- |
+| --- | --- |
 | `--hotfix` passed | Always Hotfix — no scoring, no override prompt |
 | `--micro` / `--quick` / `--full` AND matches score | Use flag mode silently |
 | Flag is **lower** than score | Downgrade protection (see below) |
@@ -59,7 +59,7 @@ Require explicit "yes" before proceeding. Gates hold harder under urgency, not s
 Single source of truth for per-phase behavior. Phase files reference by phase name.
 
 | Phase | Micro | Quick | Full | Hotfix |
-| ------- | ------- | ------- | ------ | ------- |
+| --- | --- | --- | --- | --- |
 | 1: Triage | Blast-radius → Micro auto | Blast-radius → confirm | Blast-radius → confirm | --hotfix bypasses scoring |
 | 2: Research | **Skip** | **Lite** (WHAT/WHY, ~250 lines, 1 explorer) | **Deep** (delta markers + [NEEDS CLARIFICATION] + GO/NO-GO, 1–2 explorers) | Skip |
 | 3: Plan | 1 truth, no gate | 2–3 truths, no user gate | 3–5 truths, user gate | 1–2 truths, no gate |

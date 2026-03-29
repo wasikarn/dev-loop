@@ -1,6 +1,6 @@
 ---
 name: review-output-format
-description: "Shared PR review output format for devflow skills — header, ticket understanding, AC verification, 12-point findings table, author/reviewer action sections, final verdict templates"
+description: "Shared PR review output format — header, ticket understanding, findings table, strengths, and summary sections."
 user-invocable: false
 disable-model-invocation: true
 ---

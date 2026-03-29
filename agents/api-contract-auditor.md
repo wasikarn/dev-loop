@@ -1,25 +1,6 @@
 ---
 name: api-contract-auditor
-description: |
-  Detects API-breaking changes in PR diffs (A1–A10): removed/renamed response fields, changed HTTP status codes, new required parameters, type narrowing on interfaces, reordered enums, idempotency violations on mutating endpoints, pagination envelope inconsistencies, error shape mismatches, deprecation without migration path. Spawned conditionally in review Phase 2 when controller/route/handler/interface files are detected. Reports breaking vs non-breaking with semver impact classification.
-
-  <example>
-  Context: Review lead detects route/controller files in a PR diff.
-  user: "[Review lead internal dispatch] — diff contains changes to src/routes/payments.ts and src/controllers/PaymentController.ts"
-  assistant: "Spawning api-contract-auditor to check for API breaking changes."
-  <commentary>
-  Review lead proactively dispatches api-contract-auditor when route, controller, or handler files appear in the diff to catch breaking changes before consolidation.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Developer wants to verify their API changes before opening a PR.
-  user: "check if my changes break any API contracts"
-  assistant: "I'll use the api-contract-auditor agent to audit the diff for breaking changes."
-  <commentary>
-  User explicitly requesting API contract audit triggers this agent. It compares the current diff against origin/main and classifies each change as Breaking, Non-breaking additive, or Non-breaking internal.
-  </commentary>
-  </example>
+description: "Detects API-breaking changes in PR diffs (A1–A10): removed/renamed response fields, changed HTTP status codes, new required parameters, type narrowing on interfaces, reordered enums, idempotency violations on mutating endpoints, pagination envelope inconsistencies, error shape mismatches, deprecation without migration path. Spawned conditionally in review Phase 2 when controller/route/handler/interface files are detected. Reports breaking vs non-breaking with semver impact classification."
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high

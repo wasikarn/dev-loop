@@ -1,10 +1,6 @@
 ---
 name: freeze
-description: >
-  Lock edits to a specific directory for this session. Blocks Edit and Write tool calls
-  outside the target path. Use when you want Claude to only touch files in one area:
-  "freeze src/auth", "only edit tests/", "lock to this module".
-  Triggers: /freeze [path], "only edit [dir]", "lock to [path]", "don't touch anything outside"
+description: "Lock edits to a specific directory or file for this session — blocks Edit and Write tools on matching paths."
 argument-hint: "[directory-path]"
 ---
 

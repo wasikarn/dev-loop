@@ -1,6 +1,6 @@
 # debug — Good/Bad Examples
 
-Examples of what systematic root-cause analysis looks like vs surface-level fixes, and what quality DX findings look like.
+Examples of systematic root-cause analysis vs surface-level fixes, and quality DX findings.
 
 ---
 

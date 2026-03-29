@@ -20,25 +20,34 @@ esac
 PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 
-# ── tech stack detection (single-pass, ~1ms) ─────────────────────────────────
+# ── tech stack detection (cached per project, 1hr TTL) ────────────────────────
 STACK=""
 if [ -f "$PROJECT_ROOT/package.json" ]; then
-  FRAMEWORK=$(python3 -c "
-import json, sys
-try:
-  d = json.load(open('$PROJECT_ROOT/package.json'))
-  deps = {**d.get('dependencies',{}), **d.get('devDependencies',{})}
-  tags = []
-  if 'next' in deps: tags.append('Next.js')
-  elif 'react' in deps: tags.append('React')
-  if 'typescript' in deps or '@types/node' in deps: tags.append('TypeScript')
-  if 'nestjs' in deps or '@nestjs/core' in deps: tags.append('NestJS')
-  if '@adonisjs/core' in deps: tags.append('AdonisJS')
-  if 'prisma' in deps or '@prisma/client' in deps: tags.append('Prisma')
-  print(', '.join(tags) if tags else 'Node.js')
-except: print('Node.js')
-" 2>/dev/null || echo "Node.js")
-  STACK="Node.js / $FRAMEWORK"
+  CACHE_KEY=$(printf '%s' "$PROJECT_ROOT" | md5 2>/dev/null || printf '%s' "$PROJECT_ROOT" | md5sum 2>/dev/null | cut -d' ' -f1)
+  CACHE_FILE="/tmp/devflow-stack-${CACHE_KEY}"
+
+  # Use cache if fresh (< 1 hour)
+  _mtime=$(stat -f%m "$CACHE_FILE" 2>/dev/null || stat -c%Y "$CACHE_FILE" 2>/dev/null || echo 0)
+  _now=$(date +%s)
+  if [ -f "$CACHE_FILE" ] && [ "$(( _now - _mtime ))" -lt 3600 ]; then
+    STACK=$(cat "$CACHE_FILE")
+  else
+    FRAMEWORK=$(jq -r '
+      [(.dependencies // {}), (.devDependencies // {})] | add // {} | keys |
+      if any(. == "@adonisjs/core") then "AdonisJS"
+      elif any(. == "@nestjs/core") then "NestJS"
+      elif any(. == "next") then "Next.js"
+      elif any(. == "react") then "React"
+      else "Node.js" end
+    ' "$PROJECT_ROOT/package.json" 2>/dev/null || echo "Node.js")
+
+    TS=$(jq -r 'if (.dependencies // {} | has("typescript")) or (.devDependencies // {} | has("typescript")) or (.devDependencies // {} | has("@types/node")) then ", TypeScript" else "" end' "$PROJECT_ROOT/package.json" 2>/dev/null || echo "")
+
+    PRISMA=$(jq -r 'if (.dependencies // {} | has("prisma")) or (.dependencies // {} | has("@prisma/client")) then ", Prisma" else "" end' "$PROJECT_ROOT/package.json" 2>/dev/null || echo "")
+
+    STACK="Node.js / ${FRAMEWORK}${TS}${PRISMA}"
+    printf '%s' "$STACK" > "$CACHE_FILE" 2>/dev/null || true
+  fi
 elif [ -f "$PROJECT_ROOT/go.mod" ]; then
   STACK="Go $(grep '^go ' "$PROJECT_ROOT/go.mod" 2>/dev/null | awk '{print $2}')"
 elif [ -f "$PROJECT_ROOT/requirements.txt" ] || [ -f "$PROJECT_ROOT/pyproject.toml" ]; then

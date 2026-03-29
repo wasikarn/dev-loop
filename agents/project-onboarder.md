@@ -1,25 +1,6 @@
 ---
 name: project-onboarder
-description: |
-  Bootstraps a new project into the devflow ecosystem. Detects the project stack, scaffolds .claude/skills/review-rules/hard-rules.md with stack-appropriate starter rules, and writes .claude/build/validate-command.md as project config. Artifact paths are managed by scripts/artifact-dir.sh. Run once on a new project before the first build or review invocation.
-
-  <example>
-  Context: Developer is setting up devflow on a new project for the first time.
-  user: "onboard this project" or "set up devflow for this project"
-  assistant: "I'll use project-onboarder to detect the tech stack and scaffold hard-rules.md and build directory."
-  <commentary>
-  User running devflow on a project for the first time triggers project-onboarder. It detects stack (TypeScript/Go/Python/Rust), identifies frameworks, and creates hard-rules.md with stack-specific rules. Idempotent — safe to run again.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Lead wants to initialise devflow before the first build session.
-  user: "before first build or review, run project-onboarder"
-  assistant: "Running project-onboarder to bootstrap the project into the devflow ecosystem."
-  <commentary>
-  project-onboarder is a one-time setup step. It scaffolds hard-rules.md with project-specific rules, creates the .devflow/build/ directory structure, and detects the validate command for the project.
-  </commentary>
-  </example>
+description: "Bootstraps a new project into the devflow ecosystem. Detects the project stack, scaffolds .claude/skills/review-rules/hard-rules.md with stack-appropriate starter rules, and writes .claude/build/validate-command.md as project config. Artifact paths are managed by scripts/artifact-dir.sh. Run once on a new project before the first build or review invocation."
 tools: Read, Glob, Grep, Bash, Write
 model: sonnet
 color: green

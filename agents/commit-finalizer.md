@@ -1,25 +1,6 @@
 ---
 name: commit-finalizer
-description: |
-  Stages and commits changes with a well-formatted conventional commit message. Use after completing any code change. Cheaper than Sonnet for mechanical commit tasks. Accepts optional commit message hint as input. Does NOT push unless explicitly asked.
-
-  <example>
-  Context: Developer has finished implementing a feature and wants to commit.
-  user: "commit my changes"
-  assistant: "I'll use commit-finalizer to stage and commit the changes with a conventional commit message."
-  <commentary>
-  User explicitly requesting a commit after completing work triggers commit-finalizer. It runs git status, stages files, generates a conventional commit message, and commits — but does NOT push unless asked.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Build lead wraps up Phase 7 and needs to commit the implementation.
-  user: "commit and push to remote"
-  assistant: "Dispatching commit-finalizer to stage, commit, and push the changes."
-  <commentary>
-  "push" keyword in the request tells commit-finalizer to also run git push after committing. Without explicit push request, it commits only.
-  </commentary>
-  </example>
+description: "Stages and commits changes with a well-formatted conventional commit message. Use after completing any code change. Cheaper than Sonnet for mechanical commit tasks. Accepts optional commit message hint as input. Does NOT push unless explicitly asked."
 tools: Bash
 model: haiku
 color: yellow

@@ -1,6 +1,6 @@
 ---
 name: jira-integration
-description: "Shared Jira context injection for review, build, debug, and respond — Jira key detection, ticket fetch, AC extraction, and skill-specific integration patterns"
+description: "Shared Jira context injection for build, review, debug, and respond — fetches AC, transitions cards, posts summaries."
 user-invocable: false
 disable-model-invocation: true
 ---

@@ -29,14 +29,12 @@ Check if `{artifacts_dir}/devflow-context.md` exists:
 
 ```text
 {artifacts_dir}/devflow-context.md exists AND Phase != "complete"?
-├→ Yes: Show context summary then call AskUserQuestion:
+├→ Yes: Show context summary → AskUserQuestion:
 │   question: "Resume from Phase {N} — {task_description}?"
-│   header: "Resume"
-│   options: [{ label: "Resume", description: "Continue from Phase N" },
-│              { label: "Start fresh", description: "Overwrite context file with new task" }]
-│   ├→ Resume: Skip to the recorded phase. Re-read artifacts in order:
+│   header: "Resume" · options: [{ label: "Resume" }, { label: "Start fresh" }]
+│   ├→ Resume: Re-read artifacts in order:
 │   │       1. {artifacts_dir}/devflow-context.md
-│   │       2. Plan file: read plan_file: from YAML; fallback to {artifacts_dir}/{date}-{task-slug}/plan.md if it exists
+│   │       2. Plan file: read plan_file: from YAML; fallback to {artifacts_dir}/{date}-{task-slug}/plan.md
 │   │       3. {artifacts_dir}/review-findings-*.md (if exists)
 │   └→ Start fresh: Overwrite context file with new task.
 └→ No: Proceed with triage normally.
@@ -63,63 +61,13 @@ gh pr list --author @me --state open --json number,title,headRefName,createdAt \
 ```
 
 - If Jira key in `$ARGUMENTS` (e.g. `ABC-1234`) → check if any open PR branch contains that key
-  - Match found: Call AskUserQuestion — question: "PR #1941 already targets ABC-1234. Switch to that PR?",
-    header: "Existing PR", options: [{ label: "Switch to PR #1941", description: "Use /respond or /review instead" },
-    { label: "Continue new task", description: "Proceed with triage normally" }]
+  - Match found: AskUserQuestion — question: "PR #1941 already targets ABC-1234. Switch to that PR?",
+    header: "Existing PR", options: [{ label: "Switch to PR #1941" }, { label: "Continue new task" }]
     → Switch: stop. → Continue: proceed.
 - No match / no Jira key: list open PRs briefly, ask if user wants to switch to one
 - No open PRs → proceed silently
 
-**2c — Jira Context** (skip if no Jira key in `$ARGUMENTS`):
-
-Follow [jira-integration](../../jira-integration/SKILL.md) §build:
-
-1. Fetch ticket → extract AC and subtasks
-2. AC items become plan task constraints (Phase 3)
-3. Jira context staged for `devflow-context.md` (Step 6)
-
-**2d — Duplicate Detection** (skip if no Jira key; run in parallel with 2a–2c):
-
-If `jira-search` agent (atlassian-pm plugin) is available, search for similar in-progress work:
-
-```text
-jira-search: "status = 'In Progress' AND summary ~ '{task keywords}' AND key != '{JIRA-KEY}'"
-```
-
-- Match found → Call AskUserQuestion:
-  question: "{MATCH-KEY} ({assignee}) is already working on a similar task: '{match summary}'. Continue anyway?"
-  header: "Possible Duplicate"
-  options: [{ label: "Continue", description: "Proceed with new task" },
-             { label: "Switch to existing", description: "Use /respond or /review on that ticket" }]
-- No match or jira-search not available → proceed silently
-
-**2e — AC Quality Check** (skip if no Jira key or Jira unavailable):
-
-For each AC item fetched in Step 2c, flag if:
-
-- ❌ **No measurable outcome** — vague improvement without a testable condition
-  (e.g. "ระบบต้องเร็วขึ้น" with no threshold, "improve error handling" with no criterion)
-- ❌ **Unbounded scope** — no explicit boundary on what is NOT included
-  (e.g. "handle all edge cases" — edge cases of what, exactly?)
-- ❌ **Contradicts another AC** — mutually exclusive conditions in same ticket
-
-Output an AC quality table before proceeding to Step 3:
-
-| AC | Status | Issue |
-| --- | --- | --- |
-| AC1 | ✅ Testable | — |
-| AC2 | ⚠️ Ambiguous | No success threshold defined |
-
-If **2 or more ACs are flagged**: Call AskUserQuestion before proceeding:
-
-- question: "{N} ACs have quality issues (see table above). Proceed with ambiguous ACs or clarify first?"
-- header: "AC Quality Warning"
-- options: [
-    { label: "Proceed as-is", description: "Use ACs as written — I'll handle ambiguity in plan" },
-    { label: "Clarify now", description: "Tell me what each flagged AC means" }
-  ]
-- If "Clarify now" → capture user's clarification, update AC items in-memory, then proceed.
-- If 0-1 ACs flagged → proceed silently (minor ambiguity, not worth a round-trip).
+**2c — Jira Context:** If Jira key in $ARGUMENTS — read [jira-triage.md](jira-triage.md) for fetch, duplicate detection, and AC quality check steps.
 
 ## Step 3: Classify Mode
 
@@ -152,10 +100,7 @@ If a mode flag (`--micro`/`--quick`/`--full`) was passed **and is lower than the
 - question: "Task scored {X}/5 → suggesting {mode}{validate_suffix}. Confirm or override?"
   (append " — and validate command?" if validate is empty)
 - header: "Mode"
-- options: [{ label: "Micro", description: "Isolated, minimal blast radius" },
-             { label: "Quick", description: "Bug fix or small refactor" },
-             { label: "Full", description: "Multi-file feature or architectural change" },
-             { label: "Hotfix", description: "Urgent production fix (branch from main)" }]
+- options: [{ label: "Micro" }, { label: "Quick" }, { label: "Full" }, { label: "Hotfix" }]
   (pre-select the scored mode as first option)
 
 Set `mode_source`:
@@ -167,47 +112,7 @@ Set `mode_source`:
 If validate is empty, follow up with a second AskUserQuestion or free-text prompt.
 → proceed.
 
-## Step 4: Auto-Transition to In Progress
-
-**Run only if:** `$ARGUMENTS` contains a Jira key AND at least one Jira integration is reachable (detected in Step 2c).
-**Skip silently** if no Jira key or Jira is unreachable — this step never blocks the workflow.
-
-**Detect which path to use** (in priority order):
-
-| Path | Condition | Extra behavior |
-| ------ | ----------- | ---------------- |
-| **atlassian-pm** | `issue-bootstrap` was used successfully in Step 2c | WIP gate hook fires automatically; call `cache_invalidate` after transition (HR6) |
-| **mcp-atlassian** | `mcp__mcp-atlassian__jira_transition_issue` available (Step 2c used direct API) | No WIP hook, no cache; transition only |
-| **Skip** | Neither available | Proceed silently without transitioning |
-
-Use the ticket status already fetched in Step 2c (no re-fetch needed).
-
-| Current Status | Action |
-| ---------------- | -------- |
-| To Do / Backlog / Open | Transition to In Progress (proceed below) |
-| In Progress / Reopened | Skip — note: `{JIRA-KEY} already In Progress — skipping` |
-| Done / Closed / Cancelled | Ask user (see below) |
-
-**If transition needed:**
-
-1. Call `jira_get_transitions(issue_key)` → find transition whose name contains "In Progress" (case-insensitive)
-2. Call `jira_transition_issue(issue_key, transition_name)`
-   - **atlassian-pm path only:** `pre_wip_limit_check` hook fires automatically
-     - If WIP blocked AND count ≥ wip_max → **STOP**: "WIP limit reached for In Progress ({count}/{wip_max}). Finish an existing item first."
-3. **atlassian-pm path only:** Call `cache_invalidate(issue_key)` (HR6)
-4. Output: `{JIRA-KEY} → In Progress [OK]`
-
-**If Done / Closed / Cancelled:** Call AskUserQuestion:
-
-```text
-question: "Ticket {JIRA-KEY} is already {status}. Proceed anyway?"
-header: "Ticket Status Warning"
-options:
-  - { label: "Proceed", description: "Continue with build regardless of ticket status" }
-  - { label: "Stop",    description: "Exit — pick a different ticket" }
-```
-
-→ Stop: exit skill. → Proceed: continue without transitioning.
+**Step 4 — Auto-Transition:** If Jira key present — read [jira-triage.md](jira-triage.md) Step 4.
 
 ---
 

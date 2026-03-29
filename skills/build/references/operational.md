@@ -12,7 +12,7 @@ Detect at Phase 1 and inform user of mode.
 
 ### Solo Self-Review Checklist
 
-Use when running in Solo mode (no Agent Teams or subagents available):
+Use in Solo mode (no Agent Teams or subagents):
 
 - [ ] Each changed file re-read in full — no skimming
 - [ ] Hard Rules checked against diff — every rule, every file
@@ -35,7 +35,7 @@ If worker completes a task but validate fails:
 
 If fixer fails the same finding 3 times → lead stops. Before escalating:
 
-**Step 1: Check alternative hypothesis** — review the plan for alternative approaches to the same problem. If the plan has alternatives, try the next one before escalating.
+**Step 1: Check alternative hypothesis** — review the plan for alternative approaches. If alternatives exist, try the next one before escalating.
 
 **Step 2: If no alternatives remain, present options:**
 
@@ -62,11 +62,11 @@ After fixer iteration, lead runs regression check before proceeding to review:
 git diff devflow-checkpoint-iter-{N-1}..HEAD --stat
 ```
 
-Verify: no files modified that were NOT part of the findings being fixed. If unintended changes found → revert and re-scope the fix. This prevents fixer from introducing regressions in previously-passing code.
+Verify: no files modified outside the findings being fixed. If unintended changes found → revert and re-scope. This prevents fixer from introducing regressions in previously-passing code.
 
 ### Solo Mode Self-Review Output
 
-When running in Solo mode (no Agent Teams or subagents), lead performs self-review and MUST produce a `review-findings-{N}.md` file using this template so Phase 8 Assess works the same regardless of mode:
+In Solo mode, lead MUST produce a `review-findings-{N}.md` file using this template so Phase 8 Assess works the same regardless of mode:
 
 ```markdown
 ## Summary
@@ -84,8 +84,6 @@ When running in Solo mode (no Agent Teams or subagents), lead performs self-revi
 Apply Solo Self-Review Checklist above when populating findings.
 
 ### Teammate Crash Recovery
-
-If a teammate stops responding or crashes mid-phase:
 
 | Teammate | Recovery action |
 | --- | --- |
@@ -121,7 +119,7 @@ If session compacts mid-workflow, re-read in order:
 
 ## Fallback Behavior
 
-**Jira unreachable:** If Jira fetch fails — proceed with task description as acceptance criteria. Note `[Jira: UNAVAILABLE]` in devflow-context.md.
+**Jira unreachable:** Proceed with task description as acceptance criteria. Note `[Jira: UNAVAILABLE]` in devflow-context.md.
 
 **Mode confirmation timeout:** If user doesn't respond to mode selection within 1 message → default to Full mode and proceed. Note the auto-selection in the triage output.
 

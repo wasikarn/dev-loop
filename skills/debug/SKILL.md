@@ -1,9 +1,8 @@
 ---
 name: debug
-description: "Agent Teams debugging with parallel DX analysis — Investigator traces root cause while DX Analyst audits observability, error handling, and test coverage. Pass a Jira key (ABC-XXXX) to enrich bug context from ticket details. Use when: debugging complex bugs, production incidents, or when you want to harden the affected area. Triggers: debug, team debug, investigate bug, /debug."
+description: "Parallel root cause analysis with Agent Teams — Investigator + DX Analyst run concurrently, then Fixer applies targeted fix with DX hardening. Use for bugs, test failures, or unexpected behavior."
 argument-hint: "[bug-description-or-jira-key] [--quick?] [--review?]"
 compatibility: "Requires gh CLI, git, and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
-disable-model-invocation: true
 effort: high
 allowed-tools: Read, Grep, Glob, Bash(git *), Bash(gh *)
 ---

@@ -1,11 +1,6 @@
 ---
 name: careful
-description: >
-  Activate safe-mode for the current session. Blocks destructive bash commands:
-  rm -rf, DROP TABLE, git push --force, truncate, git reset --hard on committed work.
-  Use when working near production data, shared branches, or irreversible operations.
-  Triggers: /careful, "be careful", "safe mode", "don't delete anything"
-disable-model-invocation: true
+description: "Activate safe-mode for the current session — blocks destructive bash commands and requires confirmation for risky operations."
 hooks:
   PreToolUse:
     - matcher: Bash
@@ -40,5 +35,4 @@ To deactivate: start a new session or use `/uncareful` (if installed).
 - **Session-scoped only** — the hook activates for this session only; start a new session to deactivate.
 - **Pattern matching is regex-based** — commands with unusual spacing or quoting may bypass the block.
   Use `/careful` as a reminder layer, not a security boundary.
-- **`disable-model-invocation: true`** — this skill produces no model output; it only registers the hook.
-  Claude will not summarize or explain the activation unless the hook itself returns a message.
+- This skill only registers the hook — Claude will not summarize or explain the activation unless the hook itself returns a message.

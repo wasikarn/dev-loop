@@ -1,25 +1,6 @@
 ---
 name: merge-preflight
-description: |
-  Runs a pre-merge safety checklist before merge-pr executes any irreversible git operations. Checks CI status, draft state, merge conflicts, CHANGELOG format, version bump correctness, and concurrent hotfix branch state. Outputs a structured go/no-go report with pass/fail per check. Called by merge-pr skill before the Confirmation Gate.
-
-  <example>
-  Context: merge-pr skill is at the Confirmation Gate before executing irreversible git operations.
-  user: "[merge-pr skill Confirmation Gate] — mode: feature, PR: #77, version: N/A"
-  assistant: "Dispatching merge-preflight to run safety checklist before merge."
-  <commentary>
-  merge-pr skill always dispatches merge-preflight before the Confirmation Gate to run parallel safety checks. FAIL = NO-GO, WARN = lead decides, PASS = proceed.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Developer wants to check if their PR is safe to merge before running merge-pr.
-  user: "is PR #55 ready to merge?"
-  assistant: "I'll use merge-preflight to run the pre-merge safety checklist on PR #55."
-  <commentary>
-  User asking whether a PR is ready to merge triggers merge-preflight. It checks CI status, review approval, branch freshness, open threads, and CHANGELOG (if applicable).
-  </commentary>
-  </example>
+description: "Runs a pre-merge safety checklist before merge-pr executes any irreversible git operations. Checks CI status, draft state, merge conflicts, CHANGELOG format, version bump correctness, and concurrent hotfix branch state. Outputs a structured go/no-go report with pass/fail per check. Called by merge-pr skill before the Confirmation Gate."
 tools: Bash, Read
 model: haiku
 color: yellow

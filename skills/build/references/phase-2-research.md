@@ -3,7 +3,7 @@
 Mode behavior per [workflow-modes.md](workflow-modes.md):
 
 | Mode | Research |
-| ------ | ---------- |
+| --- | --- |
 | Micro | **Skip** — proceed directly to Phase 3 |
 | Quick | **Lite** — WHAT/WHY only, ~250 lines, 1 explorer |
 | Full | **Deep** — delta markers + [NEEDS CLARIFICATION] + GO/NO-GO verdict, 1–2 explorers |
@@ -136,9 +136,7 @@ research_summary: '{"oneSentenceSummary":"...","keyFiles":[...],"primaryRisk":".
 
 **Quick mode:** Skip Step 5b — research.md is short enough to re-read directly.
 
-At Phase 3/4/5/6 gates, reference `research_summary` from devflow-context.md for context instead of
-re-reading research.md in full. Re-read research.md only when a `[NEEDS CLARIFICATION]` token or
-specific file:line evidence is needed.
+At Phase 3/4/5/6 gates, reference `research_summary` from devflow-context.md instead of re-reading research.md in full. Re-read research.md only when a `[NEEDS CLARIFICATION]` token or specific file:line evidence is needed.
 
 ---
 

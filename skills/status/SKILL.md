@@ -1,6 +1,6 @@
 ---
 name: status
-description: "Show active devflow workflow artifacts from the current session — artifact directory, phase progress, and which files exist. Use when checking Devflow session state, current phase, or where you left off. Triggers: check devflow status, what phase am I in, show session state, current progress, where did I leave off, devflow artifacts, /status."
+description: "Show active devflow workflow artifacts from the current session — artifact directories, current phase, and pending actions."
 ---
 
 # Devflow Status

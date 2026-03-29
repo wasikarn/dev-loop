@@ -5,7 +5,7 @@ Prompt templates for explorer teammates. Lead inserts project-specific values at
 ## Research Tiers
 
 | Mode | Tier | Explorers | Scope |
-| ------ | ------ | ----------- | ------- |
+| --- | --- | --- | --- |
 | Micro | Skip | 0 | No research phase |
 | Quick | Lite | 1 | Explorer 1 only, combined execution + data model scope |
 | Full | Deep | 1 (default), 2 if needed | Explorer 1; Explorer 2 only if research-validator flags insufficient files |

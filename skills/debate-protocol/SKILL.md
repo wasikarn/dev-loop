@@ -1,6 +1,6 @@
 ---
 name: debate-protocol
-description: "Adversarial debate rules for Devflow review workflows — pre-debate triage, round-robin assignment, consensus rules, hard rule exceptions, lead decision template, anti-patterns"
+description: "Adversarial debate rules for devflow review workflows — pre-debate triage, rounds, escalation, and consensus criteria."
 user-invocable: false
 disable-model-invocation: true
 ---

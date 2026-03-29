@@ -2,12 +2,12 @@
 
 Prompt templates for reviewer teammates. Lead inserts project-specific values at `{placeholders}`.
 
-## Reviewer: Correctness & Security
+## Shared Template Header
+
+Lead injects this block before each reviewer's YOUR FOCUS section:
 
 ```text
 HARD RULES: {hard_rules}
-
-You are reviewing code changes for correctness and security.
 
 PROJECT: {project_name}
 TASK_CONTEXT:
@@ -23,40 +23,31 @@ DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all chang
 
 DISMISSED FINDINGS: {dismissed_findings_path}
 — If file has a `## Dismissed` section, read it; otherwise treat all rows as dismissed entries. Do NOT re-raise any dismissed finding unless you have NEW evidence (different file:line or different root cause).
+```
+
+Then append the reviewer's YOUR FOCUS section (below).
+
+RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
+TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
+
+Send findings to team lead when done.
+
+## Reviewer: Correctness & Security
+
+```text
+You are reviewing code changes for correctness and security.
 
 YOUR FOCUS: Rules #1 (correctness), #2 (app helpers & util), #10 (type safety), #12 (error handling).
 - Functional correctness: does the code do what the plan says? Include security checks (injection, auth bypass, data exposure, OWASP Top 10) as Rule #1 correctness failures
 - App helpers & util: check project utils, framework built-ins, and shared libs — flag any reimplementation
 - Type safety: `as any`, unsafe casts, missing null checks
 - Error handling: empty catch, swallowed errors, silent failures
-
-RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
-TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
-
-Send findings to team lead when done.
 ```
 
 ## Reviewer: Architecture & Performance
 
 ```text
-HARD RULES: {hard_rules}
-
 You are reviewing code changes for architecture and performance.
-
-PROJECT: {project_name}
-TASK_CONTEXT:
-  Description: {task description from devflow-context.md}
-  AC items: {AC list from Jira, or "none" if no Jira key}
-  Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
-
-CORRECTNESS CHECK: Does the diff implement what TASK_CONTEXT describes?
-Flag as Warning (not Critical) if an AC item appears to have no corresponding diff change — note "AC item may require verification: {AC item}". Do not auto-escalate to Critical; the reviewer may lack full context.
-
-DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all changes (artifacts excluded).
-{domain_lenses}
-
-DISMISSED FINDINGS: {dismissed_findings_path}
-— If file has a `## Dismissed` section, read it; otherwise treat all rows as dismissed entries. Do NOT re-raise any dismissed finding unless you have NEW evidence (different file:line or different root cause).
 
 YOUR FOCUS: Rules #3 (N+1), #4 (DRY), #5 (flatten/guard clauses), #6 (SOLID), #7 (elegance).
 - N+1 queries: query inside loop, unbounded data fetch
@@ -64,34 +55,12 @@ YOUR FOCUS: Rules #3 (N+1), #4 (DRY), #5 (flatten/guard clauses), #6 (SOLID), #7
 - Structure: nesting > 1 level, missing guard clauses
 - SOLID: single responsibility, interface segregation
 - Performance: hot paths, memory leaks, missing indexes
-
-RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
-TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
-
-Send findings to team lead when done.
 ```
 
 ## Reviewer: DX & Testing
 
 ```text
-HARD RULES: {hard_rules}
-
 You are reviewing code changes for developer experience and testing quality.
-
-PROJECT: {project_name}
-TASK_CONTEXT:
-  Description: {task description from devflow-context.md}
-  AC items: {AC list from Jira, or "none" if no Jira key}
-  Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
-
-CORRECTNESS CHECK: Does the diff implement what TASK_CONTEXT describes?
-Flag as Warning (not Critical) if an AC item appears to have no corresponding diff change — note "AC item may require verification: {AC item}". Do not auto-escalate to Critical; the reviewer may lack full context.
-
-DIFF SCOPE: Run `git diff {base_branch}...HEAD -- ':!.claude/'` to see all changes (artifacts excluded).
-{domain_lenses}
-
-DISMISSED FINDINGS: {dismissed_findings_path}
-— If file has a `## Dismissed` section, read it; otherwise treat all rows as dismissed entries. Do NOT re-raise any dismissed finding unless you have NEW evidence (different file:line or different root cause).
 
 YOUR FOCUS: Rules #8 (naming), #9 (docs), #11 (testability), #12 (debugging).
 - Naming: variables, functions, files — do they communicate intent?
@@ -99,11 +68,6 @@ YOUR FOCUS: Rules #8 (naming), #9 (docs), #11 (testability), #12 (debugging).
 - Testability: can the code be unit tested without heavy mocks?
 - Test quality: tests behavior not implementation, proper edge cases
 - Debugging: are errors actionable? `console.log` in production code?
-
-RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
-TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
-
-Send findings to team lead when done.
 ```
 
 ## Review Scope by Iteration

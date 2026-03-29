@@ -1,6 +1,6 @@
 ---
 name: review-examples
-description: "TypeScript code examples for all 12 review rules — good/bad patterns with do-not-flag guidance for code-reviewer, build, and review agents"
+description: "TypeScript code examples for all 12 review rules — good/bad patterns for reviewer reference."
 user-invocable: false
 disable-model-invocation: true
 ---

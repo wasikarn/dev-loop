@@ -1,25 +1,6 @@
 ---
 name: devflow-build-bootstrap
-description: |
-  Bootstraps build Phase 1 context by pre-gathering shared project structure, CLAUDE.md conventions, entry points, and key type definitions in one fast pass. Use at the START of Phase 1 before spawning explorers. Output goes to {artifacts_dir}/bootstrap-context.md for injection into explorer prompts.
-
-  <example>
-  Context: Build lead is starting a new build session for a Jira feature ticket.
-  user: "devflow: build TP-1234 — implement user authentication"
-  assistant: "I'll dispatch devflow-build-bootstrap to pre-gather project context before spawning the explorer agents."
-  <commentary>
-  Build lead always dispatches devflow-build-bootstrap at Phase 1 start to gather CLAUDE.md conventions, test infrastructure, and task area file hints before explorers run.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Lead is kicking off a build session with a plain description.
-  user: "build: add rate limiting to the API endpoints"
-  assistant: "Starting Phase 1 — dispatching devflow-build-bootstrap to snapshot project context."
-  <commentary>
-  Even without a Jira key, the bootstrap runs to extract file hints from the task description and write bootstrap-context.md for downstream agents.
-  </commentary>
-  </example>
+description: "Bootstraps build Phase 1 context by pre-gathering shared project structure, CLAUDE.md conventions, entry points, and key type definitions in one fast pass. Use at the START of Phase 1 before spawning explorers. Output goes to {artifacts_dir}/bootstrap-context.md for injection into explorer prompts."
 tools: Read, Glob, Bash, Grep, Write
 model: haiku
 background: true

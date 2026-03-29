@@ -1,9 +1,8 @@
 ---
 name: respond
-description: "Respond to PR review comments — reads all open GitHub review threads, fixes each issue, commits, replies to threads, and re-requests review. Use when: you received PR review feedback and need to address reviewer comments. Triggers: respond to review, fix review comments, resolve review threads, address PR feedback, reply to reviewer, /respond."
+description: "Respond to open PR review comments — reads all GitHub review threads, fixes each comment in parallel, posts replies. Use when addressing PR review feedback."
 argument-hint: "[pr-number] [jira-key?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"
-disable-model-invocation: true
 effort: high
 allowed-tools: Read, Edit, Write, Grep, Glob, Bash(git *), Bash(gh *)
 ---

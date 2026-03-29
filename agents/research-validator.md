@@ -1,25 +1,6 @@
 ---
 name: research-validator
-description: |
-  Validates research.md completeness before the build Phase 1 gate transition. Checks required sections are present, counts file:line evidence references, and flags sections with only headers and no concrete content. Returns PASS or FAIL with specific gaps itemized. Called by build lead after explorers write research.md.
-
-  <example>
-  Context: Build lead has received research.md from explorer agents and needs to validate before Phase 2.
-  user: "[Build lead Phase 1→2 gate] — explorers completed, validate research.md"
-  assistant: "Dispatching research-validator to check research.md completeness before Phase 2."
-  <commentary>
-  Build lead dispatches research-validator at the Phase 1→2 gate. PASS allows progression; FAIL triggers re-dispatch of explorers with targeted instructions.
-  </commentary>
-  </example>
-
-  <example>
-  Context: Lead provides a research.md path directly for validation.
-  user: "[Build lead] validate .devflow/build/session-3/research.md"
-  assistant: "Running research-validator on the provided path."
-  <commentary>
-  Agent checks tier (Lite vs Deep), required sections, token count, and file:line evidence count. Returns structured JSON + markdown verdict.
-  </commentary>
-  </example>
+description: "Validates research.md completeness before the build Phase 1 gate transition. Checks required sections are present, counts file:line evidence references, and flags sections with only headers and no concrete content. Returns PASS or FAIL with specific gaps itemized. Called by build lead after explorers write research.md."
 tools: Read, Grep, Glob
 model: haiku
 color: cyan

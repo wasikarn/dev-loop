@@ -1,27 +1,6 @@
 ---
 name: comment-analyzer
-description: |
-  Analyzes code comments for factual accuracy, completeness, and long-term maintainability. Use after adding or modifying documentation comments (JSDoc, inline), before finalizing a PR, or when asked to verify comment quality. The build lead may optionally spawn this after Phase 3 when the diff contains significant comment additions — but this is a lead judgment call, not automatic.
-
-  Examples:
-
-  <example>
-  Context: Developer added JSDoc to several functions and wants accuracy verified.
-  user: "I've added documentation comments — can you check if they're accurate?"
-  assistant: "I'll use the comment-analyzer agent to verify all comment claims against the actual code."
-  <commentary>
-  Explicit comment review request — invoke comment-analyzer on changed files.
-  </commentary>
-  </example>
-
-  <example>
-  Context: build Phase 3 complete, lead sees diff has large JSDoc blocks added.
-  user: (lead spawning agent after Phase 3 workers complete)
-  assistant: "Spawning comment-analyzer on Phase 3 changes before handing off to reviewers."
-  <commentary>
-  Lead optionally invokes after Phase 3 when diff has significant comment additions — not automatic self-trigger.
-  </commentary>
-  </example>
+description: "Analyzes code comments for factual accuracy, completeness, and long-term maintainability. Use after adding or modifying documentation comments (JSDoc, inline), before finalizing a PR, or when asked to verify comment quality. The build lead may optionally spawn this after Phase 3 when the diff contains significant comment additions — but this is a lead judgment call, not automatic."
 tools: Read, Glob, Grep, Bash
 model: sonnet
 effort: low

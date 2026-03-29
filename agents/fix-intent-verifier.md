@@ -1,25 +1,6 @@
 ---
 name: fix-intent-verifier
-description: |
-  Verifies that each respond Fixer's applied fix addresses the reviewer's stated intent, not just the literal symptom. Reads reviewer thread text and applied git diff per thread. Outputs ADDRESSED / PARTIAL / MISALIGNED verdict per thread. Called by respond lead in Phase 1 verification gate before posting replies.
-
-  <example>
-  Context: Respond lead has Fixers that completed addressing reviewer comments on PR #33.
-  user: "[Respond lead Phase 1 verification] — Fixers done, verify intent match before posting replies"
-  assistant: "Dispatching fix-intent-verifier to check each fix addresses the reviewer's actual intent."
-  <commentary>
-  Respond lead always dispatches fix-intent-verifier after Fixers complete and before posting replies. It compares the diff near each thread location against the reviewer's stated intent — not just the literal symptom.
-  </commentary>
-  </example>
-
-  <example>
-  Context: User wants to check if a specific fix actually addressed a reviewer's concern.
-  user: "did the fix in src/auth.ts actually address what the reviewer asked for?"
-  assistant: "I'll use fix-intent-verifier to check the fix against the reviewer's intent."
-  <commentary>
-  User explicitly asking whether a fix matches reviewer intent triggers this agent. It reads the thread, reads the diff, and returns ADDRESSED/PARTIAL/MISALIGNED with rationale.
-  </commentary>
-  </example>
+description: "Verifies that each respond Fixer's applied fix addresses the reviewer's stated intent, not just the literal symptom. Reads reviewer thread text and applied git diff per thread. Outputs ADDRESSED / PARTIAL / MISALIGNED verdict per thread. Called by respond lead in Phase 1 verification gate before posting replies."
 tools: Bash, Read, Grep
 model: sonnet
 color: cyan

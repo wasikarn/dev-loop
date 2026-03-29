@@ -37,13 +37,11 @@ Load [pr-template.md](pr-template.md) for PR title format, description template 
 
 ## Step 4: PR Description Draft (if user chose "Create PR")
 
-If `pr-description-writer` agent (atlassian-pm plugin) is available AND a Jira key is present in
-`devflow-context.md`:
+If `pr-description-writer` agent (atlassian-pm plugin) is available AND a Jira key is present in `devflow-context.md`:
 
 1. Spawn `pr-description-writer` — pass `<branch-name> <jira-key>` as arguments
 2. Capture the output: description draft + any scope drift findings
-3. **If scope drift detected** → surface findings to user before creating PR; let them acknowledge
-   or return to Phase 4 via "Restart loop" option. A PR with known scope drift should not be silently opened.
+3. **If scope drift detected** → surface findings to user before creating PR; let them acknowledge or return to Phase 4 via "Restart loop" option. A PR with known scope drift should not be silently opened.
 4. Pass the description as `--body` argument to `gh pr create`
 
 If `pr-description-writer` is not available, fall back to `pr-template.md` manual template (current behavior).
@@ -66,12 +64,9 @@ mv {artifacts_dir}/{date}-{task-slug}/ {artifacts_dir}/archive/{date}-{task-slug
 If a Jira key is present in `devflow-context.md`:
 
 1. Run `jira-summary-poster` agent — pass `{artifacts_dir}/devflow-context.md` as `$ARGUMENTS`. The agent reads the context artifact and posts implementation summary comment (what was built, files changed, AC deviations) automatically.
-2. **After the PR is merged** (by CI or manually) — if `pr-review-jira-sync` agent (atlassian-pm plugin)
-   is available, run it with the Jira key to: transition the subtask to Done, post the PR link, and
-   check whether all sibling subtasks are complete (signal for parent story closure).
+2. **After the PR is merged** (by CI or manually) — if `pr-review-jira-sync` agent (atlassian-pm plugin) is available, run it with the Jira key to: transition the subtask to Done, post the PR link, and check whether all sibling subtasks are complete (signal for parent story closure).
 
-Note: `jira-summary-poster` runs now (post-create). `pr-review-jira-sync` runs post-merge — remind user or add
-to their post-merge checklist if atlassian-pm is installed.
+`jira-summary-poster` runs now (post-create). `pr-review-jira-sync` runs post-merge — remind user or add to their post-merge checklist if atlassian-pm is installed.
 
 ## Step 7: Metrics
 
