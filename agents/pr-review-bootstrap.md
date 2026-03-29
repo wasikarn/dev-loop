@@ -5,7 +5,7 @@ description: |
 
   <example>
   Context: Review skill is starting a PR review session with a PR number.
-  user: "anvil: review 123" or "/review 123"
+  user: "devflow: review 123" or "/review 123"
   assistant: "Dispatching pr-review-bootstrap to fetch PR diff and Jira context before reviewer agents spawn."
   <commentary>
   Review lead always dispatches pr-review-bootstrap at session start to fetch the PR diff, categorise changed files by concern type, and extract the Jira ticket (if any) — all in one pass before spawning parallel reviewers.

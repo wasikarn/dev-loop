@@ -2,7 +2,7 @@
 
 **Opportunity:** แทน haiku Agent Team ด้วย SDK structured output call
 **Impact:** ตัด team creation overhead + output ที่สม่ำเสมอกว่า
-**File ที่จะสร้าง:** `anvil-sdk/src/fix-intent-verify/prompts/verifier.ts`
+**File ที่จะสร้าง:** `devflow-sdk/src/fix-intent-verify/prompts/verifier.ts`
 
 ---
 
@@ -219,7 +219,7 @@ export async function runIntentVerification(params: {
 ## CLI Integration
 
 ```bash
-anvil-sdk fix-intent-verify \
+devflow-sdk fix-intent-verify \
   --pr <number> \
   --triage-file <path>     # respond-context.md หรือ JSON file
   [--budget <usd>]

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # check-deps.sh — SessionStart hook (startup)
-# Checks required tools for anvil plugin.
+# Checks required tools for devflow plugin.
 # Outputs a warning to Claude's context if any are missing.
 # Silent if all tools are present.
 
@@ -14,12 +14,12 @@ check() {
 }
 
 check "jq"  "brew install jq"                          "required by workflow hooks"
-check "git" "pre-installed on most systems"            "required by all Anvil skills"
+check "git" "pre-installed on most systems"            "required by all Devflow skills"
 check "gh"  "brew install gh && gh auth login"         "required by build, review, respond, debug, merge-pr"
-check "rtk" "brew install rtk  (https://rtk-ai.app/)" "recommended — token-optimized git/gh output in Anvil skills"
+check "rtk" "brew install rtk  (https://rtk-ai.app/)" "recommended — token-optimized git/gh output in Devflow skills"
 
 if [ -n "$MISSING" ]; then
-  printf "## ⚠️  anvil: Missing Dependencies\n\nThe following tools are not installed. Some skills and hooks will not work correctly:\n%b\n\nInstall missing tools and restart Claude Code to dismiss this warning.\n" "$MISSING"
+  printf "## ⚠️  devflow: Missing Dependencies\n\nThe following tools are not installed. Some skills and hooks will not work correctly:\n%b\n\nInstall missing tools and restart Claude Code to dismiss this warning.\n" "$MISSING"
 fi
 
 # Optional: atlassian-pm plugin
@@ -39,5 +39,5 @@ if [ "$ATLASSIAN_PM_FOUND" -eq 0 ] && [ -d "$HOME/.claude/plugins/cache/atlassia
 fi
 
 if [ "$ATLASSIAN_PM_FOUND" -eq 0 ]; then
-  printf "\n## 💡 anvil: Optional Enhancement\n\n- \`atlassian-pm\` (not installed)\n  Install: \`claude plugin marketplace add wasikarn/atlassian-pm && claude plugin install atlassian-pm\`\n  Unlocks: Jira context in all Anvil skills, ADF comment formatting, sprint digest in work-context.\n"
+  printf "\n## 💡 devflow: Optional Enhancement\n\n- \`atlassian-pm\` (not installed)\n  Install: \`claude plugin marketplace add wasikarn/atlassian-pm && claude plugin install atlassian-pm\`\n  Unlocks: Jira context in all Devflow skills, ADF comment formatting, sprint digest in work-context.\n"
 fi

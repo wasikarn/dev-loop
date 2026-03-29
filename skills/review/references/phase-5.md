@@ -10,12 +10,12 @@
 **Try the SDK Falsifier first (faster, lower token cost):**
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
 
   # Serialize surviving debate findings to a temp JSON file
-  FINDINGS_FILE=$(mktemp /tmp/anvil-findings-XXXXXX.json)
+  FINDINGS_FILE=$(mktemp /tmp/devflow-findings-XXXXXX.json)
   # Write findings as JSON array: [{"severity":"critical","rule":"...","file":"...","line":N,"confidence":N,"issue":"...","fix":"...","isHardRule":true}, ...]
   # echo '[...]' > "$FINDINGS_FILE"
 
@@ -26,7 +26,7 @@ if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
   rm -f "$FINDINGS_FILE"
 
 else
-  echo "anvil-sdk not available — skipping SDK-enhanced analysis"
+  echo "devflow-sdk not available — skipping SDK-enhanced analysis"
   sdk_exit=1
 fi
 ```

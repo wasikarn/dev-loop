@@ -1,6 +1,6 @@
 # debate-protocol skill
 
-Library skill defining adversarial debate rules for Anvil review workflows — loaded by `review` and `build` Phase 6, never invoked directly.
+Library skill defining adversarial debate rules for Devflow review workflows — loaded by `review` and `build` Phase 6, never invoked directly.
 
 ## Skill Architecture
 

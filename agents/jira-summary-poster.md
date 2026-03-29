@@ -1,7 +1,7 @@
 ---
 name: jira-summary-poster
 description: |
-  Post a structured implementation summary comment to the linked Jira ticket after completing an anvil task. Reads anvil-context.md or debug-context.md and posts what was implemented, files changed, and any AC deviations. When atlassian-pm plugin is available, generates ADF-formatted comment via story-writer + quality-gate agents. Use at the end of build Phase 6 or debug Phase 3 cleanup when a Jira key is present in the context artifact.
+  Post a structured implementation summary comment to the linked Jira ticket after completing an devflow task. Reads devflow-context.md or debug-context.md and posts what was implemented, files changed, and any AC deviations. When atlassian-pm plugin is available, generates ADF-formatted comment via story-writer + quality-gate agents. Use at the end of build Phase 6 or debug Phase 3 cleanup when a Jira key is present in the context artifact.
 
   <example>
   Context: Build lead has completed Phase 6 implementation and a Jira key was provided.
@@ -42,8 +42,8 @@ context artifacts — no re-reading of source files required.
 
 Look for the context artifact in this order:
 
-1. `$ARGUMENTS` — caller passes explicit path (preferred: `{artifacts_dir}/anvil-context.md` or `{artifacts_dir}/debug-context.md`)
-2. The most recent build artifact: run `bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" build 2>/dev/null` to get base dir, then glob `*/anvil-context.md` for the latest ticket
+1. `$ARGUMENTS` — caller passes explicit path (preferred: `{artifacts_dir}/devflow-context.md` or `{artifacts_dir}/debug-context.md`)
+2. The most recent build artifact: run `bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" build 2>/dev/null` to get base dir, then glob `*/devflow-context.md` for the latest ticket
 3. The most recent debug artifact: run `bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" debug 2>/dev/null` to get base dir, then glob `*/debug-context.md` for the latest date
 
 If none found, output: `No context artifact found — cannot post Jira comment.` and exit.
@@ -95,7 +95,7 @@ Parse AC items from description. Look for:
 - Numbered lists starting with "AC" or "Given/When/Then" blocks
 - Acceptance Criteria section
 
-Compare against `anvil-context.md` task/phase list and `git diff {base_branch}...HEAD --name-only`.
+Compare against `devflow-context.md` task/phase list and `git diff {base_branch}...HEAD --name-only`.
 
 Build a coverage table:
 
@@ -118,14 +118,14 @@ Spawn `story-writer` with this task:
 Generate an ADF-formatted implementation summary comment for Jira issue {KEY}.
 
 Fields:
-- Title: {task summary or feature title from anvil-context.md}
+- Title: {task summary or feature title from devflow-context.md}
 - Branch: {branch from git branch --show-current}
 - PR: {PR number if available in context, otherwise omit}
-- What was implemented: {bullet list from anvil-context.md phases/tasks completed}
+- What was implemented: {bullet list from devflow-context.md phases/tasks completed}
 - Files changed: {output of git diff {base_branch}...HEAD --name-only, deduplicated}
-- Validate result: {pass/fail and command from anvil-context.md validate: field}
+- Validate result: {pass/fail and command from devflow-context.md validate: field}
 - AC coverage table: {table built in Step 4, or "not available"}
-- AC deviations: {Deviations or Notes section from anvil-context.md, or "None"}
+- AC deviations: {Deviations or Notes section from devflow-context.md, or "None"}
 
 Format as a Jira ADF comment — use panels for each section.
 ```

@@ -1,13 +1,13 @@
 ---
 name: debate-protocol
-description: "Adversarial debate rules for Anvil review workflows — pre-debate triage, round-robin assignment, consensus rules, hard rule exceptions, lead decision template, anti-patterns"
+description: "Adversarial debate rules for Devflow review workflows — pre-debate triage, round-robin assignment, consensus rules, hard rule exceptions, lead decision template, anti-patterns"
 user-invocable: false
 disable-model-invocation: true
 ---
 
 # Debate Protocol
 
-Rules for the adversarial debate phase in Anvil review workflows (review, build Phase 4).
+Rules for the adversarial debate phase in Devflow review workflows (review, build Phase 4).
 Teammates challenge each other's findings to reduce false positives and produce higher-confidence results.
 
 ## Debate Structure

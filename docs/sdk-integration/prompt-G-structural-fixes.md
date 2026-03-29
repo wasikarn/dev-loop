@@ -4,15 +4,15 @@
 **Impact:** ลบ dead code (~10 lines), ทำ verdict matching ปลอดภัยกว่า (key-based แทน index), ลด cli.ts ~200 lines
 **Files ที่แก้:**
 
-- `anvil-sdk/src/review/schemas/finding.ts` — ลบ `crossDomain`
-- `anvil-sdk/src/review/schemas/verdict.ts` — เพิ่ม `findingKey`
-- `anvil-sdk/src/review/agents/falsifier.ts` — เพิ่ม key ใน findings summary + prompt
-- `anvil-sdk/src/review/prompts/falsifier.ts` — เพิ่ม `findingKey` ใน output spec
-- `anvil-sdk/src/review/prompts/shared-rules.ts` — ลบ `crossDomain` field จาก output spec
-- `anvil-sdk/src/review/consolidator.ts` — `applyVerdicts()` ใช้ key-based matching
-- `anvil-sdk/src/review/output.ts` — ลบ `crossDomain` rendering
-- `anvil-sdk/src/cli.ts` — extract `parseFlags()`, dedup 5 parsers
-- `anvil-sdk/smoke-test.ts` — เพิ่ม tests สำหรับ verdict key safety + parser
+- `devflow-sdk/src/review/schemas/finding.ts` — ลบ `crossDomain`
+- `devflow-sdk/src/review/schemas/verdict.ts` — เพิ่ม `findingKey`
+- `devflow-sdk/src/review/agents/falsifier.ts` — เพิ่ม key ใน findings summary + prompt
+- `devflow-sdk/src/review/prompts/falsifier.ts` — เพิ่ม `findingKey` ใน output spec
+- `devflow-sdk/src/review/prompts/shared-rules.ts` — ลบ `crossDomain` field จาก output spec
+- `devflow-sdk/src/review/consolidator.ts` — `applyVerdicts()` ใช้ key-based matching
+- `devflow-sdk/src/review/output.ts` — ลบ `crossDomain` rendering
+- `devflow-sdk/src/cli.ts` — extract `parseFlags()`, dedup 5 parsers
+- `devflow-sdk/smoke-test.ts` — เพิ่ม tests สำหรับ verdict key safety + parser
 
 **ขึ้นอยู่กับ:** ควร execute หลัง Prompt E (ลด conflicts ใน cli.ts)
 
@@ -347,5 +347,5 @@ test('crossDomain not in Finding type', () => {
 ## Verify
 
 ```bash
-cd anvil-sdk && npx tsc --noEmit && npx tsx smoke-test.ts
+cd devflow-sdk && npx tsc --noEmit && npx tsx smoke-test.ts
 ```

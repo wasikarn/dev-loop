@@ -48,8 +48,8 @@ if [ -n "$PROJECT_ROOT" ]; then
   fi
 fi
 
-# Re-inject last artifact state (top 5 lines of most recently modified anvil artifact)
-PLUGIN_DATA="${HOME}/.claude/plugins/data/anvil-anvil"
+# Re-inject last artifact state (top 5 lines of most recently modified devflow artifact)
+PLUGIN_DATA="${HOME}/.claude/plugins/data/devflow-devflow"
 if [ -d "$PLUGIN_DATA" ]; then
   # Find most recently modified .md file (macOS-compatible: ls -t on find output)
   # shellcheck disable=SC2012,SC2038

@@ -1,23 +1,23 @@
 ---
 name: project-onboarder
 description: |
-  Bootstraps a new project into the anvil ecosystem. Detects the project stack, scaffolds .claude/skills/review-rules/hard-rules.md with stack-appropriate starter rules, and writes .claude/build/validate-command.md as project config. Artifact paths are managed by scripts/artifact-dir.sh. Run once on a new project before the first build or review invocation.
+  Bootstraps a new project into the devflow ecosystem. Detects the project stack, scaffolds .claude/skills/review-rules/hard-rules.md with stack-appropriate starter rules, and writes .claude/build/validate-command.md as project config. Artifact paths are managed by scripts/artifact-dir.sh. Run once on a new project before the first build or review invocation.
 
   <example>
-  Context: Developer is setting up anvil on a new project for the first time.
-  user: "onboard this project" or "set up anvil for this project"
+  Context: Developer is setting up devflow on a new project for the first time.
+  user: "onboard this project" or "set up devflow for this project"
   assistant: "I'll use project-onboarder to detect the tech stack and scaffold hard-rules.md and build directory."
   <commentary>
-  User running anvil on a project for the first time triggers project-onboarder. It detects stack (TypeScript/Go/Python/Rust), identifies frameworks, and creates hard-rules.md with stack-specific rules. Idempotent — safe to run again.
+  User running devflow on a project for the first time triggers project-onboarder. It detects stack (TypeScript/Go/Python/Rust), identifies frameworks, and creates hard-rules.md with stack-specific rules. Idempotent — safe to run again.
   </commentary>
   </example>
 
   <example>
-  Context: Lead wants to initialise anvil before the first build session.
+  Context: Lead wants to initialise devflow before the first build session.
   user: "before first build or review, run project-onboarder"
-  assistant: "Running project-onboarder to bootstrap the project into the anvil ecosystem."
+  assistant: "Running project-onboarder to bootstrap the project into the devflow ecosystem."
   <commentary>
-  project-onboarder is a one-time setup step. It scaffolds hard-rules.md with project-specific rules, creates the .anvil/build/ directory structure, and detects the validate command for the project.
+  project-onboarder is a one-time setup step. It scaffolds hard-rules.md with project-specific rules, creates the .devflow/build/ directory structure, and detects the validate command for the project.
   </commentary>
   </example>
 tools: Read, Glob, Grep, Bash, Write
@@ -29,9 +29,9 @@ maxTurns: 15
 
 # Project Onboarder
 
-You are a project setup specialist responsible for detecting tech stacks and scaffolding anvil's hard-rules and directory structure for new projects.
+You are a project setup specialist responsible for detecting tech stacks and scaffolding devflow's hard-rules and directory structure for new projects.
 
-Set up a new project for the anvil ecosystem. One-time setup that enables build, review,
+Set up a new project for the devflow ecosystem. One-time setup that enables build, review,
 and debug to work correctly from the first invocation.
 
 ## Steps
@@ -153,7 +153,7 @@ Replace this file content with the actual validate command if auto-detection is 
 ### 6. Output Onboarding Summary
 
 ```markdown
-## Anvil Onboarding Complete
+## Devflow Onboarding Complete
 
 **Project:** {name}
 **Stack:** {language} / {framework} / {test runner}
@@ -177,4 +177,4 @@ Replace this file content with the actual validate command if auto-detection is 
 
 ## Output Format
 
-On completion, prints: "✅ Anvil onboarding complete" followed by a table: File | Action (Created/Skipped — already exists) | Contents summary. Lists: hard-rules.md, .anvil/build/ directory, and any detected test/lint commands. If all files already exist: "Project already onboarded — no changes made."
+On completion, prints: "✅ Devflow onboarding complete" followed by a table: File | Action (Created/Skipped — already exists) | Contents summary. Lists: hard-rules.md, .devflow/build/ directory, and any detected test/lint commands. If all files already exist: "Project already onboarded — no changes made."

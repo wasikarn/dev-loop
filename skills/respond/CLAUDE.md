@@ -2,7 +2,7 @@
 
 Address PR review comments: fetch threads → fix code → reply on GitHub → re-request review.
 
-## How It Differs from Other Anvil Skills
+## How It Differs from Other Devflow Skills
 
 | Aspect | review | build | debug | respond |
 | --- | --- | --- | --- | --- |

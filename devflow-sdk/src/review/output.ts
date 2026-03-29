@@ -24,7 +24,7 @@ function formatFinding(f: ConsolidatedFinding): string {
 }
 
 /**
- * Format ReviewReport as a markdown table matching the Anvil review output format.
+ * Format ReviewReport as a markdown table matching the Devflow review output format.
  *
  * Format:
  * # PR Review — {report.pr}

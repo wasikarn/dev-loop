@@ -1,7 +1,7 @@
-# Anvil Eval Suite Protocol
+# Devflow Eval Suite Protocol
 
-**Purpose:** Reproducible before/after measurement for Anvil workflow quality improvements.
-**Spec:** `docs/superpowers/specs/2026-03-19-anvil-workflow-quality-improvements-round2-design.md`
+**Purpose:** Reproducible before/after measurement for Devflow workflow quality improvements.
+**Spec:** `docs/superpowers/specs/2026-03-19-devflow-workflow-quality-improvements-round2-design.md`
 
 ---
 

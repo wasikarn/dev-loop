@@ -3,7 +3,7 @@
 Runs after all Phase 4 workers complete, before Phase 6 review.
 Lead agent runs this phase directly — no new subagent needed.
 
-Update `phase: verify` in `{artifacts_dir}/anvil-context.md`.
+Update `phase: verify` in `{artifacts_dir}/devflow-context.md`.
 
 ## Mode Behavior
 
@@ -93,7 +93,7 @@ When user picks (b) — go back to Phase 3:
 
 **Counter updates:**
 
-- Increment `redesign_count` in anvil-context.md
+- Increment `redesign_count` in devflow-context.md
 - Reset `iteration_count` for the new planning cycle
 - Archive prior artifacts with date suffix: `plan-attempt-1.md`, `research-attempt-1.md`
 

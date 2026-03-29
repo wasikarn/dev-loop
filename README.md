@@ -1,10 +1,10 @@
 <div align="center">
 
-# anvil
+# devflow
 
 **A Claude Code plugin for structured development, PR review, and debugging — powered by Agent Teams.**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)](https://github.com/wasikarn/anvil/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)](https://github.com/wasikarn/devflow/releases)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-12-blue?style=flat-square)](#skills)
 [![Agents](https://img.shields.io/badge/agents-23-purple?style=flat-square)](#agents)
@@ -25,7 +25,7 @@
 
 </div>
 
-> **Note:** This plugin is not related to [Foundry's anvil](https://github.com/foundry-rs/foundry) (Ethereum tooling).
+> **Note:** This plugin is not related to [Foundry's devflow](https://github.com/foundry-rs/foundry) (Ethereum tooling).
 
 ---
 
@@ -54,10 +54,10 @@ brew install jq gh git
 gh auth login
 
 # 4. Add marketplace and install plugin
-claude plugin marketplace add wasikarn/anvil
-claude plugin install anvil
+claude plugin marketplace add wasikarn/devflow
+claude plugin install devflow
 
-# 5. Enable Agent Teams (required for Anvil skills)
+# 5. Enable Agent Teams (required for Devflow skills)
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ```
 
@@ -92,14 +92,14 @@ brew install jq gh git
 | Tool | Why it's needed |
 | --- | --- |
 | `jq` | All lifecycle hooks depend on it — missing breaks every hook |
-| `gh` (authenticated) | Anvil skills need it to fetch PR diffs, post comments, and merge PRs |
-| `git` | All Anvil skills and hooks depend on git |
+| `gh` (authenticated) | Devflow skills need it to fetch PR diffs, post comments, and merge PRs |
+| `git` | All Devflow skills and hooks depend on git |
 
 **Recommended — plugin degrades gracefully without these:**
 
 | Tool | Without it | Install |
 | --- | --- | --- |
-| `rtk` | Anvil skills work but produce higher token usage | `brew install rtk` |
+| `rtk` | Devflow skills work but produce higher token usage | `brew install rtk` |
 | `shellcheck` | Auto-validation skipped when Claude writes `.sh` files | `brew install shellcheck` |
 | `node` + `markdownlint-cli2` | Auto-lint skipped when Claude edits `.md` files | `brew install node && npm i -g markdownlint-cli2` |
 | `fd` | Bootstrap agents fall back to slower Glob search | `brew install fd` |
@@ -119,19 +119,19 @@ gh auth login
 `claude plugin install` requires a registered marketplace. Add this plugin's marketplace first, then install:
 
 ```bash
-claude plugin marketplace add wasikarn/anvil
-claude plugin install anvil
+claude plugin marketplace add wasikarn/devflow
+claude plugin install devflow
 ```
 
 > **Troubleshooting:** If the `marketplace add` step fails with a permission or authentication error, try the explicit HTTPS URL instead:
 >
 > ```bash
-> claude plugin marketplace add https://github.com/wasikarn/anvil.git
+> claude plugin marketplace add https://github.com/wasikarn/devflow.git
 > ```
 
 #### Step 5 — Enable Agent Teams
 
-Anvil skills (`build`, `review`, `respond`, `debug`) spawn parallel agents using Agent Teams. Without this flag, they degrade to solo mode.
+Devflow skills (`build`, `review`, `respond`, `debug`) spawn parallel agents using Agent Teams. Without this flag, they degrade to solo mode.
 
 ```bash
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
@@ -145,7 +145,7 @@ Close and reopen Claude Code. On next startup, the plugin automatically checks f
 
 ```bash
 claude plugin list
-# Expected: anvil appears in the list
+# Expected: devflow appears in the list
 ```
 
 ---
@@ -156,7 +156,7 @@ claude plugin list
 
 ```bash
 # 1. Clone and enter the repo
-git clone git@github.com:wasikarn/anvil.git && cd anvil
+git clone git@github.com:wasikarn/devflow.git && cd devflow
 
 # 2. Install prerequisites (same as Option A)
 
@@ -181,9 +181,9 @@ Skills and agents take effect immediately on file change. Restart Claude Code on
 | --- | --- | --- |
 | `git` | Required | `brew install git` (usually pre-installed) |
 | `jq` | Required — all hooks fail without it | `brew install jq` |
-| `gh` (authenticated) | Required — Anvil skills + merge-pr | `brew install gh && gh auth login` |
-| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | Required — enables Agent Teams for Anvil skills | `claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1` |
-| `rtk` | Recommended — reduces token usage in Anvil output | `brew install rtk` |
+| `gh` (authenticated) | Required — Devflow skills + merge-pr | `brew install gh && gh auth login` |
+| `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | Required — enables Agent Teams for Devflow skills | `claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1` |
+| `rtk` | Recommended — reduces token usage in Devflow output | `brew install rtk` |
 | `shellcheck` | Recommended — auto-validates `.sh` files Claude writes | `brew install shellcheck` |
 | `node` + `markdownlint-cli2` | Recommended — auto-lints `.md` files Claude edits | `brew install node && npm i -g markdownlint-cli2` |
 | `fd` | Recommended — faster file search in bootstrap agents | `brew install fd` |
@@ -193,13 +193,13 @@ Skills and agents take effect immediately on file change. Restart Claude Code on
 
 ## Daily Usage
 
-Typical developer day using the Anvil workflow:
+Typical developer day using the Devflow workflow:
 
 ```mermaid
 flowchart TD
     MORNING([Start of day]) --> WC
 
-    WC["/anvil:work-context
+    WC["/devflow:work-context
     Sprint tickets + open PRs
     + unmerged branches"]
 
@@ -210,18 +210,18 @@ flowchart TD
     DECISION -->|Review comments on my PR| RESPOND
     DECISION -->|Bug / production incident| DEBUG
 
-    BUILD["/anvil:build PROJ-123
+    BUILD["/devflow:build PROJ-123
     or: 'add X feature'
     Full loop → PR created"]
 
-    REVIEW["/anvil:review 42
+    REVIEW["/devflow:review 42
     3 reviewers → findings table
     post as GitHub review comments"]
 
-    RESPOND["/anvil:respond 42
+    RESPOND["/devflow:respond 42
     Fix all threads → commit → reply"]
 
-    DEBUG["/anvil:debug 'error msg'
+    DEBUG["/devflow:debug 'error msg'
     Root cause + DX hardening → fix PR"]
 
     BUILD --> MERGE
@@ -230,7 +230,7 @@ flowchart TD
 
     REVIEW -->|Comments posted, waiting| EOD
 
-    MERGE["/anvil:merge-pr 42
+    MERGE["/devflow:merge-pr 42
     Preflight → merge → tag"]
 
     MERGE --> EOD([End of day ✓])
@@ -238,9 +238,9 @@ flowchart TD
 
 **Session tips:**
 
-- Start every session with `/anvil:work-context` — shows active sprint tickets, open PRs awaiting action, and unmerged branches
-- Run `/anvil:careful` before risky work (migrations, force-push, DROP TABLE)
-- Use `/anvil:metrics` weekly to spot recurring review findings
+- Start every session with `/devflow:work-context` — shows active sprint tickets, open PRs awaiting action, and unmerged branches
+- Run `/devflow:careful` before risky work (migrations, force-push, DROP TABLE)
+- Use `/devflow:metrics` weekly to spot recurring review findings
 
 ---
 
@@ -250,20 +250,20 @@ flowchart TD
 
 ```bash
 # 1. Build the feature
-/anvil:build PROJ-1234
+/devflow:build PROJ-1234
 # Claude fetches Jira AC → maps auth middleware → writes plan.md →
 # implements with tests → 3-reviewer debate → opens PR
 
 # 2. Address reviewer comments
-/anvil:respond 42
+/devflow:respond 42
 # Fetches open threads → fixes in parallel → commits → posts replies
 
 # 3. Final review before merge
-/anvil:review 42 PROJ-1234 Author
+/devflow:review 42 PROJ-1234 Author
 # Three agents re-examine PR against AC → debate → apply remaining fixes
 
 # 4. Merge
-/anvil:merge-pr 42
+/devflow:merge-pr 42
 # Squash into develop → version bump → CHANGELOG → post-merge verification
 ```
 
@@ -271,9 +271,9 @@ flowchart TD
 
 ## Skills
 
-### Anvil Workflow Skills
+### Devflow Workflow Skills
 
-The four Anvil skills form a complete development loop. Each runs a team of specialized agents that work in parallel, debate findings, and produce structured output.
+The four Devflow skills form a complete development loop. Each runs a team of specialized agents that work in parallel, debate findings, and produce structured output.
 
 ```mermaid
 flowchart TD
@@ -334,10 +334,10 @@ flowchart LR
 **Domain lenses (Phase 6):** Each reviewer automatically receives domain-specific lens files based on diff content — security, database, TypeScript, frontend (RSC/App Router), error handling, API design, observability, and performance. Lens injection is automatic; no configuration needed.
 
 ```bash
-/anvil:build "add rate limiting to the API"
-/anvil:build PROJ-1234           # auto-fetches Jira AC
-/anvil:build PROJ-1234 --quick   # skip research for small fixes
-/anvil:build PROJ-1234 --hotfix  # urgent production incident
+/devflow:build "add rate limiting to the API"
+/devflow:build PROJ-1234           # auto-fetches Jira AC
+/devflow:build PROJ-1234 --quick   # skip research for small fixes
+/devflow:build PROJ-1234 --hotfix  # urgent production incident
 ```
 
 | Mode | When to use |
@@ -358,10 +358,10 @@ Three agents independently review a PR, then debate their findings to eliminate 
 **When to use:** Any pull request — quick standards check, architecture review, or multi-perspective analysis.
 
 ```bash
-/anvil:review 42                  # PR number
-/anvil:review 42 PROJ-1234        # with Jira AC verification
-/anvil:review 42 Author           # apply fixes directly to the branch
-/anvil:review 42 Reviewer         # post findings as GitHub review comments
+/devflow:review 42                  # PR number
+/devflow:review 42 PROJ-1234        # with Jira AC verification
+/devflow:review 42 Author           # apply fixes directly to the branch
+/devflow:review 42 Reviewer         # post findings as GitHub review comments
 ```
 
 | Mode | When to use |
@@ -417,8 +417,8 @@ Fetches all open GitHub review threads on a PR, fixes each issue in parallel, co
 **When to use:** After receiving PR review feedback.
 
 ```bash
-/anvil:respond 42
-/anvil:respond 42 PROJ-1234   # with Jira AC context for prioritization
+/devflow:respond 42
+/devflow:respond 42 PROJ-1234   # with Jira AC context for prioritization
 ```
 
 ---
@@ -430,10 +430,10 @@ Two agents run in parallel: an Investigator traces the root cause, while a DX An
 **When to use:** Complex bugs, production incidents, or when you want to harden the affected area alongside the fix.
 
 ```bash
-/anvil:debug "NullPointerException in UserService"
-/anvil:debug PROJ-5678           # from a Jira bug ticket
-/anvil:debug PROJ-5678 --quick   # fix only, skip DX analysis
-/anvil:debug PROJ-5678 --review  # add Fix Reviewer after Fixer (forced on P0)
+/devflow:debug "NullPointerException in UserService"
+/devflow:debug PROJ-5678           # from a Jira bug ticket
+/devflow:debug PROJ-5678 --quick   # fix only, skip DX analysis
+/devflow:debug PROJ-5678 --review  # add Fix Reviewer after Fixer (forced on P0)
 ```
 
 ---
@@ -445,9 +445,9 @@ Two agents run in parallel: an Investigator traces the root cause, while a DX An
 Automates the merge and release process: version bumps, CHANGELOG updates, tags, backport PRs, and post-merge verification.
 
 ```bash
-/anvil:merge-pr 42           # feature/bugfix → develop
-/anvil:merge-pr --hotfix     # hotfix → main + backport to develop
-/anvil:merge-pr --release    # release → main + tag + backport
+/devflow:merge-pr 42           # feature/bugfix → develop
+/devflow:merge-pr --hotfix     # hotfix → main + backport to develop
+/devflow:merge-pr --release    # release → main + tag + backport
 ```
 
 **Requires:** `gh` CLI (authenticated), clean working tree, GitHub remote.
@@ -459,9 +459,9 @@ Automates the merge and release process: version bumps, CHANGELOG updates, tags,
 Scores a CLAUDE.md across quality dimensions, identifies bloat and gaps, and rewrites sections to be more useful for Claude.
 
 ```bash
-/anvil:optimize-claude-md
-/anvil:optimize-claude-md --dry-run    # preview without editing
-/anvil:optimize-claude-md --coverage   # include coverage analysis
+/devflow:optimize-claude-md
+/devflow:optimize-claude-md --dry-run    # preview without editing
+/devflow:optimize-claude-md --coverage   # include coverage analysis
 ```
 
 ---
@@ -471,8 +471,8 @@ Scores a CLAUDE.md across quality dimensions, identifies bloat and gaps, and rew
 Scans for all env var references, cross-references against the validation schema and `.env.example`, classifies gaps, auto-fixes discrepancies, and runs tests to verify.
 
 ```bash
-/anvil:env-heal          # full scan and fix
-/anvil:env-heal --quick  # schema vs .env.example only
+/devflow:env-heal          # full scan and fix
+/devflow:env-heal --quick  # schema vs .env.example only
 ```
 
 **Supports:** AdonisJS (`Env.schema`), dotenv (`.env.example`), and any Node.js project.
@@ -484,28 +484,28 @@ Scans for all env var references, cross-references against the validation schema
 Maps causal loops, identifies feedback cycles, and surfaces second-order effects before committing to an architecture decision.
 
 ```bash
-/anvil:systems-thinking "should we move to microservices?"
-/anvil:systems-thinking "what happens if we remove the cache layer?"
+/devflow:systems-thinking "should we move to microservices?"
+/devflow:systems-thinking "what happens if we remove the cache layer?"
 ```
 
 ---
 
 #### `metrics` — Retrospective Report
 
-Reads `~/.claude/anvil-metrics.jsonl` and produces a retrospective: iteration counts, critical finding categories, recurrent issues, and Hard Rule candidates.
+Reads `~/.claude/devflow-metrics.jsonl` and produces a retrospective: iteration counts, critical finding categories, recurrent issues, and Hard Rule candidates.
 
 ```bash
-/anvil:metrics
+/devflow:metrics
 ```
 
 ---
 
 #### `onboard` — Bootstrap a New Project
 
-Scaffolds the anvil ecosystem into a new project: generates `hard-rules.md` with stack-appropriate starter rules and creates the `build` artifact directory.
+Scaffolds the devflow ecosystem into a new project: generates `hard-rules.md` with stack-appropriate starter rules and creates the `build` artifact directory.
 
 ```bash
-/anvil:onboard
+/devflow:onboard
 ```
 
 ---
@@ -515,7 +515,7 @@ Scaffolds the anvil ecosystem into a new project: generates `hard-rules.md` with
 Activates session-level protection that blocks destructive bash commands: `rm -rf`, `DROP TABLE`, `git push --force`, `truncate`, `git reset --hard` on committed work.
 
 ```bash
-/anvil:careful
+/devflow:careful
 ```
 
 **When to use:** Working near production data, shared branches, or irreversible operations.
@@ -527,8 +527,8 @@ Activates session-level protection that blocks destructive bash commands: `rm -r
 Locks edits to a specific directory for the session. Claude will refuse to edit files outside the target path.
 
 ```bash
-/anvil:freeze src/auth     # lock edits to src/auth/
-/anvil:freeze tests/       # only touch tests/
+/devflow:freeze src/auth     # lock edits to src/auth/
+/devflow:freeze tests/       # only touch tests/
 ```
 
 ---
@@ -541,14 +541,14 @@ Detailed contributor docs for each skill live in `skills/<name>/CLAUDE.md`. For 
 
 ## Agents
 
-Specialized subagents spawned automatically by Anvil skills. Can also be invoked directly.
+Specialized subagents spawned automatically by Devflow skills. Can also be invoked directly.
 
 | Agent | Model | Invoked by | Purpose |
 | --- | --- | --- | --- |
 | `commit-finalizer` | Haiku | Manually | Fast git commit with conventional commit formatting |
-| `anvil-build-bootstrap` | Haiku | `build` Phase 2 | Pre-gathers project structure and type definitions |
-| `anvil-debug-bootstrap` | Haiku | `debug` Phase 1 | Pre-gathers stack trace context and affected files |
-| `anvil-respond-bootstrap` | Haiku | `respond` Phase 1 | Pre-gathers open PR threads and affected files |
+| `devflow-build-bootstrap` | Haiku | `build` Phase 2 | Pre-gathers project structure and type definitions |
+| `devflow-debug-bootstrap` | Haiku | `debug` Phase 1 | Pre-gathers stack trace context and affected files |
+| `devflow-respond-bootstrap` | Haiku | `respond` Phase 1 | Pre-gathers open PR threads and affected files |
 | `pr-review-bootstrap` | Haiku | `review` Phase 1 | Fetches PR diff, Jira AC, and groups changed files |
 | `review-consolidator` | Haiku | `review` Phase 5 | Deduplicates and ranks findings from multiple reviewers |
 | `research-validator` | Haiku | `build` Phase 2→3 gate | Validates research.md completeness (file:line evidence) |
@@ -556,7 +556,7 @@ Specialized subagents spawned automatically by Anvil skills. Can also be invoked
 | `jira-summary-poster` | Haiku | `build`/`debug` end | Posts ADF implementation summary to Jira; AC coverage check; optional status transition; spawns atlassian-pm agents when available |
 | `work-context` | Haiku | Session start | Sprint tickets + PRs awaiting action + unmerged branches digest |
 | `merge-preflight` | Haiku | `merge-pr` Confirmation Gate | Pre-merge go/no-go safety checklist |
-| `metrics-analyst` | Haiku | `metrics` | Retrospective from anvil-metrics.jsonl: iteration patterns and Hard Rule candidates |
+| `metrics-analyst` | Haiku | `metrics` | Retrospective from devflow-metrics.jsonl: iteration patterns and Hard Rule candidates |
 | `falsification-agent` | Sonnet | `build` Phase 6, `review` Phase 5 | Challenges every finding — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
 | `plan-challenger` | Sonnet | `build` Phase 3 gate | Challenges plan for YAGNI/scope/ordering issues before implementation |
 | `test-quality-reviewer` | Sonnet | `review` Phase 3 | Test quality (T1–T9): behavior vs implementation, mock fidelity, assertion presence |
@@ -618,7 +618,7 @@ Activate an output style to change how Claude communicates throughout a session.
 
 ## Jira Integration
 
-Pass a Jira ticket key (e.g. `PROJ-123`) to any Anvil skill and it auto-fetches the issue's acceptance criteria. Requires one of these MCP servers:
+Pass a Jira ticket key (e.g. `PROJ-123`) to any Devflow skill and it auto-fetches the issue's acceptance criteria. Requires one of these MCP servers:
 
 | MCP Server | Notes | Install |
 | --- | --- | --- |
@@ -663,7 +663,7 @@ All optional — skills degrade gracefully if absent.
 
 ## Troubleshooting
 
-### Anvil skills do nothing / no agents spawn
+### Devflow skills do nothing / no agents spawn
 
 Agent Teams must be enabled:
 
@@ -678,14 +678,14 @@ Restart Claude Code after setting.
 Verify the plugin is installed:
 
 ```bash
-claude plugin list   # anvil should appear
+claude plugin list   # devflow should appear
 ```
 
 If missing, reinstall:
 
 ```bash
-claude plugin marketplace add wasikarn/anvil
-claude plugin install anvil
+claude plugin marketplace add wasikarn/devflow
+claude plugin install devflow
 ```
 
 ### Warning about missing tools at session start
@@ -700,7 +700,7 @@ brew install jq gh && gh auth login
 
 Jira is optional. Configure `mcp-atlassian` or `jira-cache-server` if you want it. See [Jira Integration](#jira-integration).
 
-### Plugin skills show as `anvil:skill-name`
+### Plugin skills show as `devflow:skill-name`
 
 This is correct — skills installed via plugin are namespaced automatically to avoid conflicts with other plugins.
 
@@ -719,7 +719,7 @@ Re-run `bash scripts/link-assets.sh` if any are missing.
 ## Repo Structure
 
 ```text
-anvil/
+devflow/
 ├── .claude-plugin/
 │   └── plugin.json           # Plugin manifest
 ├── skills/                   # Skill entry points (SKILL.md per skill)

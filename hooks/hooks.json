@@ -1,5 +1,5 @@
 {
-  "description": "Workflow automation hooks for anvil — skill routing, quality gates, context injection, and file protection",
+  "description": "Workflow automation hooks for devflow — skill routing, quality gates, context injection, and file protection",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -138,11 +138,11 @@
         ]
       },
       {
-        "matcher": "anvil",
+        "matcher": "devflow",
         "hooks": [
           {
             "type": "command",
-            "command": "GATE_PATTERN='anvil|explore|implement|review|fix|finding' GATE_MSG='Your output must include file:line evidence. Re-examine the code and cite specific locations.' ${CLAUDE_PLUGIN_ROOT}/hooks/task-gate.sh",
+            "command": "GATE_PATTERN='devflow|explore|implement|review|fix|finding' GATE_MSG='Your output must include file:line evidence. Re-examine the code and cite specific locations.' ${CLAUDE_PLUGIN_ROOT}/hooks/task-gate.sh",
             "timeout": 10
           }
         ]
@@ -217,11 +217,11 @@
         ]
       },
       {
-        "matcher": "anvil",
+        "matcher": "devflow",
         "hooks": [
           {
             "type": "command",
-            "command": "NUDGE_PATTERN='anvil' NUDGE_CHECK_TASKS=1 NUDGE_MSG='You have pending tasks. Please continue working on your assigned phase tasks and message the team lead when done.' ${CLAUDE_PLUGIN_ROOT}/hooks/idle-nudge.sh",
+            "command": "NUDGE_PATTERN='devflow' NUDGE_CHECK_TASKS=1 NUDGE_MSG='You have pending tasks. Please continue working on your assigned phase tasks and message the team lead when done.' ${CLAUDE_PLUGIN_ROOT}/hooks/idle-nudge.sh",
             "timeout": 10
           }
         ]

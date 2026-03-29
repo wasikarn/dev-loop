@@ -14,7 +14,7 @@ description: |
 
   <example>
   Context: Lead provides a research.md path directly for validation.
-  user: "[Build lead] validate .anvil/build/session-3/research.md"
+  user: "[Build lead] validate .devflow/build/session-3/research.md"
   assistant: "Running research-validator on the provided path."
   <commentary>
   Agent checks tier (Lite vs Deep), required sections, token count, and file:line evidence count. Returns structured JSON + markdown verdict.
@@ -39,7 +39,7 @@ produced concrete evidence, not just section headers.
 
 ### 1. Locate research.md
 
-Read the file path passed via `$ARGUMENTS` (the lead passes `{artifacts_dir}/research.md` when dispatching). If `$ARGUMENTS` is empty, fallback: use the Glob tool with pattern `**/.anvil/build/*/research.md` to find the most recently modified match; if none found, try `**/.build/*/research.md`. If still not found, output `FAIL: research.md not found` and exit.
+Read the file path passed via `$ARGUMENTS` (the lead passes `{artifacts_dir}/research.md` when dispatching). If `$ARGUMENTS` is empty, fallback: use the Glob tool with pattern `**/.devflow/build/*/research.md` to find the most recently modified match; if none found, try `**/.build/*/research.md`. If still not found, output `FAIL: research.md not found` and exit.
 
 **Canonical path fallback:** If both glob attempts fail to find research.md, try:
 

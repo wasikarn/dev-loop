@@ -21,7 +21,7 @@ Uses 3 reviewer teammates that challenge each other's findings instead of 7 para
 | `../../review-conventions/SKILL.md` | Shared review conventions (labels, dedup, strengths) |
 | `../../review-output-format/SKILL.md` | Output format template |
 | `references/operational.md` | Graceful Degradation, Context Compression Recovery, Success Criteria |
-| `../../docs/superpowers/specs/2026-03-19-anvil-workflow-quality-improvements-round2-design.md` | Behavioral anchor rubric for scoring dimensions — see Round 2 spec |
+| `../../docs/superpowers/specs/2026-03-19-devflow-workflow-quality-improvements-round2-design.md` | Behavioral anchor rubric for scoring dimensions — see Round 2 spec |
 
 ## Skill Architecture
 

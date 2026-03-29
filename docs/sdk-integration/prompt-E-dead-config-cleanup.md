@@ -4,10 +4,10 @@
 **Impact:** Config กลายเป็น source of truth — ไม่มี field ที่บอกค่าหนึ่งแต่ code ทำอีกอย่าง + `--effort low` ทำให้ review ถูกลง ~50%
 **Files ที่แก้:**
 
-- `anvil-sdk/src/config.ts` — ลบ dead fields, เพิ่ม effort presets, rename thresholds
-- `anvil-sdk/src/review/triage.ts` — รับ thresholds จาก caller แทน hardcode
-- `anvil-sdk/src/cli.ts` — เพิ่ม `--effort` flag ใน review parser, wire เข้า `resolveConfig()`
-- `anvil-sdk/smoke-test.ts` — เพิ่ม tests สำหรับ effort presets และ config-driven triage
+- `devflow-sdk/src/config.ts` — ลบ dead fields, เพิ่ม effort presets, rename thresholds
+- `devflow-sdk/src/review/triage.ts` — รับ thresholds จาก caller แทน hardcode
+- `devflow-sdk/src/cli.ts` — เพิ่ม `--effort` flag ใน review parser, wire เข้า `resolveConfig()`
+- `devflow-sdk/smoke-test.ts` — เพิ่ม tests สำหรับ effort presets และ config-driven triage
 
 ---
 
@@ -268,7 +268,7 @@ test('resolveConfig has no confidenceThreshold or maxTurnsFalsification field', 
 ## Verify
 
 ```bash
-cd anvil-sdk && npx tsc --noEmit && npx tsx smoke-test.ts
+cd devflow-sdk && npx tsc --noEmit && npx tsx smoke-test.ts
 ```
 
 ต้องไม่มี TypeScript error และ smoke tests ผ่านทั้งหมด

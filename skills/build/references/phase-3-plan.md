@@ -63,7 +63,7 @@ READY / NEEDS WORK / NOT READY
 5. TDD task ordering — test task must precede impl task for each truth
 6. Task granularity — each task must specify: exact file(s), what to change (specific), expected behavior after change, how to verify. Each task completable in one worker turn — split if needed.
 
-Update `plan_file:` in `{artifacts_dir}/anvil-context.md` to `{artifacts_dir}/{date}-{task-slug}/plan.md`.
+Update `plan_file:` in `{artifacts_dir}/devflow-context.md` to `{artifacts_dir}/{date}-{task-slug}/plan.md`.
 
 ---
 
@@ -74,7 +74,7 @@ Update `plan_file:` in `{artifacts_dir}/anvil-context.md` to `{artifacts_dir}/{d
 **Full mode only:** Try the SDK Plan-Challenger first (faster, lower token cost):
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
 
@@ -85,7 +85,7 @@ if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
   sdk_exit=$?
 
 else
-  echo "anvil-sdk not available — skipping SDK-enhanced analysis"
+  echo "devflow-sdk not available — skipping SDK-enhanced analysis"
   sdk_exit=1
 fi
 ```

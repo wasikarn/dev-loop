@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Extend the anvil-sdk with three new CLI subcommands (`plan-challenge`, `falsify`, `investigate`) and update four skill files to use SDK fast-paths before falling back to Agent Teams.
+**Goal:** Extend the devflow-sdk with three new CLI subcommands (`plan-challenge`, `falsify`, `investigate`) and update four skill files to use SDK fast-paths before falling back to Agent Teams.
 
-**Architecture:** Each new command follows the existing `review` pattern: `AgentDefinition` + `query()` async iterator + structured JSON output via `outputFormat`. Skill files add a bash SDK block at the top of each relevant phase step — try SDK, check exit 0 + valid JSON, skip Agent Teams on success. All new modules live in `anvil-sdk/src/` with parallel structure to `src/review/`.
+**Architecture:** Each new command follows the existing `review` pattern: `AgentDefinition` + `query()` async iterator + structured JSON output via `outputFormat`. Skill files add a bash SDK block at the top of each relevant phase step — try SDK, check exit 0 + valid JSON, skip Agent Teams on success. All new modules live in `devflow-sdk/src/` with parallel structure to `src/review/`.
 
 **Tech Stack:** TypeScript ESM, `@anthropic-ai/claude-agent-sdk` (query), `zod` v4, `tsx` CLI runner, bash for skill integration blocks.
 
@@ -16,37 +16,37 @@
 
 | File | Responsibility |
 | --- | --- |
-| `anvil-sdk/src/plan/schemas/challenge.ts` | `ChallengeResultSchema` + `challengeResultJsonSchema` for plan-challenger output |
-| `anvil-sdk/src/plan/prompts/challenger.ts` | `PLAN_CHALLENGE_PROMPT` — Minimal-lens + Clean-lens challenge |
-| `anvil-sdk/src/plan/agents/challenger.ts` | `createChallenger()` + `runPlanChallenge()` — SDK agent runner |
-| `anvil-sdk/src/investigate/schemas/investigation.ts` | `InvestigationResultSchema` + `investigationResultJsonSchema` |
-| `anvil-sdk/src/investigate/prompts/investigator.ts` | `INVESTIGATOR_PROMPT` — root cause tracing, file:line evidence |
-| `anvil-sdk/src/investigate/prompts/dx-analyst.ts` | `DX_ANALYST_PROMPT` — observability, error handling, test coverage audit |
-| `anvil-sdk/src/investigate/agents/investigation.ts` | `runInvestigation()` — runs Investigator + DX Analyst concurrently via `Promise.allSettled` |
+| `devflow-sdk/src/plan/schemas/challenge.ts` | `ChallengeResultSchema` + `challengeResultJsonSchema` for plan-challenger output |
+| `devflow-sdk/src/plan/prompts/challenger.ts` | `PLAN_CHALLENGE_PROMPT` — Minimal-lens + Clean-lens challenge |
+| `devflow-sdk/src/plan/agents/challenger.ts` | `createChallenger()` + `runPlanChallenge()` — SDK agent runner |
+| `devflow-sdk/src/investigate/schemas/investigation.ts` | `InvestigationResultSchema` + `investigationResultJsonSchema` |
+| `devflow-sdk/src/investigate/prompts/investigator.ts` | `INVESTIGATOR_PROMPT` — root cause tracing, file:line evidence |
+| `devflow-sdk/src/investigate/prompts/dx-analyst.ts` | `DX_ANALYST_PROMPT` — observability, error handling, test coverage audit |
+| `devflow-sdk/src/investigate/agents/investigation.ts` | `runInvestigation()` — runs Investigator + DX Analyst concurrently via `Promise.allSettled` |
 
 ### Modified files (modify)
 
 | File | Change |
 | --- | --- |
-| `anvil-sdk/src/cli.ts` | Add `plan-challenge` and `investigate` subcommands; expose `falsify` as standalone command |
-| `anvil-sdk/src/review/agents/falsifier.ts` | Extract `parseFindingsFromJson()` helper for standalone use |
+| `devflow-sdk/src/cli.ts` | Add `plan-challenge` and `investigate` subcommands; expose `falsify` as standalone command |
+| `devflow-sdk/src/review/agents/falsifier.ts` | Extract `parseFindingsFromJson()` helper for standalone use |
 | `skills/build/references/phase-3-plan.md` | Step 2: Add SDK fast-path block before `plan-challenger` spawn |
 | `skills/build/references/phase-6-review.md` | Phase 7: Add SDK fast-path block before `falsification-agent` spawn |
 | `skills/review/references/phase-5.md` | Falsification Pass: Add SDK fast-path block |
 | `skills/debug/SKILL.md` | Phase 2 Step 1: Add SDK fast-path block before Create Team |
-| `anvil-sdk/smoke-test.ts` | Add tests for challenge schema, investigation schema, new CLI subcommand argument parsing |
+| `devflow-sdk/smoke-test.ts` | Add tests for challenge schema, investigation schema, new CLI subcommand argument parsing |
 
 ---
 
 ## Task 1: Plan Challenge Schema
 
 **Files:**
-- Create: `anvil-sdk/src/plan/schemas/challenge.ts`
+- Create: `devflow-sdk/src/plan/schemas/challenge.ts`
 
 - [ ] **Step 1: Write the failing smoke test**
 
 ```typescript
-// In anvil-sdk/smoke-test.ts — add after existing tests:
+// In devflow-sdk/smoke-test.ts — add after existing tests:
 console.log('\nplan/schemas/challenge')
 import { ChallengeResultSchema } from './src/plan/schemas/challenge.js'
 test('ChallengeResultSchema parses valid output', () => {
@@ -69,7 +69,7 @@ test('ChallengeResultSchema parses valid output', () => {
 - [ ] **Step 2: Run to verify it fails**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | tail -20
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | tail -20
 ```
 
 Expected: error about missing module `src/plan/schemas/challenge.js`
@@ -77,7 +77,7 @@ Expected: error about missing module `src/plan/schemas/challenge.js`
 - [ ] **Step 3: Create the schema file**
 
 ```typescript
-// anvil-sdk/src/plan/schemas/challenge.ts
+// devflow-sdk/src/plan/schemas/challenge.ts
 import { z } from 'zod'
 
 export const MinimalFindingSchema = z.object({
@@ -149,7 +149,7 @@ export type ChallengeResult = z.infer<typeof ChallengeResultSchema>
 - [ ] **Step 4: Run smoke test to verify schema test passes**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A3 'plan/schemas'
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A3 'plan/schemas'
 ```
 
 Expected: `✅ ChallengeResultSchema parses valid output`
@@ -157,7 +157,7 @@ Expected: `✅ ChallengeResultSchema parses valid output`
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/plan/schemas/challenge.ts anvil-sdk/smoke-test.ts && git commit -m "feat(sdk): add plan challenge schema with Zod + JSON schema"
+cd /Users/kobig/Codes/Personals/devflow && git add devflow-sdk/src/plan/schemas/challenge.ts devflow-sdk/smoke-test.ts && git commit -m "feat(sdk): add plan challenge schema with Zod + JSON schema"
 ```
 
 ---
@@ -165,13 +165,13 @@ cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/plan/schemas/chal
 ## Task 2: Plan Challenge Prompt + Agent
 
 **Files:**
-- Create: `anvil-sdk/src/plan/prompts/challenger.ts`
-- Create: `anvil-sdk/src/plan/agents/challenger.ts`
+- Create: `devflow-sdk/src/plan/prompts/challenger.ts`
+- Create: `devflow-sdk/src/plan/agents/challenger.ts`
 
 - [ ] **Step 1: Write the plan challenge prompt**
 
 ```typescript
-// anvil-sdk/src/plan/prompts/challenger.ts
+// devflow-sdk/src/plan/prompts/challenger.ts
 export const PLAN_CHALLENGE_PROMPT = `You are a plan challenger for software implementation plans.
 Challenge the plan from two lenses and return JSON.
 
@@ -198,7 +198,7 @@ Return JSON matching the schema exactly. No prose outside the JSON block.`
 - [ ] **Step 2: Write the challenger agent**
 
 ```typescript
-// anvil-sdk/src/plan/agents/challenger.ts
+// devflow-sdk/src/plan/agents/challenger.ts
 import { readFileSync } from 'node:fs'
 import type { AgentDefinition } from '@anthropic-ai/claude-agent-sdk'
 import { query } from '@anthropic-ai/claude-agent-sdk'
@@ -271,7 +271,7 @@ export async function runPlanChallenge(params: {
 - [ ] **Step 3: TypeScript check**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsc --noEmit 2>&1
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsc --noEmit 2>&1
 ```
 
 Expected: 0 errors
@@ -279,7 +279,7 @@ Expected: 0 errors
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/plan/prompts/challenger.ts anvil-sdk/src/plan/agents/challenger.ts && git commit -m "feat(sdk): add plan-challenge agent with dual-lens prompt"
+cd /Users/kobig/Codes/Personals/devflow && git add devflow-sdk/src/plan/prompts/challenger.ts devflow-sdk/src/plan/agents/challenger.ts && git commit -m "feat(sdk): add plan-challenge agent with dual-lens prompt"
 ```
 
 ---
@@ -287,12 +287,12 @@ cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/plan/prompts/chal
 ## Task 3: `plan-challenge` CLI Subcommand
 
 **Files:**
-- Modify: `anvil-sdk/src/cli.ts`
+- Modify: `devflow-sdk/src/cli.ts`
 
 - [ ] **Step 1: Write the smoke test for CLI arg parsing**
 
 ```typescript
-// In anvil-sdk/smoke-test.ts — add plan-challenge CLI arg tests:
+// In devflow-sdk/smoke-test.ts — add plan-challenge CLI arg tests:
 console.log('\nplan-challenge CLI args')
 // Test that parseArgs correctly handles plan-challenge subcommand
 // (We'll test the new parsePlanChallengeArgs function directly)
@@ -314,7 +314,7 @@ test('parsePlanChallengeArgs defaults researchFile to undefined', () => {
 - [ ] **Step 2: Run to verify tests fail**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A5 'plan-challenge CLI'
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A5 'plan-challenge CLI'
 ```
 
 Expected: import error for `parsePlanChallengeArgs`
@@ -324,7 +324,7 @@ Expected: import error for `parsePlanChallengeArgs`
 Refactor `cli.ts` to support subcommands. The existing `main()` runs the `review` command. Extract it into a `runReviewCommand()` function, add `runPlanChallengeCommand()`, and dispatch based on `argv[2]`.
 
 ```typescript
-// Add to anvil-sdk/src/cli.ts:
+// Add to devflow-sdk/src/cli.ts:
 
 interface ParsedPlanChallengeArgs {
   planFile: string | undefined
@@ -403,7 +403,7 @@ Note: the existing arg parsing becomes `runReviewCommand(args)` which calls `par
 - [ ] **Step 4: Run TypeScript check**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsc --noEmit 2>&1
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsc --noEmit 2>&1
 ```
 
 Expected: 0 errors
@@ -411,7 +411,7 @@ Expected: 0 errors
 - [ ] **Step 5: Run smoke tests**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A5 'plan-challenge CLI'
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A5 'plan-challenge CLI'
 ```
 
 Expected: 3 ✅ for plan-challenge CLI args tests
@@ -419,7 +419,7 @@ Expected: 3 ✅ for plan-challenge CLI args tests
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/cli.ts anvil-sdk/smoke-test.ts && git commit -m "feat(sdk): add plan-challenge CLI subcommand"
+cd /Users/kobig/Codes/Personals/devflow && git add devflow-sdk/src/cli.ts devflow-sdk/smoke-test.ts && git commit -m "feat(sdk): add plan-challenge CLI subcommand"
 ```
 
 ---
@@ -441,7 +441,7 @@ In `skills/build/references/phase-3-plan.md`, replace the Step 2 content with:
 **Full mode only:** Try the SDK Plan-Challenger first (faster, lower token cost):
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ ! -d "$SDK_DIR/node_modules" ]; then
   (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
@@ -473,7 +473,7 @@ Plan-challenger uses **dual-lens** challenge (see [agents/plan-challenger.md](..
 - [ ] **Step 2: Verify markdown lint passes**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && npx markdownlint-cli2 "skills/build/references/phase-3-plan.md" 2>&1
+cd /Users/kobig/Codes/Personals/devflow && npx markdownlint-cli2 "skills/build/references/phase-3-plan.md" 2>&1
 ```
 
 Expected: 0 errors
@@ -481,7 +481,7 @@ Expected: 0 errors
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add skills/build/references/phase-3-plan.md && git commit -m "feat(build): add SDK fast-path for plan-challenger in Phase 3"
+cd /Users/kobig/Codes/Personals/devflow && git add skills/build/references/phase-3-plan.md && git commit -m "feat(build): add SDK fast-path for plan-challenger in Phase 3"
 ```
 
 ---
@@ -489,14 +489,14 @@ cd /Users/kobig/Codes/Personals/anvil && git add skills/build/references/phase-3
 ## Task 5: Investigation Schema + Prompts
 
 **Files:**
-- Create: `anvil-sdk/src/investigate/schemas/investigation.ts`
-- Create: `anvil-sdk/src/investigate/prompts/investigator.ts`
-- Create: `anvil-sdk/src/investigate/prompts/dx-analyst.ts`
+- Create: `devflow-sdk/src/investigate/schemas/investigation.ts`
+- Create: `devflow-sdk/src/investigate/prompts/investigator.ts`
+- Create: `devflow-sdk/src/investigate/prompts/dx-analyst.ts`
 
 - [ ] **Step 1: Write the smoke test for investigation schema**
 
 ```typescript
-// In anvil-sdk/smoke-test.ts — add after plan challenge tests:
+// In devflow-sdk/smoke-test.ts — add after plan challenge tests:
 console.log('\ninvestigate/schemas/investigation')
 import { InvestigationResultSchema } from './src/investigate/schemas/investigation.js'
 test('InvestigationResultSchema parses valid output', () => {
@@ -522,7 +522,7 @@ test('InvestigationResultSchema parses valid output', () => {
 - [ ] **Step 2: Create the investigation schema**
 
 ```typescript
-// anvil-sdk/src/investigate/schemas/investigation.ts
+// devflow-sdk/src/investigate/schemas/investigation.ts
 import { z } from 'zod'
 
 export const EvidenceSchema = z.object({
@@ -627,7 +627,7 @@ export type InvestigationResult = z.infer<typeof InvestigationResultSchema>
 - [ ] **Step 3: Create the investigator prompt**
 
 ```typescript
-// anvil-sdk/src/investigate/prompts/investigator.ts
+// devflow-sdk/src/investigate/prompts/investigator.ts
 export const INVESTIGATOR_PROMPT = `You are a Senior SRE investigating a bug.
 Your goal: find the root cause with file:line evidence. Not symptoms — root cause.
 
@@ -656,7 +656,7 @@ Return JSON only. No prose outside JSON.`
 - [ ] **Step 4: Create the DX analyst prompt**
 
 ```typescript
-// anvil-sdk/src/investigate/prompts/dx-analyst.ts
+// devflow-sdk/src/investigate/prompts/dx-analyst.ts
 export const DX_ANALYST_PROMPT = `You are a Senior SRE auditing developer experience in the affected area of a bug.
 Your scope: files directly involved in the bug (passed in bug description and root cause area).
 
@@ -680,7 +680,7 @@ Return JSON only. No prose outside JSON.`
 - [ ] **Step 5: Run smoke test for schema**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A3 'investigate/schemas'
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -A3 'investigate/schemas'
 ```
 
 Expected: `✅ InvestigationResultSchema parses valid output`
@@ -688,7 +688,7 @@ Expected: `✅ InvestigationResultSchema parses valid output`
 - [ ] **Step 6: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/investigate/schemas/investigation.ts anvil-sdk/src/investigate/prompts/investigator.ts anvil-sdk/src/investigate/prompts/dx-analyst.ts anvil-sdk/smoke-test.ts && git commit -m "feat(sdk): add investigation schema and prompts"
+cd /Users/kobig/Codes/Personals/devflow && git add devflow-sdk/src/investigate/schemas/investigation.ts devflow-sdk/src/investigate/prompts/investigator.ts devflow-sdk/src/investigate/prompts/dx-analyst.ts devflow-sdk/smoke-test.ts && git commit -m "feat(sdk): add investigation schema and prompts"
 ```
 
 ---
@@ -696,13 +696,13 @@ cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/investigate/schem
 ## Task 6: Investigation Agent + CLI Subcommand
 
 **Files:**
-- Create: `anvil-sdk/src/investigate/agents/investigation.ts`
-- Modify: `anvil-sdk/src/cli.ts`
+- Create: `devflow-sdk/src/investigate/agents/investigation.ts`
+- Modify: `devflow-sdk/src/cli.ts`
 
 - [ ] **Step 1: Create the investigation agent runner**
 
 ```typescript
-// anvil-sdk/src/investigate/agents/investigation.ts
+// devflow-sdk/src/investigate/agents/investigation.ts
 import type { AgentDefinition } from '@anthropic-ai/claude-agent-sdk'
 import { query } from '@anthropic-ai/claude-agent-sdk'
 import type { SDKResultSuccess } from '@anthropic-ai/claude-agent-sdk'
@@ -867,7 +867,7 @@ export async function runInvestigation(params: {
 - [ ] **Step 2: Add `investigate` subcommand to cli.ts**
 
 ```typescript
-// Add to anvil-sdk/src/cli.ts:
+// Add to devflow-sdk/src/cli.ts:
 
 interface ParsedInvestigateArgs {
   bug: string | undefined
@@ -933,7 +933,7 @@ async function main(): Promise<void> {
 - [ ] **Step 3: Add smoke tests for investigate CLI arg parsing**
 
 ```typescript
-// In anvil-sdk/smoke-test.ts:
+// In devflow-sdk/smoke-test.ts:
 console.log('\ninvestigate CLI args')
 import { parseInvestigateArgs } from './src/cli.js'
 test('parseInvestigateArgs returns bug description', () => {
@@ -953,7 +953,7 @@ test('parseInvestigateArgs parses --quick flag', () => {
 - [ ] **Step 4: TypeScript check + smoke tests**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsc --noEmit 2>&1 && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -E '✅|❌'
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsc --noEmit 2>&1 && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -E '✅|❌'
 ```
 
 Expected: 0 TypeScript errors, all smoke tests ✅
@@ -961,7 +961,7 @@ Expected: 0 TypeScript errors, all smoke tests ✅
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/investigate/ anvil-sdk/src/cli.ts anvil-sdk/smoke-test.ts && git commit -m "feat(sdk): add investigate command (Investigator + DX Analyst concurrent)"
+cd /Users/kobig/Codes/Personals/devflow && git add devflow-sdk/src/investigate/ devflow-sdk/src/cli.ts devflow-sdk/smoke-test.ts && git commit -m "feat(sdk): add investigate command (Investigator + DX Analyst concurrent)"
 ```
 
 ---
@@ -981,7 +981,7 @@ In `skills/debug/SKILL.md`, update Phase 2 Step 1 "Create Team" to add SDK fast-
 **Try the SDK Investigator first (faster, lower token cost):**
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ ! -d "$SDK_DIR/node_modules" ]; then
   (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
@@ -1020,7 +1020,7 @@ Create team `debug-{branch}` with 1-2 teammates...
 - [ ] **Step 2: Verify markdown lint passes**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && npx markdownlint-cli2 "skills/debug/SKILL.md" 2>&1
+cd /Users/kobig/Codes/Personals/devflow && npx markdownlint-cli2 "skills/debug/SKILL.md" 2>&1
 ```
 
 Expected: 0 errors
@@ -1028,7 +1028,7 @@ Expected: 0 errors
 - [ ] **Step 3: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add skills/debug/SKILL.md && git commit -m "feat(debug): add SDK fast-path for investigation in Phase 2"
+cd /Users/kobig/Codes/Personals/devflow && git add skills/debug/SKILL.md && git commit -m "feat(debug): add SDK fast-path for investigation in Phase 2"
 ```
 
 ---
@@ -1036,7 +1036,7 @@ cd /Users/kobig/Codes/Personals/anvil && git add skills/debug/SKILL.md && git co
 ## Task 8: Standalone `falsify` CLI Subcommand
 
 **Files:**
-- Modify: `anvil-sdk/src/cli.ts`
+- Modify: `devflow-sdk/src/cli.ts`
 
 The `falsification-agent` Agent Teams agent is currently spawned from:
 1. `skills/review/references/phase-5.md` — after debate, before consolidation
@@ -1047,7 +1047,7 @@ We expose a standalone `falsify` subcommand that takes a findings JSON file (pre
 - [ ] **Step 1: Add smoke test for falsify CLI arg parsing**
 
 ```typescript
-// In anvil-sdk/smoke-test.ts:
+// In devflow-sdk/smoke-test.ts:
 console.log('\nfalsify CLI args')
 import { parseFalsifyArgs } from './src/cli.js'
 test('parseFalsifyArgs returns findings file path', () => {
@@ -1063,7 +1063,7 @@ test('parseFalsifyArgs defaults output to json', () => {
 - [ ] **Step 2: Add `falsify` subcommand to cli.ts**
 
 ```typescript
-// Add to anvil-sdk/src/cli.ts:
+// Add to devflow-sdk/src/cli.ts:
 import { readFileSync as _readFileSync } from 'node:fs'
 
 interface ParsedFalsifyArgs {
@@ -1119,7 +1119,7 @@ if (subcommand === 'falsify') {
 - [ ] **Step 3: TypeScript check + smoke tests**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsc --noEmit 2>&1 && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -E 'falsify|✅|❌' | head -20
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsc --noEmit 2>&1 && node_modules/.bin/tsx smoke-test.ts 2>&1 | grep -E 'falsify|✅|❌' | head -20
 ```
 
 Expected: 0 TypeScript errors, 2 ✅ for falsify CLI tests
@@ -1127,7 +1127,7 @@ Expected: 0 TypeScript errors, 2 ✅ for falsify CLI tests
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add anvil-sdk/src/cli.ts anvil-sdk/smoke-test.ts && git commit -m "feat(sdk): add standalone falsify CLI subcommand"
+cd /Users/kobig/Codes/Personals/devflow && git add devflow-sdk/src/cli.ts devflow-sdk/smoke-test.ts && git commit -m "feat(sdk): add standalone falsify CLI subcommand"
 ```
 
 ---
@@ -1153,14 +1153,14 @@ In `skills/review/references/phase-5.md`, replace the "Falsification Pass" block
 **Try the SDK Falsifier first:**
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ ! -d "$SDK_DIR/node_modules" ]; then
   (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
 fi
 
 # Serialize surviving findings to temp file
-FINDINGS_FILE=$(mktemp /tmp/anvil-findings-XXXXXX.json)
+FINDINGS_FILE=$(mktemp /tmp/devflow-findings-XXXXXX.json)
 # Lead writes findings JSON here: echo '{...}' > $FINDINGS_FILE
 
 sdk_result=$(cd "$SDK_DIR" && node_modules/.bin/tsx src/cli.ts falsify \
@@ -1186,7 +1186,7 @@ In `skills/build/references/phase-6-review.md`, replace "Phase 7: Falsification 
 - [ ] **Step 3: Verify markdown lint**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && npx markdownlint-cli2 "skills/review/references/phase-5.md" "skills/build/references/phase-6-review.md" 2>&1
+cd /Users/kobig/Codes/Personals/devflow && npx markdownlint-cli2 "skills/review/references/phase-5.md" "skills/build/references/phase-6-review.md" 2>&1
 ```
 
 Expected: 0 errors
@@ -1194,7 +1194,7 @@ Expected: 0 errors
 - [ ] **Step 4: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add skills/review/references/phase-5.md skills/build/references/phase-6-review.md && git commit -m "feat(review,build): add SDK fast-path for falsification in phase 5/7"
+cd /Users/kobig/Codes/Personals/devflow && git add skills/review/references/phase-5.md skills/build/references/phase-6-review.md && git commit -m "feat(review,build): add SDK fast-path for falsification in phase 5/7"
 ```
 
 ---
@@ -1204,7 +1204,7 @@ cd /Users/kobig/Codes/Personals/anvil && git add skills/review/references/phase-
 - [ ] **Step 1: Run full smoke test suite**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsx smoke-test.ts 2>&1
 ```
 
 Expected: all ✅, 0 ❌, summary line shows total passed
@@ -1212,7 +1212,7 @@ Expected: all ✅, 0 ❌, summary line shows total passed
 - [ ] **Step 2: TypeScript strict check**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && node_modules/.bin/tsc --noEmit 2>&1
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && node_modules/.bin/tsc --noEmit 2>&1
 ```
 
 Expected: 0 errors
@@ -1220,7 +1220,7 @@ Expected: 0 errors
 - [ ] **Step 3: Lint all modified markdown**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && npx markdownlint-cli2 "skills/build/references/phase-3-plan.md" "skills/build/references/phase-6-review.md" "skills/review/references/phase-5.md" "skills/debug/SKILL.md" 2>&1
+cd /Users/kobig/Codes/Personals/devflow && npx markdownlint-cli2 "skills/build/references/phase-3-plan.md" "skills/build/references/phase-6-review.md" "skills/review/references/phase-5.md" "skills/debug/SKILL.md" 2>&1
 ```
 
 Expected: 0 errors
@@ -1228,7 +1228,7 @@ Expected: 0 errors
 - [ ] **Step 4: Verify CLI help for all 3 new subcommands**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil/anvil-sdk && \
+cd /Users/kobig/Codes/Personals/devflow/devflow-sdk && \
   node_modules/.bin/tsx src/cli.ts plan-challenge 2>&1 | head -3 && \
   node_modules/.bin/tsx src/cli.ts investigate 2>&1 | head -3 && \
   node_modules/.bin/tsx src/cli.ts falsify 2>&1 | head -3
@@ -1239,7 +1239,7 @@ Expected: each prints `[sdk-xxx] --xxx-file is required` (or similar error for m
 - [ ] **Step 5: Commit**
 
 ```bash
-cd /Users/kobig/Codes/Personals/anvil && git add -p && git commit -m "chore(sdk): integration check — all 3 new subcommands verified"
+cd /Users/kobig/Codes/Personals/devflow && git add -p && git commit -m "chore(sdk): integration check — all 3 new subcommands verified"
 ```
 
 ---

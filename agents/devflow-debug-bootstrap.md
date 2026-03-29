@@ -1,21 +1,21 @@
 ---
-name: anvil-debug-bootstrap
+name: devflow-debug-bootstrap
 description: |
   Pre-gather shared debug context before debug Phase 1: reads build artifacts when present, maps affected files from stack trace or description, collects recent commits and code structure. Run at the start of any debug session to avoid redundant reads by Investigator agents.
 
   <example>
   Context: Debug lead is starting a session to investigate a production bug.
-  user: "anvil: debug — NullPointerException in UserService.createSession at line 142"
-  assistant: "Dispatching anvil-debug-bootstrap to pre-gather debug context before Investigator agents spawn."
+  user: "devflow: debug — NullPointerException in UserService.createSession at line 142"
+  assistant: "Dispatching devflow-debug-bootstrap to pre-gather debug context before Investigator agents spawn."
   <commentary>
-  Debug lead always dispatches anvil-debug-bootstrap at Phase 1 start to parse the stack trace, gather recent git changes, and write debug-context.md before spawning Investigators.
+  Debug lead always dispatches devflow-debug-bootstrap at Phase 1 start to parse the stack trace, gather recent git changes, and write debug-context.md before spawning Investigators.
   </commentary>
   </example>
 
   <example>
   Context: Lead is debugging with a minimal bug description.
   user: "debug: the payment webhook handler crashes intermittently"
-  assistant: "Starting debug Phase 1 — dispatching anvil-debug-bootstrap to gather context."
+  assistant: "Starting debug Phase 1 — dispatching devflow-debug-bootstrap to gather context."
   <commentary>
   Even without a stack trace, the bootstrap gathers relevant file structures, recent commits touching the suspected area, and writes debug-context.md for Investigator agents.
   </commentary>
@@ -54,10 +54,10 @@ Artifacts Dir: {artifacts_dir from debug skill header}
 ```bash
 # Compute build base artifacts dir (no suffix — search all ticket subdirs)
 DLCBUILD_DIR=$(bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" build 2>/dev/null || echo "")
-ls "${DLCBUILD_DIR}"/*/anvil-context.md 2>/dev/null | sort -r | head -1
+ls "${DLCBUILD_DIR}"/*/devflow-context.md 2>/dev/null | sort -r | head -1
 ```
 
-If found: read the most recent `*/anvil-context.md` (from the sorted glob above) and extract plan items relevant to the bug area
+If found: read the most recent `*/devflow-context.md` (from the sorted glob above) and extract plan items relevant to the bug area
 
 If not found: skip — omit "Recent Build Context" section from output.
 

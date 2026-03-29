@@ -11,7 +11,7 @@
 **Otherwise, try the SDK Review Engine first (faster, deterministic, lower token cost):**
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
 
@@ -43,7 +43,7 @@ if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
   }
 
 else
-  echo "anvil-sdk not available — skipping SDK-enhanced analysis"
+  echo "devflow-sdk not available — skipping SDK-enhanced analysis"
   sdk_exit=1
 fi
 ```

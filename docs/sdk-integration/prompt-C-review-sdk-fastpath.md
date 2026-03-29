@@ -1,6 +1,6 @@
 # Prompt C: SDK Fast-Path สำหรับ review + build Phase 6
 
-**Opportunity:** ใช้ `anvil-sdk review` ก่อน spawn Agent Teams — เหมือน pattern ที่ `debug` skill ทำกับ `investigate`
+**Opportunity:** ใช้ `devflow-sdk review` ก่อน spawn Agent Teams — เหมือน pattern ที่ `debug` skill ทำกับ `investigate`
 **Impact:** ประหยัด ~50-70% token ของ review phase (ไม่มี debate overhead)
 **Files ที่แก้:**
 
@@ -19,7 +19,7 @@
 **Try the SDK Reviewer first — faster, lower token cost, deterministic structured output:**
 
 \`\`\`bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ ! -d "$SDK_DIR/node_modules" ]; then
   (cd "$SDK_DIR" && npm install --silent 2>/dev/null)
@@ -62,7 +62,7 @@ Log `SDK review failed (exit {sdk_exit}) — falling back to Agent Teams` and co
 **Before spawning reviewer Agent Teams, try SDK first:**
 
 \`\`\`bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ ! -d "$SDK_DIR/node_modules" ]; then
   (cd "$SDK_DIR" && npm install --silent 2>/dev/null)

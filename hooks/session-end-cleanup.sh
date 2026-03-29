@@ -6,7 +6,7 @@
 
 # NOTE: no set -euo pipefail — hook must exit 0 on all failures
 
-PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/anvil-anvil}"
+PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"
 
 [ -d "$PLUGIN_DATA_BASE" ] || exit 0
 
@@ -17,7 +17,7 @@ while IFS= read -r -d '' file; do
 done < <(find "$PLUGIN_DATA_BASE" -type f \( -name "*.tmp" -o -name "*.lock" \) -print0 2>/dev/null)
 
 if [ "$DELETED" -gt 0 ]; then
-  echo "anvil: session-end cleaned up $DELETED temp file(s) from $PLUGIN_DATA_BASE/"
+  echo "devflow: session-end cleaned up $DELETED temp file(s) from $PLUGIN_DATA_BASE/"
 fi
 
 exit 0

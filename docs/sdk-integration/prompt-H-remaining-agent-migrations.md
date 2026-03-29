@@ -6,12 +6,12 @@
 **Impact:** ลบ `@anthropic-ai/claude-agent-sdk` และ `@anthropic-ai/sdk` ออกได้ทั้งหมด — เหลือแค่ `zod` dependency
 **Files ที่แก้:**
 
-- `anvil-sdk/src/plan/agents/challenger.ts`
-- `anvil-sdk/src/investigate/agents/investigation.ts`
-- `anvil-sdk/src/fix-intent-verify/agents/verifier.ts`
-- `anvil-sdk/src/review/agents/falsifier.ts` — regression fix: เปลี่ยนจาก `@anthropic-ai/sdk` กลับเป็น subprocess
-- `anvil-sdk/package.json` — ลบ `@anthropic-ai/claude-agent-sdk` และ `@anthropic-ai/sdk`
-- `anvil-sdk/smoke-test.ts` — เพิ่ม no-SDK-imports tests
+- `devflow-sdk/src/plan/agents/challenger.ts`
+- `devflow-sdk/src/investigate/agents/investigation.ts`
+- `devflow-sdk/src/fix-intent-verify/agents/verifier.ts`
+- `devflow-sdk/src/review/agents/falsifier.ts` — regression fix: เปลี่ยนจาก `@anthropic-ai/sdk` กลับเป็น subprocess
+- `devflow-sdk/package.json` — ลบ `@anthropic-ai/claude-agent-sdk` และ `@anthropic-ai/sdk`
+- `devflow-sdk/smoke-test.ts` — เพิ่ม no-SDK-imports tests
 
 **ขึ้นอยู่กับ:** **Prompt F ต้อง execute ก่อน** — ใช้ `runClaudeSubprocess()` จาก `src/claude-subprocess.ts`
 
@@ -176,7 +176,7 @@ export async function runIntentVerification(params): Promise<VerifierResult> {
 ```
 
 ```bash
-cd anvil-sdk && npm install  # removes 7 packages
+cd devflow-sdk && npm install  # removes 7 packages
 ```
 
 ---
@@ -200,7 +200,7 @@ test('no @anthropic-ai/sdk imports remain', () => {
 ## Verify
 
 ```bash
-cd anvil-sdk
+cd devflow-sdk
 grep -r "claude-agent-sdk" src/ --include="*.ts"   # ต้องว่างเปล่า
 grep -r "@anthropic-ai/sdk" src/ --include="*.ts"  # ต้องว่างเปล่า
 npx tsc --noEmit

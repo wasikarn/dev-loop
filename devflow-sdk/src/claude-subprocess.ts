@@ -58,7 +58,7 @@ interface ClaudeJsonOutput {
 }
 
 export async function runClaudeSubprocess(params: SubprocessParams): Promise<SubprocessResult> {
-  const tmpPath = join(tmpdir(), `anvil-sys-${randomUUID()}.txt`)
+  const tmpPath = join(tmpdir(), `devflow-sys-${randomUUID()}.txt`)
 
   try {
     await writeFile(tmpPath, params.systemPrompt, 'utf8')

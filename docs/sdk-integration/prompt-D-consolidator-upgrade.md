@@ -4,9 +4,9 @@
 **Impact:** ตัด haiku agent call ออกจาก review pipeline ทั้งหมด — ไม่มี LLM overhead สำหรับ consolidation อีกต่อไป
 **Files ที่แก้:**
 
-- `anvil-sdk/src/review/orchestrator.ts` — return `roles[]` alongside `results[]`
-- `anvil-sdk/src/review/consolidator.ts` — เพิ่ม role-based thresholds, consensus N/M, pattern cap with file names
-- `anvil-sdk/src/cli.ts` — ส่ง per-reviewer roles เข้า `consolidate()`
+- `devflow-sdk/src/review/orchestrator.ts` — return `roles[]` alongside `results[]`
+- `devflow-sdk/src/review/consolidator.ts` — เพิ่ม role-based thresholds, consensus N/M, pattern cap with file names
+- `devflow-sdk/src/cli.ts` — ส่ง per-reviewer roles เข้า `consolidate()`
 
 ---
 

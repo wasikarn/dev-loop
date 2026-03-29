@@ -4,9 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Purpose
 
-**Plugin name:** `anvil` · **Repo:** `wasikarn/anvil`
+**Plugin name:** `devflow` · **Repo:** `wasikarn/devflow`
 
-A Claude Code plugin — skills, agents, hooks, output styles, and scripts for structured development and PR review workflows. Each skill is a self-contained prompt workflow installed via `claude plugin install anvil`.
+A Claude Code plugin — skills, agents, hooks, output styles, and scripts for structured development and PR review workflows. Each skill is a self-contained prompt workflow installed via `claude plugin install devflow`.
 
 ## Docs Index
 
@@ -47,13 +47,13 @@ skills/<name>/
 | `build` | Full development loop (Research → Plan → Implement → Review → Ship) |
 | `review` | Adversarial PR review with 3-reviewer debate |
 | `debug` | Parallel root cause analysis + DX hardening |
-| `metrics` | Run retrospective report from anvil-metrics.jsonl — iteration counts, finding categories, recurrent issues |
-| `onboard` | Bootstrap a new project into the anvil ecosystem — scaffold hard-rules.md and build directories |
+| `metrics` | Run retrospective report from devflow-metrics.jsonl — iteration counts, finding categories, recurrent issues |
+| `onboard` | Bootstrap a new project into the devflow ecosystem — scaffold hard-rules.md and build directories |
 | `respond` | Address PR review comments as author |
 | `systems-thinking` | Causal Loop Diagram analysis for architecture decisions |
 | `careful` | Enter careful mode — elevated confirmation threshold for destructive operations |
 | `freeze` | Freeze a file or pattern from being edited for the session |
-| `status` | Show active Anvil session artifacts and current phase |
+| `status` | Show active Devflow session artifacts and current phase |
 | `plugin-qa` | Run QA check suite to verify all hooks, skills, and plugin structure |
 | `analyze-claude-features` | Audit project against official Claude Code features and score adoption coverage |
 | `promote-hard-rule` | Review auto-detected Hard Rule candidates (from metrics-analyst) and approve/reject/defer each one — never auto-applies |
@@ -77,10 +77,10 @@ Current agents (24):
 | Agent | Model | Purpose |
 | --- | --- | --- |
 | `commit-finalizer` | haiku | Fast git commit with conventional commits format |
-| `anvil-build-bootstrap` | haiku | Pre-gather Phase 2 context before build explorer spawns |
+| `devflow-build-bootstrap` | haiku | Pre-gather Phase 2 context before build explorer spawns |
 | `build-research-summarizer` | haiku | Compress research.md to JSON summary after Phase 2 gate — eliminates re-reads at later phases |
-| `anvil-debug-bootstrap` | haiku | Pre-gather debug context before debug Investigator spawns |
-| `anvil-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before respond Fixers spawn |
+| `devflow-debug-bootstrap` | haiku | Pre-gather debug context before debug Investigator spawns |
+| `devflow-respond-bootstrap` | haiku | Pre-gather open PR threads + affected files before respond Fixers spawn |
 | `pr-review-bootstrap` | haiku | Fetch PR diff + Jira AC in one pass before review |
 | `review-consolidator` | haiku | Dedup/sort multi-reviewer findings into single ranked table |
 | `research-validator` | haiku | Validate research.md completeness (file:line evidence gate) before Phase 2→3 |
@@ -88,7 +88,7 @@ Current agents (24):
 | `jira-summary-poster` | haiku | Post structured implementation summary to Jira after build/debug completes |
 | `work-context` | haiku | Session start digest: active sprint tickets + PRs awaiting action + unmerged branches |
 | `merge-preflight` | haiku | Pre-merge go/no-go safety checklist before merge-pr Confirmation Gate |
-| `metrics-analyst` | haiku | Retrospective from anvil-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
+| `metrics-analyst` | haiku | Retrospective from devflow-metrics.jsonl: iteration patterns, recurring findings, Hard Rule candidates |
 | `falsification-agent` | sonnet | Challenges review findings before consolidation — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
 | `plan-challenger` | sonnet | Challenges build Phase 3 plan for YAGNI/scope/ordering issues before implementation |
 | `test-quality-reviewer` | sonnet | Dedicated test quality reviewer (T1–T9): behavior vs implementation, mock fidelity, edge cases, assertion presence (Hard Rule), boundary operators, stale contracts, test isolation |
@@ -98,7 +98,7 @@ Current agents (24):
 | `migration-reviewer` | sonnet | Reviews DB migration files (M1–M10): DDL safety, reversibility, FK indexes, table-lock risk, zero-downtime violations, expand/contract, data batching, index types, deadlock risk |
 | `api-contract-auditor` | sonnet | Detects API breaking changes (A1–A10): removed/renamed fields, changed status codes, new required params, type narrowing, enum reordering, idempotency, pagination, error envelopes, deprecation |
 | `skill-validator` | sonnet | Validates SKILL.md against best practices |
-| `project-onboarder` | sonnet | Bootstrap a new project into anvil: scaffold hard-rules.md + build directory |
+| `project-onboarder` | sonnet | Bootstrap a new project into devflow: scaffold hard-rules.md + build directory |
 | `code-reviewer` | sonnet | General-purpose code reviewer with cross-session persistent memory |
 
 <important if="editing or adding hooks">
@@ -116,8 +116,8 @@ Hooks live at `hooks/`. All hooks are registered in `hooks/hooks.json` and distr
 | `PreToolUse` | `Bash` | `safe-command-approver.sh` |
 | `PostToolUse` | `Edit\|Write` | _(inline markdownlint)_ |
 | `PostToolUse` | `Write` | `shellcheck-written-scripts.sh` |
-| `TaskCompleted` | `review-debate\|anvil\|respond` | `task-gate.sh` |
-| `TeammateIdle` | `review-pr\|anvil\|respond\|debug-` | `idle-nudge.sh` |
+| `TaskCompleted` | `review-debate\|devflow\|respond` | `task-gate.sh` |
+| `TeammateIdle` | `review-pr\|devflow\|respond\|debug-` | `idle-nudge.sh` |
 | `PostCompact` | — | `post-compact-context.sh` |
 | `PreCompact` | — | `pre-compact-save.sh` |
 | `PostToolUseFailure` | `Bash` | `bash-failure-hint.sh` |
@@ -147,11 +147,11 @@ Current styles: `senior-software-engineer` (Thai language, pragmatic senior engi
 Plugin manifest at `.claude-plugin/plugin.json`. Install:
 
 ```bash
-claude plugin install anvil
+claude plugin install devflow
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ```
 
-`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is required for all Anvil skills (build, review, respond, debug) to spawn Agent Teams.
+`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is required for all Devflow skills (build, review, respond, debug) to spawn Agent Teams.
 
 <important if="adding a new skill">
 

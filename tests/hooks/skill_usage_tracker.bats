@@ -6,7 +6,7 @@ load setup
 @test "logs skill invocation to usage file" {
   USAGE_LOG=$(mktemp)
   run bash -c "
-    ANVIL_USAGE_LOG=$USAGE_LOG \
+    DEVFLOW_USAGE_LOG=$USAGE_LOG \
     bash '$HOOKS_DIR/skill-usage-tracker.sh' <<< '{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"build\"}}'
   "
   [ "$status" -eq 0 ]
@@ -17,7 +17,7 @@ load setup
 @test "non-Skill tool: exits 0 with no log write" {
   USAGE_LOG=$(mktemp)
   run bash -c "
-    ANVIL_USAGE_LOG=$USAGE_LOG \
+    DEVFLOW_USAGE_LOG=$USAGE_LOG \
     bash '$HOOKS_DIR/skill-usage-tracker.sh' <<< '{\"tool_name\":\"Bash\",\"tool_input\":{\"command\":\"ls\"}}'
   "
   [ "$status" -eq 0 ]
@@ -29,7 +29,7 @@ load setup
   USAGE_LOG=$(mktemp)
   for skill in build review merge-pr; do
     bash -c "
-      ANVIL_USAGE_LOG=$USAGE_LOG \
+      DEVFLOW_USAGE_LOG=$USAGE_LOG \
       bash '$HOOKS_DIR/skill-usage-tracker.sh' <<< \
         '{\"tool_name\":\"Skill\",\"tool_input\":{\"skill\":\"$skill\"}}'"
   done

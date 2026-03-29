@@ -1,21 +1,21 @@
 ---
-name: anvil-respond-bootstrap
+name: devflow-respond-bootstrap
 description: |
   Bootstraps respond Phase 1 by pre-gathering all open PR review threads, affected file contents, and recent git context in one fast pass. Use at the START of respond before spawning Fixers. Returns structured context block for injection into Fixer prompts.
 
   <example>
   Context: Respond lead is starting a session to address reviewer comments on PR #87.
-  user: "anvil: respond 87"
-  assistant: "Dispatching anvil-respond-bootstrap to fetch open PR threads and affected file contents before spawning Fixers."
+  user: "devflow: respond 87"
+  assistant: "Dispatching devflow-respond-bootstrap to fetch open PR threads and affected file contents before spawning Fixers."
   <commentary>
-  Respond lead always dispatches anvil-respond-bootstrap at Phase 1 start to gather open threads and file context, producing a structured JSON payload for Fixer scoping.
+  Respond lead always dispatches devflow-respond-bootstrap at Phase 1 start to gather open threads and file context, producing a structured JSON payload for Fixer scoping.
   </commentary>
   </example>
 
   <example>
   Context: PR has multiple open review threads across different files.
   user: "respond: address all reviewer comments on PR #42"
-  assistant: "Starting respond Phase 1 — anvil-respond-bootstrap will fetch all open threads."
+  assistant: "Starting respond Phase 1 — devflow-respond-bootstrap will fetch all open threads."
   <commentary>
   The bootstrap fetches unresolved threads grouped by file, truncates large files to 300 lines, and outputs a JSON structure for the lead to scope individual Fixer agents.
   </commentary>

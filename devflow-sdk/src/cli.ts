@@ -37,7 +37,7 @@ async function appendReviewerCalibration(
     })
 
   if (lines.length === 0) return
-  const calibrationFile = join(homedir(), '.claude', 'anvil-reviewer-calibration.jsonl')
+  const calibrationFile = join(homedir(), '.claude', 'devflow-reviewer-calibration.jsonl')
   await mkdir(join(homedir(), '.claude'), { recursive: true })
   await appendFile(calibrationFile, lines.join('\n') + '\n', 'utf8')
 }

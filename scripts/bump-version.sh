@@ -155,7 +155,7 @@ fi
 # ── preview ───────────────────────────────────────────────────────────────────
 
 echo ""
-echo -e "  ${CYAN}anvil${NC}  ${YELLOW}$CURRENT${NC} → ${GREEN}$NEW_VERSION${NC}"
+echo -e "  ${CYAN}devflow${NC}  ${YELLOW}$CURRENT${NC} → ${GREEN}$NEW_VERSION${NC}"
 echo ""
 if [[ "$AUTO_YES" -eq 1 ]]; then
   if [[ -n "$RELEASE_TITLE_ARG" ]]; then
@@ -282,10 +282,10 @@ ok "Release: $RELEASE_URL"
 # ── 5. refresh local marketplace cache ───────────────────────────────────────
 
 info "Refreshing local marketplace cache..."
-if claude plugin marketplace update anvil 2>&1 | grep -q "Successfully updated"; then
+if claude plugin marketplace update devflow 2>&1 | grep -q "Successfully updated"; then
   ok "Marketplace cache refreshed → ready to install v$NEW_VERSION"
 else
-  warn "Marketplace cache refresh may have failed — run manually: claude plugin marketplace update anvil"
+  warn "Marketplace cache refresh may have failed — run manually: claude plugin marketplace update devflow"
 fi
 
 # ── done ──────────────────────────────────────────────────────────────────────
@@ -296,9 +296,9 @@ echo ""
 echo "  Next steps:"
 echo ""
 echo -e "  ${CYAN}Fresh install:${NC}"
-echo "    claude plugin install anvil@anvil"
+echo "    claude plugin install devflow@devflow"
 echo ""
 echo -e "  ${CYAN}Update existing:${NC}"
-echo "    claude plugin update anvil@anvil"
+echo "    claude plugin update devflow@devflow"
 echo ""
 echo "  Then restart Claude Code to load v$NEW_VERSION"

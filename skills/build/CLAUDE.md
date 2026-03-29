@@ -3,7 +3,7 @@
 Full development loop with Agent Teams: Research → Plan → Implement → Review → Ship.
 Uses dynamic team roster (explorers, workers, reviewers) with iterative implement-review loop.
 
-## How It Differs from Other Anvil Skills
+## How It Differs from Other Devflow Skills
 
 | Aspect | review | build | debug |
 | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ Uses dynamic team roster (explorers, workers, reviewers) with iterative implemen
 | `references/operational.md` | Graceful Degradation, Crash Recovery, Regression Gate, Solo findings |
 | `../../review-output-format/SKILL.md` | Review output format template |
 | `../../debate-protocol/SKILL.md` | Adversarial debate rules (fallback in phase-6-review.md) |
-| `../../docs/superpowers/specs/2026-03-19-anvil-workflow-quality-improvements-round2-design.md` | Behavioral anchor rubric for scoring dimensions — see Round 2 spec |
+| `../../docs/superpowers/specs/2026-03-19-devflow-workflow-quality-improvements-round2-design.md` | Behavioral anchor rubric for scoring dimensions — see Round 2 spec |
 
 ## Skill Architecture
 
@@ -68,6 +68,6 @@ ls -la ~/.claude/skills/build
 - Review scope narrows each iteration: 3 reviewers → 2 → 1, full debate → focused → spot-check
 - Hard Rules cannot be dropped via debate — only reclassified with evidence
 - Max 3 loop iterations enforced — prevents runaway token usage
-- Artifacts written to **`{artifacts_dir}/{date}-{slug}/`** (path from `scripts/artifact-dir.sh build`): `anvil-context.md`, `research.md`, `plan.md`, `verify-results.md`, `review-findings-*.md`. All artifacts in one folder — `~/.claude/plans/` is no longer used.
+- Artifacts written to **`{artifacts_dir}/{date}-{slug}/`** (path from `scripts/artifact-dir.sh build`): `devflow-context.md`, `research.md`, `plan.md`, `verify-results.md`, `review-findings-*.md`. All artifacts in one folder — `~/.claude/plans/` is no longer used.
 - Team cleanup must be done by lead in Phase 9 — teammates don't self-terminate
 - One team per session — cannot run multiple build in parallel

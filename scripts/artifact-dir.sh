@@ -4,9 +4,9 @@
 # Output: absolute path (stdout)
 # Side effect: mkdir -p on the output path
 #
-# Path convention: $HOME/.claude/plugins/data/anvil-anvil/<encoded-path>/<skill>[/<suffix>]
+# Path convention: $HOME/.claude/plugins/data/devflow-devflow/<encoded-path>/<skill>[/<suffix>]
 # Encoding: absolute project root path with / replaced by -
-# Stored under ~/.claude/plugins/data/anvil-anvil/ (NOT ~/.claude/projects/) to avoid colliding with
+# Stored under ~/.claude/plugins/data/devflow-devflow/ (NOT ~/.claude/projects/) to avoid colliding with
 # Claude Code's session JSONL storage which owns ~/.claude/projects/ exclusively.
 # The leading - in the encoded path (e.g., -Users-alice-...) is intentional — not a bug.
 #
@@ -48,7 +48,7 @@ ENCODED=$(echo "$PROJECT_ROOT" | tr '/' '-')
 
 # CLAUDE_PLUGIN_DATA: stable per-plugin folder set by Claude Code plugin runtime.
 # Falls back to the conventional path for local dev (symlinked, not installed).
-PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/anvil-anvil}"
+PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"
 
 # Compose path
 if [ -n "$CONTEXT_SUFFIX" ]; then

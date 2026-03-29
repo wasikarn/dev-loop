@@ -20,7 +20,7 @@ Stage 1 checks (in order):
 
 **Stage 1 FAIL:** Return to Phase 4 immediately. Do NOT proceed to Stage 2.
 Mandatory path: Phase 4 (fix) → **Phase 5 (verify again)** → Phase 6 Stage 1 (check again).
-Increment `iteration_count` in anvil-context.md before returning to Phase 4.
+Increment `iteration_count` in devflow-context.md before returning to Phase 4.
 
 **Stage 1 PASS:** Proceed to Stage 2.
 
@@ -31,7 +31,7 @@ Increment `iteration_count` in anvil-context.md before returning to Phase 4.
 **Try the SDK Review Engine first (faster, deterministic, lower token cost):**
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
 
@@ -61,7 +61,7 @@ if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
   }
 
 else
-  echo "anvil-sdk not available — skipping SDK-enhanced analysis"
+  echo "devflow-sdk not available — skipping SDK-enhanced analysis"
   sdk_exit=1
 fi
 ```
@@ -187,7 +187,7 @@ If agent errors → dedup, pattern-cap, sort, and signal-check inline per [revie
 **Phase 6 status line** (output before findings table — no prose paragraph):
 `### Phase 6 Complete — N findings consolidated · Proceeding to Phase 8`
 
-**GATE:** Findings consolidated → update `Phase: review` in anvil-context.md → proceed to Assess.
+**GATE:** Findings consolidated → update `Phase: review` in devflow-context.md → proceed to Assess.
 
 ## Phase 7: Falsification Pass (Full mode iter 1 only)
 
@@ -205,11 +205,11 @@ Dispatch `review-consolidator` agent with the raw findings table from all review
 Try the SDK Falsifier while the consolidator runs:
 
 ```bash
-SDK_DIR="${CLAUDE_SKILL_DIR}/../../anvil-sdk"
+SDK_DIR="${CLAUDE_SKILL_DIR}/../../devflow-sdk"
 
 if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
 
-  FINDINGS_FILE=$(mktemp /tmp/anvil-findings-XXXXXX.json)
+  FINDINGS_FILE=$(mktemp /tmp/devflow-findings-XXXXXX.json)
   # Write pre-consolidation findings as JSON array to $FINDINGS_FILE
 
   sdk_result=$(cd "$SDK_DIR" && node_modules/.bin/tsx src/cli.ts falsify \
@@ -219,7 +219,7 @@ if [ -d "$SDK_DIR" ] && [ -d "$SDK_DIR/node_modules" ]; then
   rm -f "$FINDINGS_FILE"
 
 else
-  echo "anvil-sdk not available — skipping SDK-enhanced analysis"
+  echo "devflow-sdk not available — skipping SDK-enhanced analysis"
   sdk_exit=1
 fi
 ```
@@ -252,9 +252,9 @@ Note the final REJECTED count in the Phase 6 status line: `(N findings rejected 
 
 **Task context injection (B1):** When constructing reviewer prompts, populate `TASK_CONTEXT` from:
 
-- `Description`: task description from `anvil-context.md` → `task:` field
-- `AC items`: Jira AC list from `anvil-context.md` → Jira context section, or "none"
-- `Plan summary`: read plan file path from `anvil-context.md` → `plan_file:` field; read that file and extract top 5 task titles (one line, max 10 words each). If `plan_file` is empty, set Plan summary to "plan file path not in context."
+- `Description`: task description from `devflow-context.md` → `task:` field
+- `AC items`: Jira AC list from `devflow-context.md` → Jira context section, or "none"
+- `Plan summary`: read plan file path from `devflow-context.md` → `plan_file:` field; read that file and extract top 5 task titles (one line, max 10 words each). If `plan_file` is empty, set Plan summary to "plan file path not in context."
 
 **Severity calibration injection (SA):** Before spawning reviewers, construct a `SEVERITY CALIBRATION` block and inject it into each reviewer prompt:
 

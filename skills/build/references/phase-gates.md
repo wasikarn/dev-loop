@@ -60,7 +60,7 @@ Every phase transition has explicit gate conditions. No phase proceeds until its
 - [ ] Each task has at least 1 commit
 - [ ] No uncommitted changes in working tree
 - [ ] All workers shut down (TeamDelete executed or confirmed idle)
-- [ ] **Iteration 2+ only:** Regression check passed — `git diff anvil-checkpoint-iter-{N-1}..HEAD` shows no unintended modifications outside finding fixes
+- [ ] **Iteration 2+ only:** Regression check passed — `git diff devflow-checkpoint-iter-{N-1}..HEAD` shows no unintended modifications outside finding fixes
 
 Lead verifies: `git diff {base_branch}...HEAD --stat` (scope) + `git log --oneline {base_branch}..HEAD` (commit-per-task).
 
@@ -84,7 +84,7 @@ Lead verifies: `git diff {base_branch}...HEAD --stat` (scope) + `git log --oneli
 - [ ] User explicitly picks option (b) redesign
 - [ ] redesign_count < 1 (only 1 redesign allowed)
 - Prior artifacts archived with `-attempt-1` suffix
-- `redesign_count` incremented in anvil-context.md
+- `redesign_count` incremented in devflow-context.md
 
 ### Phase 6 (Review) → Phase 7 (Falsification)
 

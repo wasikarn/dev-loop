@@ -64,13 +64,13 @@ $HARD_RULES_CONTENT
 fi
 
 cat <<EOF
-<anvil-agent-context>
+<devflow-agent-context>
 Project root: $PROJECT_ROOT
 Git branch: $BRANCH${STACK:+
 Tech stack: $STACK}${GIT_LOG:+
 Recent commits:
 $GIT_LOG}
-</anvil-agent-context>${HARD_RULES_BLOCK}
+</devflow-agent-context>${HARD_RULES_BLOCK}
 EOF
 
 exit 0

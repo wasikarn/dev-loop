@@ -5,7 +5,7 @@ user-invocable: false
 disable-model-invocation: true
 ---
 
-# Jira Integration for Anvil Skills
+# Jira Integration for Devflow Skills
 
 Shared Jira context injection for review, build, and debug.
 All Jira phases are optional — if no Jira key detected, skip entirely.
@@ -82,7 +82,7 @@ When using `issue-bootstrap` (option 1), all fields above are already extracted 
 1. Fetch ticket per Detection & Fetch above
 2. Extract AC → each becomes a task item constraint for Phase 2 plan
 3. Extract subtasks → map to plan structure if subtasks exist
-4. Add to `anvil-context.md`:
+4. Add to `devflow-context.md`:
 
    ```markdown
    ## Jira Ticket

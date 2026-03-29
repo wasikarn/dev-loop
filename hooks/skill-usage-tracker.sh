@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # skill-usage-tracker.sh — PreToolUse hook
 # Logs Skill tool invocations to a TSV file for usage analytics.
-# Output: ANVIL_USAGE_LOG (default: ${CLAUDE_PLUGIN_DATA}/skill-usage.tsv)
+# Output: DEVFLOW_USAGE_LOG (default: ${CLAUDE_PLUGIN_DATA}/skill-usage.tsv)
 #         CLAUDE_PLUGIN_DATA is set by the Claude Code plugin runtime — survives upgrades.
-#         Falls back to ~/.claude/anvil/skill-usage.tsv if not set (dev mode / symlinks).
+#         Falls back to ~/.claude/devflow/skill-usage.tsv if not set (dev mode / symlinks).
 # Format: ISO8601_TIMESTAMP<TAB>SKILL_NAME
 # NOTE: no set -euo pipefail — hook must exit 0 on all failures
 # shellcheck source=lib/common.sh
@@ -19,9 +19,9 @@ IFS=$'\t' read -r TOOL_NAME SKILL_NAME < <(jq_fields '.tool_name' '.tool_input.s
 
 # CLAUDE_PLUGIN_DATA: stable per-plugin folder set by Claude Code plugin runtime.
 # Falls back to the conventional path for local dev (symlinked, not installed).
-DATA_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/anvil-anvil}"
+DATA_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"
 mkdir -p "$DATA_DIR"
-LOG="${ANVIL_USAGE_LOG:-${DEV_LOOP_USAGE_LOG:-$DATA_DIR/skill-usage.tsv}}"
+LOG="${DEVFLOW_USAGE_LOG:-${ANVIL_USAGE_LOG:-${DEV_LOOP_USAGE_LOG:-$DATA_DIR/skill-usage.tsv}}}"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 printf '%s\t%s\n' "$TIMESTAMP" "$SKILL_NAME" >> "$LOG"

@@ -11,7 +11,7 @@ You are reviewing code changes for correctness and security.
 
 PROJECT: {project_name}
 TASK_CONTEXT:
-  Description: {task description from anvil-context.md}
+  Description: {task description from devflow-context.md}
   AC items: {AC list from Jira, or "none" if no Jira key}
   Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
 
@@ -58,7 +58,7 @@ You are reviewing code changes for architecture and performance.
 
 PROJECT: {project_name}
 TASK_CONTEXT:
-  Description: {task description from anvil-context.md}
+  Description: {task description from devflow-context.md}
   AC items: {AC list from Jira, or "none" if no Jira key}
   Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
 
@@ -106,7 +106,7 @@ You are reviewing code changes for developer experience and testing quality.
 
 PROJECT: {project_name}
 TASK_CONTEXT:
-  Description: {task description from anvil-context.md}
+  Description: {task description from devflow-context.md}
   AC items: {AC list from Jira, or "none" if no Jira key}
   Plan summary: {top 5 tasks from plan file, one line each — max 10 words per task}
 

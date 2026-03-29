@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# qa-check.sh — Full QA check for the anvil plugin.
+# qa-check.sh — Full QA check for the devflow plugin.
 #
 # Usage:
 #   ./scripts/qa-check.sh               # check repo working copy

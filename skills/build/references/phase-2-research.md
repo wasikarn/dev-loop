@@ -12,7 +12,7 @@ Mode behavior per [workflow-modes.md](workflow-modes.md):
 
 ## Step 1: Bootstrap (concurrent with explorers)
 
-Dispatch `anvil-build-bootstrap` agent (Haiku) with the task description. **Do not wait** — proceed immediately to Step 2 while bootstrap runs.
+Dispatch `devflow-build-bootstrap` agent (Haiku) with the task description. **Do not wait** — proceed immediately to Step 2 while bootstrap runs.
 
 When bootstrap completes: read `{artifacts_dir}/bootstrap-context.md` and send its contents to each explorer via `SendMessage`:
 
@@ -20,7 +20,7 @@ When bootstrap completes: read `{artifacts_dir}/bootstrap-context.md` and send i
 BOOTSTRAP CONTEXT: {contents of bootstrap-context.md}
 ```
 
-**Bootstrap fallback:** If bootstrap errors or produces no output within 60s: log "bootstrap timed out" in `anvil-context.md` and skip. Explorers continue with `BOOTSTRAP CONTEXT: (not available)`.
+**Bootstrap fallback:** If bootstrap errors or produces no output within 60s: log "bootstrap timed out" in `devflow-context.md` and skip. Explorers continue with `BOOTSTRAP CONTEXT: (not available)`.
 
 ---
 
@@ -118,7 +118,7 @@ READY / NEEDS WORK / NOT READY
 Reason: [based on Risks Found above — not independent opinion]
 ```
 
-Every section must cite file:line references. Update `phase: research` in anvil-context.md.
+Every section must cite file:line references. Update `phase: research` in devflow-context.md.
 
 ---
 
@@ -128,7 +128,7 @@ Run `research-validator` agent with path `{artifacts_dir}/research.md`. If resul
 
 ## Step 5b: Compress Summary (Full mode only)
 
-After validator PASS, run `build-research-summarizer` agent with `{artifacts_dir}/research.md` as `$ARGUMENTS`. When it completes, append the JSON output as a `research_summary:` field to `{artifacts_dir}/anvil-context.md`:
+After validator PASS, run `build-research-summarizer` agent with `{artifacts_dir}/research.md` as `$ARGUMENTS`. When it completes, append the JSON output as a `research_summary:` field to `{artifacts_dir}/devflow-context.md`:
 
 ```yaml
 research_summary: '{"oneSentenceSummary":"...","keyFiles":[...],"primaryRisk":"...","verdict":"READY"}'
@@ -136,7 +136,7 @@ research_summary: '{"oneSentenceSummary":"...","keyFiles":[...],"primaryRisk":".
 
 **Quick mode:** Skip Step 5b — research.md is short enough to re-read directly.
 
-At Phase 3/4/5/6 gates, reference `research_summary` from anvil-context.md for context instead of
+At Phase 3/4/5/6 gates, reference `research_summary` from devflow-context.md for context instead of
 re-reading research.md in full. Re-read research.md only when a `[NEEDS CLARIFICATION]` token or
 specific file:line evidence is needed.
 

@@ -1,13 +1,13 @@
 ---
 name: review-output-format
-description: "Shared PR review output format for anvil skills — header, ticket understanding, AC verification, 12-point findings table, author/reviewer action sections, final verdict templates"
+description: "Shared PR review output format for devflow skills — header, ticket understanding, AC verification, 12-point findings table, author/reviewer action sections, final verdict templates"
 user-invocable: false
 disable-model-invocation: true
 ---
 
 # PR Review Output Format
 
-Shared output format for `anvil` review skills. Each phase outputs its section as it completes — streaming progress to the user.
+Shared output format for `devflow` review skills. Each phase outputs its section as it completes — streaming progress to the user.
 
 Output language: Thai mixed with English technical terms. Templates below use English for readability; actual output must be in Thai.
 

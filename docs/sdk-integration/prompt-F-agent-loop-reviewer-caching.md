@@ -6,10 +6,10 @@
 **Impact:** Reviewer migrate จาก Agent SDK `query()` มาใช้ subprocess — ไม่ต้องการ API key + Agent SDK dependency เริ่มถูกลดทอน
 **Files ที่สร้าง/แก้:**
 
-- **NEW** `anvil-sdk/src/claude-subprocess.ts` — generic subprocess utility
-- `anvil-sdk/src/review/agents/reviewer.ts` — rewrite เป็น `runReviewer()` ที่ return `ReviewerResult` โดยตรง
-- `anvil-sdk/src/review/orchestrator.ts` — เปลี่ยนให้ใช้ `runReviewer` แทน `createReviewer` + `query`
-- `anvil-sdk/smoke-test.ts` — เพิ่ม no-SDK-imports tests
+- **NEW** `devflow-sdk/src/claude-subprocess.ts` — generic subprocess utility
+- `devflow-sdk/src/review/agents/reviewer.ts` — rewrite เป็น `runReviewer()` ที่ return `ReviewerResult` โดยตรง
+- `devflow-sdk/src/review/orchestrator.ts` — เปลี่ยนให้ใช้ `runReviewer` แทน `createReviewer` + `query`
+- `devflow-sdk/smoke-test.ts` — เพิ่ม no-SDK-imports tests
 
 **ขึ้นอยู่กับ:** ไม่มี. แต่ Prompt H ต้องใช้ `claude-subprocess.ts` จาก Prompt นี้
 
@@ -159,7 +159,7 @@ const settled = await Promise.allSettled(
 ## Verify
 
 ```bash
-cd anvil-sdk
+cd devflow-sdk
 grep -r "claude-agent-sdk" src/ --include="*.ts"   # ต้องว่างเปล่า
 grep -r "@anthropic-ai/sdk" src/ --include="*.ts"  # ต้องว่างเปล่า
 npx tsc --noEmit

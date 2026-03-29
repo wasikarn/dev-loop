@@ -2,7 +2,7 @@
 
 Fix in severity order: 🔴 Critical → 🟡 Important → 🔵 Suggestion (only if user requested).
 
-**Bootstrap:** Run `anvil-respond-bootstrap` agent (Haiku) with PR #$0 before spawning Fixers. It
+**Bootstrap:** Run `devflow-respond-bootstrap` agent (Haiku) with PR #$0 before spawning Fixers. It
 pre-reads all affected files and returns a JSON object with `fileContents` and `threadsByFile`.
 
 When building each Fixer's prompt, scope from the JSON bootstrap output:

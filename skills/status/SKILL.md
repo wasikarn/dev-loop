@@ -1,16 +1,16 @@
 ---
 name: status
-description: "Show active anvil workflow artifacts from the current session — artifact directory, phase progress, and which files exist. Use when checking Anvil session state, current phase, or where you left off. Triggers: check anvil status, what phase am I in, show session state, current progress, where did I leave off, anvil artifacts, /status."
+description: "Show active devflow workflow artifacts from the current session — artifact directory, phase progress, and which files exist. Use when checking Devflow session state, current phase, or where you left off. Triggers: check devflow status, what phase am I in, show session state, current progress, where did I leave off, devflow artifacts, /status."
 ---
 
-# Anvil Status
+# Devflow Status
 
-Show active anvil workflow artifacts from the current session.
+Show active devflow workflow artifacts from the current session.
 
 Run this command now:
 
 ```bash
-bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" 2>/dev/null || echo "no active Anvil session"
+bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" 2>/dev/null || echo "no active Devflow session"
 ```
 
 Then check for artifact files:
@@ -31,4 +31,4 @@ Report:
    - `research.md` + `plan.md` → Phase 2 Plan complete
    - `research.md` + `plan.md` (no `review.md`) → Phase 3 Implementation in progress
    - `research.md` + `plan.md` + `review.md` → Phase 4+ Review/Ship in progress
-4. If no artifacts: "No active Anvil session — start one with /anvil:build"
+4. If no artifacts: "No active Devflow session — start one with /devflow:build"

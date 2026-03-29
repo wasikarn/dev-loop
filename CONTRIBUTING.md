@@ -1,4 +1,4 @@
-# Contributing to anvil
+# Contributing to devflow
 
 This guide is for developers who want to customize, extend, or contribute to the plugin.
 
@@ -6,7 +6,7 @@ This guide is for developers who want to customize, extend, or contribute to the
 
 ## Local Development Setup (symlinks)
 
-> **Warning:** Do not use symlinks if you have `claude plugin install wasikarn/anvil` active — both write to the same `~/.claude/` directories and will conflict. Use one or the other.
+> **Warning:** Do not use symlinks if you have `claude plugin install wasikarn/devflow` active — both write to the same `~/.claude/` directories and will conflict. Use one or the other.
 
 For contributors who want to edit skills and see changes take effect immediately without reinstalling the plugin. Clone the repo and symlink assets directly to `~/.claude/`.
 
@@ -16,9 +16,9 @@ For contributors who want to edit skills and see changes take effect immediately
 
 | Tool | Why | Install |
 | --- | --- | --- |
-| `git` | Session hooks + all Anvil skills | pre-installed / `xcode-select --install` |
+| `git` | Session hooks + all Devflow skills | pre-installed / `xcode-select --install` |
 | `jq` | Every hook uses it — missing breaks all hooks | `brew install jq` |
-| `gh` CLI (authenticated) | Anvil skills (`build`, `review`, `respond`, `debug`, `merge-pr`) — no fallback | `brew install gh && gh auth login` |
+| `gh` CLI (authenticated) | Devflow skills (`build`, `review`, `respond`, `debug`, `merge-pr`) — no fallback | `brew install gh && gh auth login` |
 
 **Required for auto-quality hooks (fire on every file edit):**
 
@@ -31,7 +31,7 @@ For contributors who want to edit skills and see changes take effect immediately
 
 | Tool | Without it | Install |
 | --- | --- | --- |
-| `rtk` | Anvil skills still work but use raw git/gh output (higher token cost) | `brew install rtk` |
+| `rtk` | Devflow skills still work but use raw git/gh output (higher token cost) | `brew install rtk` |
 | `python3` | `optimize-claude-md` skill cannot detect project framework | pre-installed on macOS |
 | `fd` | Bootstrap agents fall back to Glob (slower) | `brew install fd` |
 | `ast-grep` | Bootstrap agents fall back to Grep (less precise) | `brew install ast-grep` |
@@ -39,8 +39,8 @@ For contributors who want to edit skills and see changes take effect immediately
 ### Step 1 — Clone the repo
 
 ```bash
-git clone git@github.com:wasikarn/anvil.git
-cd anvil
+git clone git@github.com:wasikarn/devflow.git
+cd devflow
 ```
 
 ### Step 2 — Link skills, agents, hooks, and output styles
@@ -133,7 +133,7 @@ bash scripts/link-assets.sh --list
 ## Repo Structure
 
 ```text
-anvil/
+devflow/
 ├── .claude-plugin/
 │   └── plugin.json           # Plugin manifest
 ├── skills/                   # Skill entry points (SKILL.md per skill)

@@ -4,7 +4,7 @@ paths:
   - "skills/review-*/**"
 ---
 
-# Anvil Review Skills
+# Devflow Review Skills
 
 `review` uses 3 Agent Teams teammates with adversarial debate.
 

@@ -1,7 +1,7 @@
 ---
 name: review-consolidator
 description: |
-  Deduplicates, caps, sorts, and signal-checks multi-reviewer findings tables into a single ranked output. Use after Anvil review debate to consolidate raw findings. Called by build Phase 4 iter 1 (3 reviewers) and iter 2+ (2 reviewers), and review Phase 4 Convergence.
+  Deduplicates, caps, sorts, and signal-checks multi-reviewer findings tables into a single ranked output. Use after Devflow review debate to consolidate raw findings. Called by build Phase 4 iter 1 (3 reviewers) and iter 2+ (2 reviewers), and review Phase 4 Convergence.
 
   <example>
   Context: Build Phase 4 has three reviewers that have completed their findings.
