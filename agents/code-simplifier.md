@@ -25,6 +25,8 @@ description: |
 tools: Read, Grep, Glob, Bash, Edit
 model: sonnet
 effort: low
+color: blue
+maxTurns: 15
 # memory intentionally omitted — stateless: operates on git diff, no cross-session context needed
 ---
 
@@ -101,3 +103,14 @@ Output a summary table:
 ```
 
 If no simplifications were found: output `✅ No simplifications needed — code is already clear.`
+
+## Output Format
+
+After applying simplifications, returns a summary table: File | Change Type | Lines Before → After | Description. If no simplifications found, output: "No simplifications found within scope — code is already clean." Never add new behavior — scope is cosmetic changes only.
+
+## Error Handling
+
+- `git merge-base HEAD origin/HEAD` fails (no remote configured) → fall back to `git diff HEAD --name-only` to get changed files
+- Edit tool failure on a specific file → skip that file, note in report: "⚠ could not edit `[file]` — manual review required"
+- No changed files found in scope → output early: "No changed files found since branch diverged from origin/HEAD"
+- Uncertain whether a change is safe → ask the user before applying; do not guess

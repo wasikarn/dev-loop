@@ -1,8 +1,29 @@
 ---
 name: work-context
-description: "Session start work context digest — fetches active sprint tickets from Jira, open PRs awaiting your action, and recent unmerged local branches. Outputs a prioritized daily action table. Use proactively at session start or when resuming work after an interruption."
+description: |
+  Session start work context digest — fetches active sprint tickets from Jira, open PRs awaiting your action, and recent unmerged local branches. Outputs a prioritized daily action table. Use proactively at session start or when resuming work after an interruption.
+
+  <example>
+  Context: Developer starts a new Claude Code session and wants orientation.
+  user: "work context" or "what am I working on?" or "catch me up"
+  assistant: "I'll use work-context to show active sprint tickets, open PRs, and recent branches."
+  <commentary>
+  User typing "work context" or asking for a session orientation at the start of a session triggers work-context. It fetches Jira sprint items, open PRs awaiting action, and recent git branches — then outputs a prioritised daily action table.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Developer is resuming work after an interruption and needs a quick refresh.
+  user: "what should I work on?" or "show me my PRs and tickets"
+  assistant: "Running work-context to pull your current sprint and PR status."
+  <commentary>
+  Any request for an overview of current work state, active tickets, or pending PRs triggers work-context. Sections are omitted if empty — no noise for clean states.
+  </commentary>
+  </example>
 tools: Bash, Read
 model: haiku
+color: green
+effort: low
 disallowedTools: Edit, Write
 maxTurns: 10
 ---
@@ -99,3 +120,21 @@ Return this block:
 ```
 
 Omit sections where nothing was found. Keep output scannable — this is a quick orientation, not a report.
+
+## Rules
+
+- **Read-only contract:** Never make any file changes, git operations, or Jira updates — this is a read-only orientation tool
+- **Priority scoring:** Determine "Action Needed" column by status: APPROVED → "Ready to merge"; CHANGES_REQUESTED → "Address comments"; no decision → "Awaiting review"; DRAFT → "In progress"
+- **Time formatting:** Display relative time ("2h ago", "3d ago") not raw ISO timestamps
+- **Empty sections:** Omit section entirely if it has no data — do not print empty headers
+
+## Output Format
+
+Returns a digest block with sections: **Sprint Tickets** (table: key | summary | status | action needed), **PRs Awaiting Action** (table: PR # | title | status | action needed), **Recent Branches** (list: branch | last commit | age). Ends with: "Updated: [relative time]". Omit any section that is empty.
+
+## Error Handling
+
+- `gh` not installed or not authenticated → skip all PR sections, append note: "[PRs: skipped — run `gh auth login` to enable]"
+- Not in a git repository → note: "[Git: not a git repository]" and continue with Jira sections only
+- Jira MCP unavailable → skip sprint section, note: "[Sprint: Jira MCP unavailable]"
+- Any section fetch fails → note the failure inline and continue — never abort the whole digest for a single section failure

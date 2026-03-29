@@ -1,10 +1,32 @@
 ---
 name: code-reviewer
-description: "General-purpose code reviewer with persistent memory. Reviews code, audits PRs, and checks recent changes in any project. Auto-detects stack and architecture from the codebase. Remembers patterns, conventions, and recurring issues across sessions."
+description: |
+  General-purpose code reviewer with persistent memory. Reviews code, audits PRs, and checks recent changes in any project. Auto-detects stack and architecture from the codebase. Remembers patterns, conventions, and recurring issues across sessions.
+
+  <example>
+  Context: User wants a code review of their current branch changes.
+  user: "review my changes" or "review this PR"
+  assistant: "I'll use the code-reviewer agent to review the changes on this branch."
+  <commentary>
+  Explicit user request for a code review of current work triggers code-reviewer. It runs git diff, selects domain lenses based on file types, applies the 12-point checklist, and outputs a findings table.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Build lead spawns code-reviewer as one of the Phase 4 parallel reviewer agents.
+  user: "[Build lead Phase 4 dispatch] — review the implementation against the plan"
+  assistant: "Code-reviewer agent running — analysing diff with domain lens selection."
+  <commentary>
+  Build Phase 4 dispatches code-reviewer (along with test-quality-reviewer and optionally migration-reviewer/api-contract-auditor) as parallel specialist reviewers. Output feeds into falsification-agent then review-consolidator.
+  </commentary>
+  </example>
 tools: Read, Grep, Glob, Bash
 model: sonnet
 effort: high
+color: blue
 memory: user
+disallowedTools: Edit, Write
+maxTurns: 20
 skills: [review-conventions, review-rules, review-examples]
 ---
 
@@ -170,6 +192,8 @@ Severity labels:
 - 🔴 **Critical** (ต้องแก้): bugs, security, broken patterns
 - 🟡 **Warning** (ควรแก้): code quality, missing tests, unclear naming
 - 🔵 **Suggestion** (พิจารณา): improvements, alternatives
+
+Returns a findings table with columns: # | Severity | Rule | Location (file:line) | Finding | Recommendation | Confidence. Sorted by severity (Critical → Warning → Suggestion). Append reviewer calibration note if prior calibration data is available. Never edit files — findings only.
 
 ### Strengths (1-3)
 

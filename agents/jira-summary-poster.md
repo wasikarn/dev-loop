@@ -1,8 +1,29 @@
 ---
 name: jira-summary-poster
-description: "Post a structured implementation summary comment to the linked Jira ticket after completing an anvil task. Reads anvil-context.md or debug-context.md and posts what was implemented, files changed, and any AC deviations. When atlassian-pm plugin is available, generates ADF-formatted comment via story-writer + quality-gate agents. Use at the end of build Phase 6 or debug Phase 3 cleanup when a Jira key is present in the context artifact."
+description: |
+  Post a structured implementation summary comment to the linked Jira ticket after completing an anvil task. Reads anvil-context.md or debug-context.md and posts what was implemented, files changed, and any AC deviations. When atlassian-pm plugin is available, generates ADF-formatted comment via story-writer + quality-gate agents. Use at the end of build Phase 6 or debug Phase 3 cleanup when a Jira key is present in the context artifact.
+
+  <example>
+  Context: Build lead has completed Phase 6 implementation and a Jira key was provided.
+  user: "[Build lead Phase 6] — implementation complete, Jira key TP-891 detected"
+  assistant: "Dispatching jira-summary-poster to post implementation summary to TP-891."
+  <commentary>
+  Build lead dispatches jira-summary-poster at Phase 6 whenever a Jira key is present in the session. Agent reads build artifacts, constructs ADF comment, posts to Jira, and optionally transitions the issue.
+  </commentary>
+  </example>
+
+  <example>
+  Context: User explicitly requests a Jira update after completing work.
+  user: "post a summary to Jira for TP-456"
+  assistant: "I'll use jira-summary-poster to post the implementation summary to TP-456."
+  <commentary>
+  User explicitly requesting a Jira post triggers this agent. It reads session artifacts or git diff, constructs a structured comment, and posts it.
+  </commentary>
+  </example>
 tools: Read, Glob, Bash, mcp__mcp-atlassian__jira_get_issue, mcp__mcp-atlassian__jira_add_comment, mcp__mcp-atlassian__jira_transition_issue, mcp__mcp-atlassian__jira_get_transitions, mcp__plugin_atlassian-pm_atlassian-cache__cache_get_issue, mcp__plugin_atlassian-pm_atlassian-cache__cache_invalidate
-model: haiku
+model: sonnet
+color: magenta
+effort: medium
 background: true
 maxTurns: 15
 skills: [jira-integration]
@@ -193,3 +214,7 @@ If status is anything other than `"In Progress"` / `"In Development"`, or if Pha
 
 If MCP was unavailable throughout: output the formatted comment and instruct:
 `Post manually to Jira {KEY} — MCP tools not available in this session.`
+
+## Output Format
+
+On success: "✅ Posted to [JIRA-KEY] — comment ID: [id]". On ADF failure with markdown fallback: "⚠️ ADF failed, posted as markdown to [JIRA-KEY]". On MCP unavailable: prints the comment content with header "Post this manually to [JIRA-KEY]:" and the full comment text below.

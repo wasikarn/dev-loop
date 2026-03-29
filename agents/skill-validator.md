@@ -1,9 +1,31 @@
 ---
 name: skill-validator
-description: "Validates SKILL.md files against best practices. Use proactively after creating or editing a skill, or when asked to validate a skill."
+description: |
+  Validates SKILL.md files against best practices. Use proactively after creating or editing a skill, or when asked to validate a skill.
+
+  <example>
+  Context: User has finished editing or creating a SKILL.md and wants it validated.
+  user: "validate this skill" or "check skills/build/SKILL.md"
+  assistant: "I'll use skill-validator to check the skill against frontmatter requirements and best practices."
+  <commentary>
+  User explicitly requesting skill validation triggers skill-validator. It scores the skill across four categories (Required fields, Safety, Structure, Polish) and returns a grade with specific fix recommendations.
+  </commentary>
+  </example>
+
+  <example>
+  Context: After creating a new skill, the lead wants to check quality before shipping.
+  user: "I just created a new skill — validate it before I commit"
+  assistant: "Running skill-validator on the new skill to check for any issues."
+  <commentary>
+  Proactive quality gate — skill-validator should be run after every skill creation or significant edit to catch spec violations before they reach production.
+  </commentary>
+  </example>
 tools: Read, Grep, Glob, Bash
 model: sonnet
+color: cyan
 effort: high
+disallowedTools: Edit, Write
+maxTurns: 10
 memory: project
 ---
 
@@ -76,3 +98,5 @@ Grade: A (90+), B (70-89), C (50-69), F (<50)
 - **Warning**: [criterion] — [could be improved]
 
 Top 3 recommended fixes (by weight impact).
+
+Returns: Grade (A/B/C/F) with total score, then a scoring breakdown table: Category | Points Earned | Max Points | Issues. Followed by "Top 3 fixes by impact" (prioritised by weight). If grade A (≥ 90 points): "✅ Skill passes all quality checks." Skill is never modified — findings only.

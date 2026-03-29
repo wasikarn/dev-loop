@@ -1,10 +1,31 @@
 ---
 name: anvil-build-bootstrap
-description: "Bootstraps build Phase 1 context by pre-gathering shared project structure, CLAUDE.md conventions, entry points, and key type definitions in one fast pass. Use at the START of Phase 1 before spawning explorers. Output goes to {artifacts_dir}/bootstrap-context.md for injection into explorer prompts."
+description: |
+  Bootstraps build Phase 1 context by pre-gathering shared project structure, CLAUDE.md conventions, entry points, and key type definitions in one fast pass. Use at the START of Phase 1 before spawning explorers. Output goes to {artifacts_dir}/bootstrap-context.md for injection into explorer prompts.
+
+  <example>
+  Context: Build lead is starting a new build session for a Jira feature ticket.
+  user: "anvil: build TP-1234 — implement user authentication"
+  assistant: "I'll dispatch anvil-build-bootstrap to pre-gather project context before spawning the explorer agents."
+  <commentary>
+  Build lead always dispatches anvil-build-bootstrap at Phase 1 start to gather CLAUDE.md conventions, test infrastructure, and task area file hints before explorers run.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Lead is kicking off a build session with a plain description.
+  user: "build: add rate limiting to the API endpoints"
+  assistant: "Starting Phase 1 — dispatching anvil-build-bootstrap to snapshot project context."
+  <commentary>
+  Even without a Jira key, the bootstrap runs to extract file hints from the task description and write bootstrap-context.md for downstream agents.
+  </commentary>
+  </example>
 tools: Read, Glob, Bash, Grep, Write
 model: haiku
 background: true
 maxTurns: 15
+color: green
+effort: low
 ---
 
 # Dev Loop Bootstrap
@@ -79,3 +100,16 @@ Compute the output directory: `ARTIFACT_DIR=$(bash "${CLAUDE_SKILL_DIR}/../../sc
 ```
 
 Keep each section concise — this is input to explorer agents, not a human report. Omit sections where nothing was found.
+
+## Output Format
+
+Writes `bootstrap-context.md` to the artifacts directory. Returns nothing to stdout — output is the written file. If the write fails, prints the bootstrap context inline and notes the failure.
+
+## Error Handling
+
+- `rtk tree` unavailable → fall back to `find . -maxdepth 3 -type d | head -30`
+- CLAUDE.md not found → skip conventions section entirely, do not write empty section
+- `ast-grep` / `fd` unavailable → use grep/Glob fallbacks as documented in Steps
+- Write failure to artifacts_dir → print full bootstrap-context.md content to stdout with note "⚠ write failed — content printed inline"
+- Empty section output (e.g. no Key Types found) → omit the section header entirely; do not write header with no content beneath it
+- Total output target: keep bootstrap-context.md under 2,000 chars — summarise rather than paste raw tool output

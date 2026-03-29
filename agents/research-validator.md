@@ -1,8 +1,29 @@
 ---
 name: research-validator
-description: "Validates research.md completeness before the build Phase 1 gate transition. Checks required sections are present, counts file:line evidence references, and flags sections with only headers and no concrete content. Returns PASS or FAIL with specific gaps itemized. Called by build lead after explorers write research.md."
+description: |
+  Validates research.md completeness before the build Phase 1 gate transition. Checks required sections are present, counts file:line evidence references, and flags sections with only headers and no concrete content. Returns PASS or FAIL with specific gaps itemized. Called by build lead after explorers write research.md.
+
+  <example>
+  Context: Build lead has received research.md from explorer agents and needs to validate before Phase 2.
+  user: "[Build lead Phase 1→2 gate] — explorers completed, validate research.md"
+  assistant: "Dispatching research-validator to check research.md completeness before Phase 2."
+  <commentary>
+  Build lead dispatches research-validator at the Phase 1→2 gate. PASS allows progression; FAIL triggers re-dispatch of explorers with targeted instructions.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Lead provides a research.md path directly for validation.
+  user: "[Build lead] validate .anvil/build/session-3/research.md"
+  assistant: "Running research-validator on the provided path."
+  <commentary>
+  Agent checks tier (Lite vs Deep), required sections, token count, and file:line evidence count. Returns structured JSON + markdown verdict.
+  </commentary>
+  </example>
 tools: Read, Grep, Glob
 model: haiku
+color: cyan
+effort: low
 disallowedTools: Edit, Write, Bash
 maxTurns: 5
 ---
@@ -17,6 +38,14 @@ produced concrete evidence, not just section headers.
 ### 1. Locate research.md
 
 Read the file path passed via `$ARGUMENTS` (the lead passes `{artifacts_dir}/research.md` when dispatching). If `$ARGUMENTS` is empty, fallback: use the Glob tool with pattern `**/.anvil/build/*/research.md` to find the most recently modified match; if none found, try `**/.build/*/research.md`. If still not found, output `FAIL: research.md not found` and exit.
+
+**Canonical path fallback:** If both glob attempts fail to find research.md, try:
+
+```bash
+bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" build 2>/dev/null
+```
+
+Then glob that directory for research.md. This handles non-standard artifact directory configurations.
 
 ### 2. Detect Research Tier
 
@@ -108,3 +137,7 @@ Then the markdown block:
 On PASS, output JSON then summary line and passing checks only (no issues table).
 On FAIL, lead should re-dispatch the relevant explorer with a targeted prompt before proceeding to
 Phase 2.
+
+## Output Format
+
+Returns both a JSON verdict and a markdown summary. JSON: `{"verdict": "PASS|FAIL", "tier": "Lite|Deep", "token_status": "thin|ok|bloated", "evidence_count": N, "missing_sections": [], "issues": []}`. Markdown summary: verdict banner, checklist table, and (on FAIL) targeted re-dispatch instruction for the build lead.

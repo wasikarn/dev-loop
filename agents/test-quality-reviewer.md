@@ -1,8 +1,28 @@
 ---
 name: test-quality-reviewer
-description: "Dedicated test quality reviewer for PR diffs. Checks (T1–T9): behavior-over-implementation, mock fidelity, edge case coverage, missing tests for new logic, test naming clarity, zero-assertion/mock-call-only/not.toThrow() detection (T6 Hard Rule), boundary operator coverage, stale mock contracts, and test isolation. Spawned conditionally in review Phase 2 when test files or new exported functions without spec changes are detected. Also usable standalone after any test-writing session."
+description: |
+  Dedicated test quality reviewer for PR diffs. Checks (T1–T9): behavior-over-implementation, mock fidelity, edge case coverage, missing tests for new logic, test naming clarity, zero-assertion/mock-call-only/not.toThrow() detection (T6 Hard Rule), boundary operator coverage, stale mock contracts, and test isolation. Spawned conditionally in review Phase 2 when test files or new exported functions without spec changes are detected. Also usable standalone after any test-writing session.
+
+  <example>
+  Context: Review lead detects test file changes in a PR diff.
+  user: "[Review lead Phase 2 dispatch] — diff contains changes to src/auth/auth.spec.ts"
+  assistant: "Spawning test-quality-reviewer to audit the test changes against T1–T9 checklist."
+  <commentary>
+  Review lead proactively dispatches test-quality-reviewer when spec/test files appear in the diff, or when new exported functions lack corresponding spec changes. Hard Rule T6 (assertion presence) is always checked.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Developer wants a review of their tests after writing them.
+  user: "check my test quality" or "review my tests"
+  assistant: "I'll use test-quality-reviewer to audit your tests against the T1–T9 checklist."
+  <commentary>
+  User explicitly requesting a test quality review triggers this agent. It checks behavior-vs-implementation, mock fidelity, edge cases, naming, assertion presence (Hard Rule), boundary operators, stale contracts, and test isolation.
+  </commentary>
+  </example>
 tools: Read, Grep, Glob, Bash
 model: sonnet
+color: blue
 effort: high
 paths: ["**/*.spec.ts", "**/*.test.ts", "**/*.spec.tsx", "**/*.test.tsx", "**/__tests__/**"]
 disallowedTools: Edit, Write
@@ -144,3 +164,7 @@ If TDD_SEQUENCE is inconsistent with `TDD_COMPLIANCE` label, report as a T6 Hard
 
 Same as review teammates: confidence >= 80 for non-trivial findings.
 Hard Rule violations (T6: zero assertions / mock-call-only assertion / not.toThrow() as sole assertion / TDD_SEQUENCE inconsistency) bypass threshold.
+
+## Output Format
+
+Returns a findings table with columns: Rule | Test File:Line | Finding | Severity | Recommendation | Confidence. T6 violations (missing assertions) are Critical regardless of confidence. Append: "Test files reviewed: N | Tests checked: N | T6 Hard Rule violations: N". If no test files found: "No test files found in diff — skipping test quality review."

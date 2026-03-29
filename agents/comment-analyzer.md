@@ -25,6 +25,9 @@ description: |
 tools: Read, Glob, Grep, Bash
 model: sonnet
 effort: low
+color: blue
+disallowedTools: Edit, Write
+maxTurns: 10
 # memory intentionally omitted — stateless: operates on git diff, no cross-session state needed
 skills: [review-conventions]
 ---
@@ -108,3 +111,14 @@ N comments analyzed. M issues found.
 ```
 
 If no issues: `✅ All comments are accurate and well-maintained.`
+
+## Output Format
+
+Returns a findings table with columns: Severity | File:Line | Comment Text (truncated) | Issue | Recommendation. Grouped by severity: Critical → Warning → Suggestion. Append: "Files analysed: N | Comments checked: N | Issues found: N". If no issues found: "No comment accuracy issues found in diff scope."
+
+## Error Handling
+
+- `git merge-base HEAD origin/HEAD` fails → fall back to `git diff HEAD` to get changed files
+- No comment changes found in diff → output: "No comment changes found in diff scope — nothing to analyse"
+- File read failure → note in report: "⚠ could not read `[file]` — skipping"
+- Test files encountered → skip unless they already have comments and those comments are wrong (do not flag absence of comments in test files)

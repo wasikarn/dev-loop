@@ -1,8 +1,29 @@
 ---
 name: metrics-analyst
-description: "Reads anvil-metrics.jsonl and produces a retrospective report: iteration counts, critical finding categories, recurrent issues, and improvement recommendations. Use after multiple build or review runs to identify recurring workflow patterns and surface candidates for new Hard Rules."
+description: |
+  Reads anvil-metrics.jsonl and produces a retrospective report: iteration counts, critical finding categories, recurrent issues, and improvement recommendations. Use after multiple build or review runs to identify recurring workflow patterns and surface candidates for new Hard Rules.
+
+  <example>
+  Context: Build lead is at Phase 9 (retrospective) after multiple build sessions.
+  user: "[Build lead Phase 9] — artifacts_dir: .anvil/build/session-15/"
+  assistant: "Dispatching metrics-analyst to analyse anvil-metrics.jsonl and produce retrospective report."
+  <commentary>
+  Build lead dispatches metrics-analyst at Phase 9 to produce iteration pattern analysis, recurring finding categories, and Hard Rule candidates from the session's metrics log.
+  </commentary>
+  </example>
+
+  <example>
+  Context: User wants to review recurring issues across recent anvil sessions.
+  user: "show me anvil metrics" or "what issues keep coming up in our reviews?"
+  assistant: "I'll use metrics-analyst to analyse the anvil-metrics.jsonl log and surface patterns."
+  <commentary>
+  User asking about recurring issues, review quality trends, or reviewer calibration triggers metrics-analyst. It needs at least 3 sessions of data to produce meaningful analysis.
+  </commentary>
+  </example>
 tools: Bash, Read, Write
 model: haiku
+color: magenta
+effort: medium
 disallowedTools: Edit
 maxTurns: 5
 ---
@@ -161,6 +182,7 @@ bonuses (cumulative):
   distinct_tasks ≥ 3 in the matching sessions = +20   (not a single task inflating count)
   category is SECURITY, NULL_CHECK, or DATA_LOSS = +20 (high-cost failure modes)
   category is TYPE_SAFETY or ERROR_HANDLING = +10
+  consecutive_sessions_in_last_3: +15                 (worsening trend bonus — see below)
 
 penalties (cumulative):
   all matching sessions share the same task name = -30  (task repetition, not real pattern)
@@ -168,6 +190,12 @@ penalties (cumulative):
     findings in those sessions — signal the reviewer was noisy, not category-specific)
   category is STYLE, NAMING, or FORMATTING only = -15  (low signal, high variance)
 ```
+
+**Velocity regression bonus:** `consecutive_sessions_in_last_3: +15` — if the finding category appears in the 3 most recent sessions consecutively (not just any 3 of 5), add +15. This signals a worsening trend, not a historical one.
+
+**Penalty clarification:** The `-10 per session with findings_reversed > 2` penalty applies once per session (not per individual reversed finding). A session with 5 reversed findings still incurs -10, not -50.
+
+**Data quality note:** If `finding_categories` is absent in more than 50% of entries, append to the report: "⚠ Category analysis limited — older entries lack `finding_categories` field; results may be skewed toward recent sessions only."
 
 **Route based on score:**
 
@@ -244,3 +272,7 @@ Append to retrospective report if any role has ≥5 records:
 ```
 
 Omit roles with fewer than 5 records.
+
+## Output Format
+
+Returns a retrospective report with sections: **Iteration Summary** (table: session → iterations → outcome), **Finding Categories** (ranked by frequency), **Hard Rule Candidates** (score ≥ 70 → candidate-rules.md), **Reviewer Calibration** (accuracy_rate per role), **Recommendations** (top 3 actionable items). Minimum data requirement: 3 sessions. If fewer: output "Insufficient data — need at least 3 sessions for meaningful analysis."

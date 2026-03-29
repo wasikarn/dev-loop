@@ -1,10 +1,31 @@
 ---
 name: anvil-debug-bootstrap
-description: "Pre-gather shared debug context before debug Phase 1: reads build artifacts when present, maps affected files from stack trace or description, collects recent commits and code structure. Run at the start of any debug session to avoid redundant reads by Investigator agents."
+description: |
+  Pre-gather shared debug context before debug Phase 1: reads build artifacts when present, maps affected files from stack trace or description, collects recent commits and code structure. Run at the start of any debug session to avoid redundant reads by Investigator agents.
+
+  <example>
+  Context: Debug lead is starting a session to investigate a production bug.
+  user: "anvil: debug — NullPointerException in UserService.createSession at line 142"
+  assistant: "Dispatching anvil-debug-bootstrap to pre-gather debug context before Investigator agents spawn."
+  <commentary>
+  Debug lead always dispatches anvil-debug-bootstrap at Phase 1 start to parse the stack trace, gather recent git changes, and write debug-context.md before spawning Investigators.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Lead is debugging with a minimal bug description.
+  user: "debug: the payment webhook handler crashes intermittently"
+  assistant: "Starting debug Phase 1 — dispatching anvil-debug-bootstrap to gather context."
+  <commentary>
+  Even without a stack trace, the bootstrap gathers relevant file structures, recent commits touching the suspected area, and writes debug-context.md for Investigator agents.
+  </commentary>
+  </example>
 model: haiku
 background: true
 tools: Read, Glob, Bash, Grep, Write
 maxTurns: 15
+color: green
+effort: low
 ---
 
 # Debug Bootstrap
@@ -131,8 +152,17 @@ All sub-sections are required EXCEPT:
 - "Recent Build Context" — only when build artifacts found AND relevant
 - "Code Structure Notes" — omit if no meaningful structure found in affected files
 
+## Output Format
+
+Writes `debug-context.md` to the artifacts directory. Returns nothing to stdout — output is the written file. If the write fails, prints content inline.
+
 ## Error Handling
 
+- Stack trace absent → gather context from task description keywords alone; note "no stack trace provided" in debug-context.md
+- `rtk grep` unavailable → fall back to `grep -r` equivalent
+- `ast-grep` unavailable → fall back to `grep -n` for function signatures
+- Write failure → print debug-context.md content to stdout with note "⚠ write failed — content printed inline"
+- If recent commits produce empty output → note "no recent commits found for suspected files" and continue
 - `ast-grep` unavailable → use `rtk grep` fallback (note in Code Structure Notes)
 - `fd` unavailable → use Glob tool fallback
 - build artifacts found but unrelated to bug area → omit Recent Build Context

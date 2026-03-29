@@ -25,6 +25,9 @@ description: |
 tools: Read, Glob, Grep, Bash
 model: sonnet
 effort: medium
+color: blue
+disallowedTools: Edit, Write
+maxTurns: 15
 # memory intentionally omitted — stateless: operates on $ARGUMENTS, no cross-session state needed
 ---
 
@@ -110,3 +113,7 @@ Structure the report as:
 - Issues: {tech debt, coupling, risks}
 - Extension points: {where to hook in new behavior}
 ```
+
+## Output Format
+
+Returns a structured exploration report with sections: **Entry Points** (file:line for each), **Execution Flow** (numbered steps with file:line), **Architecture Layers** (table: layer name → files → responsibility), **Extension Points** (where new behavior can be added), **Technical Debt Flags** (if any found). Every claim must cite file:line — no assertions without evidence.
