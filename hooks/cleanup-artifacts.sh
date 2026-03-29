@@ -4,9 +4,9 @@
 # Silent if nothing to clean. Safe to run on every session start.
 
 TTL_DAYS="${DEVFLOW_ARTIFACT_TTL_DAYS:-${ANVIL_ARTIFACT_TTL_DAYS:-${DEV_LOOP_ARTIFACT_TTL_DAYS:-7}}}"
-# CLAUDE_PLUGIN_DATA: stable per-plugin folder set by Claude Code plugin runtime.
-# Falls back to the conventional path for local dev (symlinked, not installed).
-BASE_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+BASE_DIR="$(plugin_data_dir)"
 
 [ -d "$BASE_DIR" ] || exit 0
 

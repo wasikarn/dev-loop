@@ -34,7 +34,5 @@ Security is **part of Rule #1** (not a separate numbered rule) — covered at mu
 
 ## Team vs Solo Assignment
 
-| Context | Reviewer 1 (Correctness) | Reviewer 2 (Architecture) | Reviewer 3 (DX) |
-| --- | --- | --- | --- |
-| **Solo** (code-reviewer) | All 12 | — | — |
-| **Team** (build / review) | #1, #2, #10, #12 | #3, #4, #5, #6, #7 | #8, #9, #11, #12 |
+- **Solo** (`code-reviewer`): all 12 rules
+- **Team** (`build` / `review`): per-role assignment in `review-conventions` § Reviewer Focus Areas

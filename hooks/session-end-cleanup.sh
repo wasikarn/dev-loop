@@ -5,8 +5,9 @@
 # Only removes .tmp and .lock files that may have been left behind.
 
 # NOTE: no set -euo pipefail — hook must exit 0 on all failures
-
-PLUGIN_DATA_BASE="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"
+# shellcheck source=lib/common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
+PLUGIN_DATA_BASE="$(plugin_data_dir)"
 
 [ -d "$PLUGIN_DATA_BASE" ] || exit 0
 

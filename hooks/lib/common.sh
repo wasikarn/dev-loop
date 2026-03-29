@@ -17,6 +17,11 @@ require_jq() { command -v jq > /dev/null 2>&1 || exit 0; }
 # Usage: if has_evidence "$SOME_VAR"; then ...
 has_evidence() { printf '%s\n' "$1" | grep -qE '[a-zA-Z0-9_/.-]+\.[a-zA-Z]+:[0-9]+'; }
 
+# plugin_data_dir — returns the stable per-plugin data directory.
+# CLAUDE_PLUGIN_DATA is set by the Claude Code plugin runtime; falls back to
+# the conventional path for local dev (symlinked / not installed).
+plugin_data_dir() { echo "${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"; }
+
 # jq_fields FILTER... — parse multiple fields from $INPUT in one jq call.
 # Precondition: $INPUT must be set (via INPUT=$(cat)) before calling.
 # Requires at least one filter argument.

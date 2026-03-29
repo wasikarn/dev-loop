@@ -30,21 +30,8 @@ YOUR FOCUS: Rules #1 (correctness), #2 (app helpers & util), #10 (type safety), 
 - Type safety: `as any`, unsafe casts, missing null checks
 - Error handling: empty catch, swallowed errors, silent failures
 
-RULES: Apply all rules from reviewer-shared-rules.md. Thresholds and CONTEXT-REQUEST pattern: per reviewer-shared-rules.md.
+RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
 TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
-
-BOUNDARY CONTRACT:
-If you find an issue outside your primary domain (e.g., Correctness reviewer finds a performance issue):
-- Mark as: [CROSS-DOMAIN: {domain}] in the finding
-- Set severity to: Warning (never Critical — defer escalation to consolidator)
-- Do not drop it — cross-domain findings are valid, just lower confidence
-- Consolidator may escalate after seeing full findings set
-
-OBSERVATION MASKING:
-After reading a file and extracting findings:
-- Retain: file path, line refs, finding text, reasoning chain
-- Discard: full file content from working memory
-- Do not re-read a file you have already processed unless Lead explicitly requests it
 
 Send findings to team lead when done.
 ```
@@ -78,21 +65,8 @@ YOUR FOCUS: Rules #3 (N+1), #4 (DRY), #5 (flatten/guard clauses), #6 (SOLID), #7
 - SOLID: single responsibility, interface segregation
 - Performance: hot paths, memory leaks, missing indexes
 
-RULES: Apply all rules from reviewer-shared-rules.md. Thresholds and CONTEXT-REQUEST pattern: per reviewer-shared-rules.md.
+RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
 TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
-
-BOUNDARY CONTRACT:
-If you find an issue outside your primary domain (e.g., this reviewer finds a missing null check or type safety issue):
-- Mark as: [CROSS-DOMAIN: {domain}] in the finding
-- Set severity to: Warning (never Critical — defer escalation to consolidator)
-- Do not drop it — cross-domain findings are valid, just lower confidence
-- Consolidator may escalate after seeing full findings set
-
-OBSERVATION MASKING:
-After reading a file and extracting findings:
-- Retain: file path, line refs, finding text, reasoning chain
-- Discard: full file content from working memory
-- Do not re-read a file you have already processed unless Lead explicitly requests it
 
 Send findings to team lead when done.
 ```
@@ -126,21 +100,8 @@ YOUR FOCUS: Rules #8 (naming), #9 (docs), #11 (testability), #12 (debugging).
 - Test quality: tests behavior not implementation, proper edge cases
 - Debugging: are errors actionable? `console.log` in production code?
 
-RULES: Apply all rules from reviewer-shared-rules.md. Thresholds and CONTEXT-REQUEST pattern: per reviewer-shared-rules.md.
+RULES: Apply all rules from reviewer-shared-rules.md. Thresholds, CONTEXT-REQUEST pattern, BOUNDARY CONTRACT, and OBSERVATION MASKING: per reviewer-shared-rules.md.
 TOKEN BUDGET: After reading 8+ files directly (excluding Lead-provided shared context): switch to header + structure overview for files >300 lines.
-
-BOUNDARY CONTRACT:
-If you find an issue outside your primary domain (e.g., this reviewer finds an N+1 query or a type safety issue):
-- Mark as: [CROSS-DOMAIN: {domain}] in the finding
-- Set severity to: Warning (never Critical — defer escalation to consolidator)
-- Do not drop it — cross-domain findings are valid, just lower confidence
-- Consolidator may escalate after seeing full findings set
-
-OBSERVATION MASKING:
-After reading a file and extracting findings:
-- Retain: file path, line refs, finding text, reasoning chain
-- Discard: full file content from working memory
-- Do not re-read a file you have already processed unless Lead explicitly requests it
 
 Send findings to team lead when done.
 ```

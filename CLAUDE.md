@@ -151,8 +151,6 @@ claude plugin install devflow
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
 ```
 
-`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is required for all Devflow skills (build, review, respond, debug) to spawn Agent Teams.
-
 <important if="adding a new skill">
 
 ## Adding a New Skill
@@ -165,6 +163,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full step-by-step guide. Key rule
 - Pre-commit hook auto-fixes staged `.md` files — no manual lint needed before commit
 
 </important>
+
+## Skill Comparison & Agent Teams Constraints
+
+| Aspect | review | build | debug | respond |
+| --- | --- | --- | --- | --- |
+| Scope | PR review + debate | Full dev loop | Debug + DX harden | PR comment response |
+| Execution | 3 teammates (debate) | Dynamic roster per phase | Investigator + DX + Fixer | 1 Fixer per file group |
+| Loop | None | Implement-Review (max 3 iter) | Fix-only (max 3 attempts) | Fix-only (max 3 per thread) |
+
+All four require `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (degrades gracefully). One team per session; team cleanup by lead; Hard Rules cannot be dropped via debate.
 
 ## Repo Commands
 
@@ -189,5 +197,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full step-by-step guide. Key rule
 - Pre-commit hook auto-fixes staged `.md` files — runs `scripts/fix-tables.sh` + `markdownlint-cli2 --fix`; no manual fix needed before commit
 - `disable-model-invocation: true` removes description from context entirely (skill never auto-triggers); `user-invocable: false` hides from menu but keeps context — different effects
 - Run `/optimize-claude-md` when this file feels stale
-
 </important>

@@ -19,8 +19,8 @@ IFS=$'\t' read -r TOOL_NAME SKILL_NAME < <(jq_fields '.tool_name' '.tool_input.s
 
 # CLAUDE_PLUGIN_DATA: stable per-plugin folder set by Claude Code plugin runtime.
 # Falls back to the conventional path for local dev (symlinked, not installed).
-DATA_DIR="${CLAUDE_PLUGIN_DATA:-$HOME/.claude/plugins/data/devflow-devflow}"
-mkdir -p "$DATA_DIR"
+DATA_DIR="$(plugin_data_dir)"
+[ -d "$DATA_DIR" ] || mkdir -p "$DATA_DIR"
 LOG="${DEVFLOW_USAGE_LOG:-${ANVIL_USAGE_LOG:-${DEV_LOOP_USAGE_LOG:-$DATA_DIR/skill-usage.tsv}}}"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 

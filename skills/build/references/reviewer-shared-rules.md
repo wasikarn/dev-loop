@@ -85,6 +85,23 @@ Use these when `.claude/skills/review-rules/hard-rules.md` does not exist in the
 4. No `as any` without justification comment — use proper typing
 5. No missing null checks on external data — validate at system boundaries
 
+## Boundary Contract
+
+If you find an issue outside your primary domain:
+
+- Mark as: `[CROSS-DOMAIN: {domain}]` in the finding
+- Set severity to: Warning (never Critical — defer escalation to consolidator)
+- Do not drop it — cross-domain findings are valid, just lower confidence
+- Consolidator may escalate after seeing full findings set
+
+## Observation Masking
+
+After reading a file and extracting findings:
+
+- Retain: file path, line refs, finding text, reasoning chain
+- Discard: full file content from working memory
+- Do not re-read a file you have already processed unless Lead explicitly requests it
+
 ## Output Format
 
 | # | Sev | File | Line | Confidence | Issue | Fix |

@@ -3,15 +3,9 @@
 Full development loop with Agent Teams: Research → Plan → Implement → Review → Ship.
 Uses dynamic team roster (explorers, workers, reviewers) with iterative implement-review loop.
 
-## How It Differs from Other Devflow Skills
+## How It Differs
 
-| Aspect | review | build | debug |
-| --- | --- | --- | --- |
-| Scope | PR review + debate | Full dev loop | Debug + DX harden |
-| Execution | 3 teammates (debate) | Dynamic roster per phase | Investigator + DX Analyst + Fixer |
-| Review | Adversarial debate | Embedded (reuses review pattern) | N/A (no review phase) |
-| Loop | None | Implement-Review (max 3 iter) | Fix-only (max 3 attempts) |
-| Artifacts | Findings in output | research.md, plan.md, review-findings-N.md | debug-context.md, investigation.md |
+See root [CLAUDE.md § Skill Comparison](../../CLAUDE.md) for full build/review/debug/respond comparison.
 
 ## Docs Index
 
@@ -31,7 +25,6 @@ Uses dynamic team roster (explorers, workers, reviewers) with iterative implemen
 | `references/operational.md` | Graceful Degradation, Crash Recovery, Regression Gate, Solo findings |
 | `../../review-output-format/SKILL.md` | Review output format template |
 | `../../debate-protocol/SKILL.md` | Adversarial debate rules (fallback in phase-6-review.md) |
-| `../../docs/superpowers/specs/2026-03-19-devflow-workflow-quality-improvements-round2-design.md` | Behavioral anchor rubric for scoring dimensions — see Round 2 spec |
 
 ## Skill Architecture
 
@@ -62,12 +55,9 @@ ls -la ~/.claude/skills/build
 
 ## Gotchas
 
-- Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` — degrades gracefully to subagent or solo mode
+- Agent Teams constraints: see root [CLAUDE.md § Agent Teams Constraints](../../CLAUDE.md)
 - Agent Teams have no session resumption — if lead crashes, artifacts on disk enable manual recovery
 - Workers and reviewers are never alive simultaneously — workers during Phase 4, reviewers during Phase 6
 - Review scope narrows each iteration: 3 reviewers → 2 → 1, full debate → focused → spot-check
-- Hard Rules cannot be dropped via debate — only reclassified with evidence
 - Max 3 loop iterations enforced — prevents runaway token usage
 - Artifacts written to **`{artifacts_dir}/{date}-{slug}/`** (path from `scripts/artifact-dir.sh build`): `devflow-context.md`, `research.md`, `plan.md`, `verify-results.md`, `review-findings-*.md`. All artifacts in one folder — `~/.claude/plans/` is no longer used.
-- Team cleanup must be done by lead in Phase 9 — teammates don't self-terminate
-- One team per session — cannot run multiple build in parallel

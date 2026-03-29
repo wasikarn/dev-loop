@@ -3,15 +3,9 @@
 Systematic debugging with Agent Teams: parallel Investigator + DX Analyst, then Fixer.
 Combines systematic-debugging methodology with DX analysis to fix bugs and harden the affected area.
 
-## How It Differs from Other Skills
+## How It Differs
 
-| Aspect | review | build | debug |
-| --- | --- | --- | --- |
-| Scope | PR review + debate | Full dev loop | Debug + DX harden |
-| Execution | 3 teammates (debate) | Dynamic roster per phase | Investigator + DX Analyst + Fixer |
-| Review | Adversarial debate | Embedded (reuses review) | N/A (no review phase) |
-| Loop | None | Implement-Review (max 3 iter) | Fix-only (max 3 attempts) |
-| Artifacts | Findings in output | research.md, plan.md, review-findings-N.md | debug-context.md, investigation.md |
+See root [CLAUDE.md § Skill Comparison](../../CLAUDE.md) for full build/review/debug/respond comparison.
 
 ## Docs Index
 
@@ -47,13 +41,11 @@ ls -la ~/.claude/skills/debug
 
 ## Gotchas
 
-- Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` — degrades gracefully to subagent or solo mode
+- Agent Teams constraints: see root [CLAUDE.md § Agent Teams Constraints](../../CLAUDE.md)
 - Agent Teams have no session resumption — if lead crashes, `debug-context.md` + `investigation.md` enable manual recovery
 - Investigator and DX Analyst are never alive simultaneously with Fixer — Phase 1 teammates shut down before Phase 2
 - Max 2 teammates concurrent (Investigator + DX Analyst), then 1 (Fixer)
 - DX scope = affected area only — not codebase-wide improvements
 - 3 fix attempts max — beyond that is an architectural problem, escalate to user
 - Artifacts written to `{artifacts_dir}` (path from `scripts/artifact-dir.sh debug`): `debug-context.md`, `investigation.md`
-- Team cleanup must be done by lead in Phase 3 — teammates don't self-terminate
-- One team per session — cannot run multiple debug in parallel
 - Quick mode still has DX awareness via condensed checklist — not zero DX

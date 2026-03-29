@@ -3,15 +3,9 @@
 Experimental Agent Teams-based PR review with adversarial debate.
 Uses 3 reviewer teammates that challenge each other's findings instead of 7 parallel subagents.
 
-## How It Differs from Other Skills
+## How It Differs
 
-| Aspect | review | build | debug |
-| --- | --- | --- | --- |
-| Scope | PR review + debate | Full dev loop | Debug + DX harden |
-| Execution | 3 teammates (debate) | Dynamic roster per phase | Investigator + DX Analyst + Fixer |
-| False positives | Adversarial debate | Embedded (reuses review) | N/A (no review phase) |
-| Project scope | Auto-detects project | Auto-detects project | Auto-detects project |
-| Feature status | Experimental | Experimental | Experimental |
+See root [CLAUDE.md § Skill Comparison](../../CLAUDE.md) for full build/review/debug/respond comparison.
 
 ## Docs Index
 
@@ -21,7 +15,6 @@ Uses 3 reviewer teammates that challenge each other's findings instead of 7 para
 | `../../review-conventions/SKILL.md` | Shared review conventions (labels, dedup, strengths) |
 | `../../review-output-format/SKILL.md` | Output format template |
 | `references/operational.md` | Graceful Degradation, Context Compression Recovery, Success Criteria |
-| `../../docs/superpowers/specs/2026-03-19-devflow-workflow-quality-improvements-round2-design.md` | Behavioral anchor rubric for scoring dimensions — see Round 2 spec |
 
 ## Skill Architecture
 
@@ -45,13 +38,10 @@ ls -la ~/.claude/skills/review
 
 ## Gotchas
 
-- Requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` — degrades gracefully to subagent or solo mode
+- Agent Teams constraints: see root [CLAUDE.md § Agent Teams Constraints](../../CLAUDE.md)
 - Agent teams have no session resumption for in-process teammates — recommend tmux mode
 - Teammates are READ-ONLY during review and debate — code changes only in action phase
-- Hard Rules cannot be dropped via debate — only reclassified with evidence
 - Max 2 debate rounds enforced by lead — prevents runaway token usage
-- Team cleanup must be done by lead, not teammates
-- One team per session — cannot run multiple review in parallel
 - Phase 1 Bootstrap uses `pr-review-bootstrap` agent (Haiku) — if unavailable, teammates gather context themselves
 - Pre-Debate Triage skips debate for Auto-pass (Hard Rule + conf ≥90) and Auto-drop (Info + conf <80) findings
 - Dismissed findings persist at `{review_memory_dir}/review-dismissed.md` — cap 50 entries FIFO
