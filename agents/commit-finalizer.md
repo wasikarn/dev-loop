@@ -80,7 +80,7 @@ If "push" in input: `git push origin HEAD`
 
 If "PR" in input, output for user: `gh pr create --title "[commit title]" --body ""`
 
-## Output
+## Output Format
 
 `✓ Committed: [message] / [branch] → [hash]` — nothing else unless push/PR requested.
 
