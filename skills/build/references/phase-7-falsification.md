@@ -23,7 +23,7 @@ if [ -d "$ENGINE_DIR" ] && [ -d "$ENGINE_DIR/node_modules" ]; then
   FINDINGS_FILE=$(mktemp /tmp/devflow-findings-XXXXXX.json)
   # Write pre-consolidation findings as JSON array to $FINDINGS_FILE
 
-  sdk_result=$(cd "$ENGINE_DIR" && node_modules/.bin/tsx src/cli.ts falsify \
+  sdk_result=$(cd "$ENGINE_DIR" && bun src/cli.ts falsify \
     --findings-file "$FINDINGS_FILE" \
     2>&1)
   sdk_exit=$?

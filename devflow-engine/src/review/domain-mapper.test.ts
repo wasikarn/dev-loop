@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { mapToDomains } from './domain-mapper.js'
 import type { FileDiff } from '../types.js'
 

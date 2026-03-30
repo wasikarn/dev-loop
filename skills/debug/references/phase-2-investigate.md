@@ -34,7 +34,7 @@ if [ -d "$ENGINE_DIR" ] && [ -d "$ENGINE_DIR/node_modules" ]; then
   SDK_MODE_FLAG=""
   [ "{mode}" = "Quick" ] && SDK_MODE_FLAG="--quick"
 
-  sdk_result=$(cd "$ENGINE_DIR" && node_modules/.bin/tsx src/cli.ts investigate \
+  sdk_result=$(cd "$ENGINE_DIR" && bun src/cli.ts investigate \
     --bug "{bug_description}" \
     $SDK_MODE_FLAG \
     2>&1)

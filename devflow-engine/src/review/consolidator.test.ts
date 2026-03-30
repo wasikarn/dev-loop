@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect } from 'bun:test'
 import { consolidate, findingKey } from './consolidator.js'
 import type { Finding, Verdict } from '../types.js'
 

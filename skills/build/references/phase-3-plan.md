@@ -78,7 +78,7 @@ ENGINE_DIR="${CLAUDE_SKILL_DIR}/../../devflow-engine"
 
 if [ -d "$ENGINE_DIR" ] && [ -d "$ENGINE_DIR/node_modules" ]; then
 
-  sdk_result=$(cd "$ENGINE_DIR" && node_modules/.bin/tsx src/cli.ts plan-challenge \
+  sdk_result=$(cd "$ENGINE_DIR" && bun src/cli.ts plan-challenge \
     --plan-file {plan_file_path} \
     --research-file {artifacts_dir}/research.md \
     2>&1)

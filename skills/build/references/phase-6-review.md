@@ -48,7 +48,7 @@ if [ -d "$ENGINE_DIR" ] && [ -d "$ENGINE_DIR/node_modules" ]; then
   [ -n "${HARD_RULES_PATH}" ] && SDK_ARGS="$SDK_ARGS --hard-rules $HARD_RULES_PATH"
 
   # Run SDK reviewer
-  sdk_result=$(cd "$ENGINE_DIR" && node_modules/.bin/tsx src/cli.ts review $SDK_ARGS 2>&1)
+  sdk_result=$(cd "$ENGINE_DIR" && bun src/cli.ts review $SDK_ARGS 2>&1)
   sdk_exit=$?
 
   # Validate: must be JSON with findings array (not just any {})

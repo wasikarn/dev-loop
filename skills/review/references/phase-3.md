@@ -54,7 +54,7 @@ if [ -d "$ENGINE_DIR" ] && [ -d "$ENGINE_DIR/node_modules" ]; then
   [ -n "$focused_area" ] && RESOLVE_ARGS="$RESOLVE_ARGS --focused $focused_area"
 
   # Capture stdout only; redirect stderr to /dev/null to prevent tsx warnings corrupting JSON
-  resolve_result=$(cd "$ENGINE_DIR" && node_modules/.bin/tsx src/cli.ts resolve $RESOLVE_ARGS 2>/dev/null)
+  resolve_result=$(cd "$ENGINE_DIR" && bun src/cli.ts resolve $RESOLVE_ARGS 2>/dev/null)
   resolve_exit=$?
 
   _extract_mode() {

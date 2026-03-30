@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { triage } from './triage.js'
 import type { Finding } from '../types.js'
 

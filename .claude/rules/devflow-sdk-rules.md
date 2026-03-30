@@ -7,14 +7,14 @@ paths:
 
 TypeScript engine at `devflow-engine/` — programmatic PR review pipeline. `private: true`, not published to npm.
 
-**Tech stack:** TypeScript strict · vitest · tsx for running
+**Tech stack:** TypeScript strict · bun test (built-in) · Bun for running
 
 **Structure:**
 
 ```text
 devflow-engine/src/
 ├── review/        # orchestrator, triage, consolidator, falsifier, domain-mapper, output
-├── cli.ts         # CLI entry point (tsx src/cli.ts review|falsify|plan-challenge)
+├── cli.ts         # CLI entry point (bun src/cli.ts review|falsify|plan-challenge)
 ├── config.ts      # configuration
 └── types.ts       # shared types
 ```
@@ -23,9 +23,9 @@ devflow-engine/src/
 
 | Task | Command |
 | --- | --- |
-| Run tests | `cd devflow-engine && npm test` |
-| Watch tests | `cd devflow-engine && npm run test:watch` |
-| Run CLI review | `cd devflow-engine && npm run review -- --pr <number>` |
+| Run tests | `cd devflow-engine && bun test` |
+| Watch tests | `cd devflow-engine && bun test --watch` |
+| Run CLI review | `cd devflow-engine && bun run review -- --pr <number>` |
 
 **Rules:**
 

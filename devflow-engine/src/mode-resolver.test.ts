@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'bun:test'
 import { resolveMode } from './mode-resolver.js'
 import { toFilePath } from './types.js'
 import type { PRSignals } from './types.js'

@@ -25,7 +25,7 @@ if [ -d "$ENGINE_DIR" ] && [ -d "$ENGINE_DIR/node_modules" ]; then
   # Write findings as JSON array: [{"severity":"critical","rule":"...","file":"...","line":N,"confidence":N,"issue":"...","fix":"...","isHardRule":true}, ...]
   # echo '[...]' > "$FINDINGS_FILE"
 
-  sdk_result=$(cd "$ENGINE_DIR" && node_modules/.bin/tsx src/cli.ts falsify \
+  sdk_result=$(cd "$ENGINE_DIR" && bun src/cli.ts falsify \
     --findings-file "$FINDINGS_FILE" \
     2>&1)
   sdk_exit=$?

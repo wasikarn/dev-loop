@@ -137,13 +137,13 @@ All four require `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (degrades gracefully).
 
 ## devflow-engine
 
-TypeScript SDK at `devflow-engine/` — programmatic PR review pipeline (orchestrator, triage, consolidator, falsifier, CLI). `private: true`; not published to npm. Uses `vitest` for tests.
+TypeScript SDK at `devflow-engine/` — programmatic PR review pipeline (orchestrator, triage, consolidator, falsifier, CLI). `private: true`; not published to npm. Uses `bun test` (built-in).
 
 | Task | Command |
 | --- | --- |
-| Run SDK tests | `cd devflow-engine && npm test` |
-| Watch tests | `cd devflow-engine && npm run test:watch` |
-| Run CLI review | `cd devflow-engine && npm run review -- --pr <number>` |
+| Run SDK tests | `cd devflow-engine && bun test` |
+| Watch tests | `cd devflow-engine && bun test --watch` |
+| Run CLI review | `cd devflow-engine && bun run review -- --pr <number>` |
 
 ## Repo Commands
 
