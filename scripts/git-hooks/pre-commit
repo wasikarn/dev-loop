@@ -1,0 +1,36 @@
+#!/bin/sh
+# pre-commit: auto-fix markdown tables and lint before commit
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Get staged .md files only
+STAGED_MD=$(git diff --cached --name-only --diff-filter=ACM | grep '\.md$' || true)
+
+if [ -z "$STAGED_MD" ]; then
+  exit 0
+fi
+
+# Snapshot which files have unstaged changes before we touch anything
+FILES_WITH_UNSTAGED=$(git diff --name-only || true)
+
+echo "🔧 Running fix-tables.sh on staged .md files..."
+echo "$STAGED_MD" | xargs bash "$REPO_ROOT/scripts/fix-tables.sh"
+
+echo "🔧 Running markdownlint-cli2 --fix on staged .md files..."
+echo "$STAGED_MD" | xargs npx markdownlint-cli2 --fix
+
+# Re-stage only files that:
+#   1. were originally staged (.md)
+#   2. did NOT have pre-existing unstaged changes (to avoid accidentally staging them)
+for FILE in $STAGED_MD; do
+  if echo "$FILES_WITH_UNSTAGED" | grep -qx "$FILE"; then
+    # File had unstaged changes — use patch mode to add only the tool's fixes
+    git diff -- "$FILE" | git apply --cached --whitespace=nowarn 2>/dev/null || git add "$FILE"
+  else
+    git add "$FILE"
+  fi
+done
+
+echo "✅ Markdown auto-fix complete"
