@@ -29,4 +29,4 @@ Test coverage (warning):
 Resilience (info):
 {"severity":"info","category":"resilience","file":"src/payments/processor.ts","line":38,"issue":"No retry logic for transient network errors — single attempt with no backoff","recommendation":"Consider exponential backoff with 2 retries for network-class errors (not business-logic rejections)"}
 
-Return JSON only. No prose outside JSON.`
+Return structured JSON per the provided schema.`

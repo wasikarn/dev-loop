@@ -60,6 +60,8 @@ After findings table, send to team lead.
 M1 (missing down) and M2 (destructive DDL) are always reported regardless of confidence.
 M3–M10 require confidence >= 80.
 
+CONFIDENCE CALIBRATION: high (90+) = directly visible in diff, unambiguous; medium (75-89) = probable but context outside diff needed; low (<75) = do not report
+
 ## Output Format
 
 Returns a findings table with columns: `# | Sev | Rule | File | Line | Issue | Fix`. M1–M2 violations are Critical (🔴) regardless of confidence. M3–M10 require confidence ≥ 80% to appear. Append after the table: "Migration files reviewed: N | Hard Rule violations: N | Warnings: N". If no migration files found: "No migration files found in diff — skipping migration review."

@@ -1,8 +1,6 @@
 export const ADONISJS_LENS = `
 # AdonisJS Review Lens
 
-Inject into reviewer prompts when diff touches: \`app/controllers/\`, \`app/models/\`, \`app/validators/\`, \`app/services/\`, \`start/routes.ts\`, or files using Lucid ORM / Vine / IoC decorators.
-
 \`\`\`text
 ADONISJS LENS (active for this review):
 

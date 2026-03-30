@@ -1,7 +1,5 @@
 # Database Review Lens
 
-Inject into reviewer prompts when diff touches: migrations, ORM queries, raw SQL, or repository layer code.
-
 ```text
 DATABASE LENS (active for this review):
 

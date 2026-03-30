@@ -85,8 +85,6 @@ Then the emoji markdown (canonical for human display):
 - If zero findings after filter: output `{"critical":0,"warning":0,"info":0,"lowSignal":false}` then `**Summary: ✅ No issues found**` (no table)
 - `lowSignal: true` when (🔴 + 🟡) / total surviving findings < 60%
 
-Returns a single ranked findings table: # | Severity | Rule | Location | Finding | Reviewers | Confidence | Recommendation. Sorted Critical → Warning → Suggestion, then by confidence descending. Append signal check result: "Signal check: [PASS — findings have broad coverage] or [WARN — N% of findings from single reviewer]". If no findings survive filtering: "No findings passed confidence thresholds — clean review."
-
 ## Error Handling
 
 - No findings from a reviewer → proceed with remaining reviewers; note `[no findings from reviewer N]` in Summary line

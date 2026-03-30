@@ -28,34 +28,20 @@ Read the file path passed via `$ARGUMENTS` (the lead passes `{artifacts_dir}/res
 bash "${CLAUDE_SKILL_DIR}/../../scripts/artifact-dir.sh" build 2>/dev/null
 ```
 
-Then glob that directory for research.md. This handles non-standard artifact directory configurations.
+Then glob that directory for research.md.
 
 ### 2. Detect Research Tier
 
-Check the research.md header for tier marker:
+Check the research.md header for tier marker. If absent, infer: Lite if only WHAT/WHY found, Deep if ADDED/MODIFIED/REMOVED found.
 
-- **Lite** (Quick mode): expects `## Context`, `## WHAT`, `## WHY`, `## Token Count` sections
-- **Deep** (Full mode): expects `## Context`, `## ADDED`, `## MODIFIED`, `## REMOVED`, `## Token Count`, `## GO/NO-GO Verdict` sections
-
-If no tier marker, infer from structure: Lite if only WHAT/WHY found, Deep if ADDED/MODIFIED/REMOVED found.
+| Tier | Detect when | Required sections | Min evidence refs |
+|---|---|---|---|
+| Lite | no plan.md AND no Jira key | Context, WHAT, WHY, Token Count | 2 file:line |
+| Deep | plan.md OR Jira key present | Context, ADDED, MODIFIED, REMOVED, Token Count, GO/NO-GO Verdict | 5 file:line |
 
 ### 3. Check Required Sections (tier-aware)
 
-**Lite tier:** Verify these sections exist:
-
-- `## Context` — 2-3 sentences about what exists and what changes
-- `## WHAT` — behaviors that must be true after the task
-- `## WHY` — reason for the change
-- `## Token Count` — present
-
-**Deep tier:** Verify these sections exist:
-
-- `## Context` — existing architecture patterns
-- `## ADDED` — new files/patterns/dependencies
-- `## MODIFIED` — existing files that will change (with before/after)
-- `## REMOVED` — anything deprecated or deleted
-- `## Token Count` — present with value
-- `## GO/NO-GO Verdict` — present
+Verify each section from the table above exists and has content (not just a heading).
 
 ### 4. Token Count Check (Deep tier only)
 

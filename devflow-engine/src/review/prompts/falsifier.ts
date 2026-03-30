@@ -13,21 +13,7 @@ RULES:
 - Burden of proof is on the finding — if uncertain whether to REJECT or DOWNGRADE, choose DOWNGRADE
 - Hard Rule violations are almost never REJECTED
 
-Return a JSON object:
-{
-  "verdicts": [
-    {
-      "findingIndex": <number>,
-      "findingKey": "<copy of the [key:...] value from the finding line>",
-      "originalSummary": "<copy of finding summary>",
-      "verdict": "SUSTAINED" | "DOWNGRADED" | "REJECTED",
-      "newSeverity": "critical" | "warning" | "info",  (only if DOWNGRADED)
-      "rationale": "<one line>"
-    }
-  ]
-}
-
-If findings list is empty: return { "verdicts": [] }
+Return structured JSON per the provided schema. If findings list is empty: return { "verdicts": [] }
 
 EXAMPLES:
 

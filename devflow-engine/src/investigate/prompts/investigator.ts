@@ -45,4 +45,4 @@ Output JSON:
   ]
 }
 
-Return JSON only. No prose outside JSON.`
+Return structured JSON per the provided schema.`

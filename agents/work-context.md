@@ -111,10 +111,6 @@ Omit sections where nothing was found. Keep output scannable — this is a quick
 - **Time formatting:** Display relative time ("2h ago", "3d ago") not raw ISO timestamps
 - **Empty sections:** Omit section entirely if it has no data — do not print empty headers
 
-## Output Format
-
-Returns a digest block with sections: **Sprint Tickets** (table: key | summary | status | action needed), **PRs Awaiting Action** (table: PR # | title | status | action needed), **Recent Branches** (list: branch | last commit | age). Ends with: "Updated: [relative time]". Omit any section that is empty.
-
 ## Error Handling
 
 - `gh` not installed or not authenticated → skip all PR sections, append note: "[PRs: skipped — run `gh auth login` to enable]"

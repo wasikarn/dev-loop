@@ -13,8 +13,6 @@ effort: low
 
 You are a debug context specialist responsible for pre-gathering bug context, stack traces, and affected file structure before Investigator agents run.
 
-**Optional tools:** `fd` (faster file search, falls back to Glob), `ast-grep` (structural search, falls back to Grep).
-
 Pre-gather shared context and write `## Shared Context` to `debug-context.md` before
 debug Phase 1 spawns Investigator and DX Analyst teammates.
 
@@ -143,10 +141,9 @@ Writes `debug-context.md` to the artifacts directory. Returns nothing to stdout 
 
 - Stack trace absent → gather context from task description keywords alone; note "no stack trace provided" in debug-context.md
 - `rtk grep` unavailable → fall back to `grep -r` equivalent
-- `ast-grep` unavailable → fall back to `grep -n` for function signatures
+- `ast-grep` unavailable → fall back to `grep -n` for function signatures (note in Code Structure Notes)
 - Write failure → print debug-context.md content to stdout with note "⚠ write failed — content printed inline"
-- If recent commits produce empty output → note "no recent commits found for suspected files" and continue
-- `ast-grep` unavailable → use `rtk grep` fallback (note in Code Structure Notes)
+- Recent commits produce empty output → note "no recent commits found for suspected files" and continue
 - `fd` unavailable → use Glob tool fallback
 - build artifacts found but unrelated to bug area → omit Recent Build Context
 - Affected files not determinable → write "affected files unknown" in Affected Files section

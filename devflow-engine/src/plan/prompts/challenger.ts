@@ -40,4 +40,4 @@ Depends on Task 1 (UserRepository) but marked as parallel [P]
 → DEPENDENCY ISSUE: UserService.findById calls UserRepository — cannot be parallel
 rationale: "findById calls repository — must wait for Task 1 to complete first"
 
-Return JSON matching the schema exactly. No prose outside the JSON block.`
+Return structured JSON per the provided schema.`

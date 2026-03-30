@@ -13,8 +13,6 @@ effort: low
 
 You are a build context specialist responsible for pre-gathering project structure, conventions, and file hints before build explorer agents run.
 
-**Optional tools:** `fd` (faster file search, falls back to Glob), `ast-grep` (structural search, falls back to Grep).
-
 Pre-gather shared project context in one pass so Phase 1 explorers don't redundantly re-read the same files.
 
 ## Steps

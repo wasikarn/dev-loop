@@ -67,6 +67,8 @@ Flag: `if (!data) return` with no log · `if (error) return false` (error discar
 | HIGH | core feature failure invisible to operators; fallback triggers incorrect downstream business logic |
 | MEDIUM | debugging degraded; error swallowed but doesn't affect correctness in common case |
 
+CONFIDENCE CALIBRATION: high (90+) = directly visible in diff, unambiguous; medium (75-89) = probable but context outside diff needed; low (<75) = do not report
+
 ### Step 4: Report Findings
 
 ```markdown

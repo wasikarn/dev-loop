@@ -1,11 +1,7 @@
 # Frontend Review Lens
 
-Inject into reviewer prompts when diff touches: React components, Next.js pages, hooks, or UI code.
-
 ```text
 FRONTEND LENS (active for this review):
-
-THRESHOLD: Report at confidence ≥75 unless marked Hard Rule.
 
 RSC / APP ROUTER BOUNDARY (Next.js App Router — flag when `app/` dir or `'use client'` present):
 - `'use client'` on a parent that only passes data down → move boundary to leaf; reduces client JS

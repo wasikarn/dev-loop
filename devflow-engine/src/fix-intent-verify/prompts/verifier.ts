@@ -48,27 +48,7 @@ Diff: adds guard at line 42 only
 JSON: {"threadIndex":2,"file":"src/user.ts:42","issueSummary":"null checks missing on profile and settings","verdict":"PARTIAL",
   "reviewerConcern":"null check missing on both user.profile (line 42) and user.settings (line 67)","appliedChange":"src/user.ts:42 — added if (user.profile) guard","gap":"user.settings at line 67 still has no null guard","rationale":"Half of the concern addressed; line 67 gap remains"}
 
-Return a JSON object matching this schema exactly:
-{
-  "verdicts": [
-    {
-      "threadIndex": <number>,
-      "file": "<file:line from triage table>",
-      "issueSummary": "<copied verbatim from triage table>",
-      "verdict": "ADDRESSED" | "PARTIAL" | "MISALIGNED",
-      "reviewerConcern": "<exact quote from reviewer thread body>",
-      "appliedChange": "<file:line — what the diff actually changed>",
-      "gap": "<what is missing — omit this field only if ADDRESSED>",
-      "rationale": "<one concise sentence>"
-    }
-  ],
-  "summary": {
-    "addressed": <count>,
-    "partial": <count>,
-    "misaligned": <count>
-  }
-}
-
-If input contains no threads:
-return { "verdicts": [], "summary": { "addressed": 0, "partial": 0, "misaligned": 0 } }
+Return structured JSON per the provided schema.
+summary counts must equal the count of each verdict type in the verdicts array (compute from verdicts, do not guess).
+If input contains no threads: return empty verdicts with zero counts.
 `

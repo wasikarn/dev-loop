@@ -1,8 +1,6 @@
 export const ERROR_HANDLING_LENS = `
 # Error Handling Review Lens
 
-Inject into reviewer prompts when diff touches: \`try\`, \`catch\`, \`async\`, \`.catch(\`, \`Promise\`, \`new Error\`, \`throw\`.
-
 \`\`\`text
 ERROR HANDLING LENS (active for this review):
 

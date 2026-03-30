@@ -80,6 +80,8 @@ Inconsistency → report as **T6-TDD** violation (Hard Rule severity).
 
 ≥80 for non-trivial findings. Hard Rules bypass threshold: T6 (assertion-related) and T6-TDD.
 
+CONFIDENCE CALIBRATION: high (90+) = directly visible in diff, unambiguous; medium (75-89) = probable but context outside diff needed; low (<75) = do not report
+
 ## Output Format
 
 Findings table (Step 4 format). T6 Hard Rule violations are always 🔴. Append: `Test files reviewed: N | Tests checked: N | T6 Hard Rule violations: N`. If no test files: `No test files found in diff — skipping test quality review.`

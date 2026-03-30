@@ -1,7 +1,5 @@
 # Performance Review Lens
 
-Inject into reviewer prompts when diff touches: data fetching, list rendering, event handlers, caching, or any hot path code.
-
 ```text
 PERFORMANCE LENS (active for this review):
 

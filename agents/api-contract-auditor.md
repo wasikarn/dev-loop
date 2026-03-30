@@ -116,3 +116,10 @@ A1–A10 findings with direct evidence from diff require confidence >= 80.
 "Possible" breaking changes (where the change *might* be breaking depending on consumer patterns)
 are reported at 🟡 Warning with rationale.
 A7 (idempotency) applied to payment/financial routes is escalated to 🔴 Critical when confidence >= 80.
+
+CONFIDENCE CALIBRATION (0-100):
+
+- 95: Response field `userId` removed — confirmed by comparing main vs PR interface definition side-by-side
+- 85: Required query param added to existing endpoint — visible in route handler signature change in diff
+- 75: Response field type narrowed (string → string | null) — diff shows interface change; downstream consumers not in diff
+- 60: Naming inconsistency in response fields (camelCase vs snake_case) — do not report without evidence of a breaking contract change

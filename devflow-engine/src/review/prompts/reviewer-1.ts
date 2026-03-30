@@ -9,21 +9,6 @@ export function buildReviewer1Prompt(config: {
 
 YOUR FOCUS: Functional correctness (#1), app helpers & util (#2), type safety (#10), error handling, and all Hard Rules.
 
-${config.sharedRules}
-
-HARD RULES:
-${config.hardRules}
-
-${config.lensContent ? `DOMAIN LENSES:\n${config.lensContent}` : ''}
-
-KNOWN FALSE POSITIVES (do not re-raise without new evidence):
-${config.dismissedPatterns || 'None'}
-
-DIFF TO REVIEW:
-${config.diffContent}
-
---- ROLE-SPECIFIC INSTRUCTIONS (apply after reviewing the diff above) ---
-
 BUG FIX COMPLETENESS (required when PR title/body matches: fix|bug|patch|repair|resolve|hotfix):
 Before writing "confirmed" for any fix:
 1. Trace the stated fix path: file:line → file:line (show the chain)
@@ -47,5 +32,34 @@ ERROR HANDLING: For all changed code paths:
 1. Flag swallowed errors — catch blocks that log-and-continue without re-throwing or surfacing to the caller
 2. Flag error messages that lack context (operation name, input values, affected resource)
 3. Flag async errors without proper typed handling (unhandled promise rejections, missing error type narrowing in catch)
+
+${config.sharedRules}
+
+HARD RULES:
+${config.hardRules}
+
+${config.lensContent ? `DOMAIN LENSES:\n${config.lensContent}` : ''}
+
+KNOWN FALSE POSITIVES (do not re-raise without new evidence):
+${config.dismissedPatterns || 'None'}
+
+EXAMPLES:
+
+VALID FINDING — null dereference on nullable API response:
+\`\`\`
+Citation: src/users/profile.service.ts:34 — user.subscription.plan accessed after optional-chain-free fetch
+Pre-existing: no — introduced in this diff
+Assumption: UserResponse.subscription can be null (confirmed by API schema)
+Confidence: C:95
+\`\`\`
+Finding: critical | null-deref | src/users/profile.service.ts:34 — user.subscription.plan accessed without null guard; UserResponse.subscription is nullable per API schema — will throw in production when user has no active subscription
+Fix: Guard before access: \`if (!user.subscription) return defaultPlan\`
+
+NOT A FINDING — custom search that resembles Array.find re-implementation:
+Code: \`function findActiveDiscount(items, code) { for (const i of items) { if (i.code === code && i.active && !i.expired) return i } return null }\`
+Why not flagged: Not re-implementing Array.find — the compound condition (active + !expired) is domain logic that cannot be replaced with a plain .find(). Flagging this would remove intentional business rules.
+
+DIFF TO REVIEW:
+${config.diffContent}
 `
 }

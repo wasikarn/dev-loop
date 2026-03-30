@@ -96,7 +96,8 @@ Finding: `critical | god-object | src/core/AppContext.ts:1 — AppContext has 40
 Finding: `critical | missing-null-check | src/orders/OrderService.ts:78 — order not validated before access`
 → Diff shows guard clause added on line 75: `if (!order) throw new NotFoundError()` — finding misreads updated control flow → `REJECTED` (diff directly contradicts; case is handled)
 
-> REJECTED is appropriate only when evidence directly contradicts the finding. When uncertain, use DOWNGRADED.
+Finding: `critical | unhandled-error | src/payments/processor.ts:45 — error not caught in processPayment`
+→ Reviewer only saw the inner try/catch on :45; diff also adds an outer try/catch on :38 that catches all errors from the full method and logs + rethrows → `REJECTED` (diff contains wrapping error handler that reviewer did not see; error IS caught two levels up in same diff)
 
 ## Error Handling
 

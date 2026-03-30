@@ -41,21 +41,6 @@ Suppress \`info\`-severity findings with confidence below 70. These are noise, n
 Only include \`info\` findings if confidence >= 70.
 \`warning\` and \`critical\` findings: confidence >= 80 required (Hard Rule violations bypass this floor).
 
-OUTPUT: Return a JSON object with two fields:
-
-"findings" — array of issues:
-[{
-  "severity": "critical"|"warning"|"info",
-  "rule": "<rule number or name>",
-  "file": "<file path>",
-  "line": <number or null>,
-  "confidence": <0-100>,
-  "issue": "<what is wrong with evidence — include [CROSS-DOMAIN: domain] prefix if outside your primary domain>",
-  "fix": "<concrete fix>",
-  "isHardRule": <true|false>
-}]
-
-"strengths" — array of 1-3 specific things done well in this diff, within your domain.
-Cite file:line. Be concrete ("guard clause at auth.ts:42 prevents null deref on expired token").
-Return [] if nothing noteworthy. Do not manufacture praise.
+OUTPUT: Return structured JSON per the provided schema.
+strengths: 0-3 specific things done well (cite file:line; [] if nothing noteworthy; do not manufacture praise).
 `

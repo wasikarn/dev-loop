@@ -1,12 +1,8 @@
 export const API_DESIGN_LENS = `
 # API Design Review Lens
 
-Inject into reviewer prompts when diff touches: route handlers, controllers, API endpoints, REST routes, or GraphQL resolvers.
-
 \`\`\`text
 API DESIGN LENS (active for this review):
-
-THRESHOLD: Report at confidence ≥75 unless marked Hard Rule.
 
 STATUS CODE CORRECTNESS (Hard Rule — flag unconditionally):
 - \`200 OK\` returned for resource creation → must be \`201 Created\` with \`Location\` header

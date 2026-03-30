@@ -147,7 +147,3 @@ OR
 
 FAIL on any required check → NO-GO.
 WARN items are informational — lead decides whether to proceed.
-
-## Output Format
-
-Returns a Go/No-Go report: header showing mode and PR number, then a checklist table: Check | Status (✅ PASS / ⚠️ WARN / ❌ FAIL) | Detail. Ends with: **VERDICT: GO** or **VERDICT: NO-GO** (bold). FAIL on any ❌ check = NO-GO. WARN checks are informational — lead decides.

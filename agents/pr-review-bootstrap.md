@@ -85,7 +85,3 @@ Return this exact block — nothing else:
 ```
 
 If no Jira ticket found, skip that section. Keep output concise — this is input to another agent, not a human report.
-
-## Output Format
-
-Returns the full `review-context.md` content as stdout output for the calling lead to write. Content includes: PR metadata (title, author, base/head branch), file categories (by concern area: database/api/frontend/test/config), Jira context (if found), and diff size summary. The lead writes this to `{artifacts_dir}/review-context.md`.

@@ -1,7 +1,5 @@
 # Security Review Lens
 
-Inject into reviewer prompts when diff touches: auth, API endpoints, user input, DB queries, file uploads, credentials/tokens.
-
 ```text
 SECURITY LENS (active for this review):
 

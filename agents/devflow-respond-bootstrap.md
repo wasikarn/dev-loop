@@ -85,10 +85,6 @@ Return a JSON object — nothing else. The calling lead will scope `fileContents
 - `threadsByFile`: keyed by file path, value is array of thread objects for that file; `index` is 1-based and matches the triage table `#` column
 - `gitContext`: `git log --oneline -10` output for affected files as a plain string
 
-## Output Format
-
-Outputs a JSON structure with `openThreadCount`, `affectedFileCount`, `threadsByFile` (grouped by file path, each thread with index, body, line), and `fileContents` (path → truncated content). The lead uses this JSON to scope Fixer agents.
-
 ## Error Handling
 
 - `gh pr view` fails (not authenticated or no gh CLI) → output `{"error": "gh pr view failed — run gh auth login first"}` and exit

@@ -1,7 +1,5 @@
 # TypeScript Review Lens
 
-Inject into reviewer prompts when diff touches: TypeScript files, type definitions, or generic utilities.
-
 ```text
 TYPESCRIPT LENS (active for this review):
 

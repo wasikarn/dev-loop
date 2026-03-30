@@ -1,11 +1,7 @@
 # Observability Review Lens
 
-Inject into reviewer prompts when diff touches: logging, metrics, tracing, monitoring, or any new service/endpoint/background job.
-
 ```text
 OBSERVABILITY LENS (active for this review):
-
-THRESHOLD: Report at confidence ≥75 unless marked Hard Rule.
 
 STRUCTURED LOGGING (Hard Rule — flag when new logger calls added):
 - Unstructured log message with interpolation: `logger.info(\`User ${id} created\`)`

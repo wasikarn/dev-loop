@@ -60,6 +60,13 @@ Hard Rules: response field removed/renamed without alias; required param added t
 
 ---
 
+## Common False Positives (Do Not Flag)
+
+- **Orchestrator functions**: a function that calls 3-5 service methods in sequence is NOT a God object or SRP violation — it IS the intended orchestrator
+- **Custom domain predicates**: a loop/function that looks like it reimplements `.find()` or `.filter()` but has compound business conditions (active + !expired + owns) is NOT a built-in reimplementation
+- **Short names in trivial scope**: `item` in a 1-line `.map()`, `e` in a 3-line catch, `i` in a 2-line loop — these are idiomatic, not naming issues
+- **Pre-existing architecture**: an issue in an unchanged file is not a finding in this diff, even if it looks like a problem
+
 ## Output Format
 
 Output ภาษาไทย ผสม technical terms ภาษาอังกฤษ

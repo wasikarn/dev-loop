@@ -70,6 +70,12 @@ DOMAIN LENSES:
 KNOWN FALSE POSITIVES (do not re-raise without new evidence):
 {dismissed_patterns}
 
+COMMON FALSE POSITIVES (never flag these):
+- Orchestrator functions that call 3-5 service methods in sequence — that IS correct SRP (the orchestrator's single responsibility is to sequence steps)
+- Custom predicates/filters with compound domain conditions — not a built-in reimplementation even if `.find()` syntax looks similar
+- Short names in trivial scope: `item` in 1-line `.map()`, `e` in a 3-line catch, `i` in a 2-line loop
+- Pre-existing issues in unchanged files — only flag code introduced or modified in this diff
+
 OUTPUT FORMAT: | # | Sev | File | Line | Confidence | Issue | Fix |
 Sev values: 🔴 Critical | 🟡 Warning | 🔵 Info
 
