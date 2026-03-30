@@ -33,6 +33,12 @@
             "async": true,
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/cleanup-artifacts.sh",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "async": true,
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/../scripts/migrate-legacy-data.sh\"",
+            "timeout": 10
           }
         ]
       }
