@@ -18,7 +18,6 @@ node_modules/
 .claude/devflow-debug/
 
 # Personal / non-distributed
-prompts/
 
 # Docs (internal)
 docs/eval/*.local.md
