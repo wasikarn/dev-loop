@@ -161,11 +161,11 @@
     ],
     "SubagentStop": [
       {
-        "matcher": "code-reviewer|test-quality-reviewer|migration-reviewer|api-contract-auditor|comment-analyzer|code-simplifier",
+        "matcher": "code-reviewer|test-quality-reviewer|migration-reviewer|api-contract-auditor|comment-analyzer|code-simplifier|silent-failure-hunter|type-design-analyzer",
         "hooks": [
           {
             "type": "command",
-            "command": "GATE_PATTERN='code-reviewer|test-quality-reviewer|migration-reviewer|api-contract-auditor|comment-analyzer|code-simplifier' GATE_MSG='Your review output must include file:line evidence for every issue. Re-examine the code and cite specific code locations before finishing.' ${CLAUDE_PLUGIN_ROOT}/hooks/subagent-stop-gate.sh",
+            "command": "GATE_PATTERN='code-reviewer|test-quality-reviewer|migration-reviewer|api-contract-auditor|comment-analyzer|code-simplifier|silent-failure-hunter|type-design-analyzer' GATE_MSG='Your review output must include file:line evidence for every issue. Re-examine the code and cite specific code locations before finishing.' ${CLAUDE_PLUGIN_ROOT}/hooks/subagent-stop-gate.sh",
             "timeout": 10
           }
         ]
@@ -173,7 +173,7 @@
     ],
     "SubagentStart": [
       {
-        "matcher": "code-reviewer|test-quality-reviewer|migration-reviewer|api-contract-auditor|falsification-agent|plan-challenger|comment-analyzer|code-simplifier",
+        "matcher": "code-reviewer|test-quality-reviewer|migration-reviewer|api-contract-auditor|falsification-agent|plan-challenger|comment-analyzer|code-simplifier|silent-failure-hunter|type-design-analyzer",
         "hooks": [
           {
             "type": "command",

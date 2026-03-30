@@ -63,8 +63,7 @@ Custom subagents live at `agents/<name>.md` with YAML frontmatter. Distributed a
 Key fields: `description` (include "proactively" to auto-trigger), `memory` (`user`/`project`/`local` for cross-session persistence), `skills` (preload into agent context). All fields: `name`, `tools`/`disallowedTools`, `model`, `hooks`, `permissionMode`, `maxTurns`, `background`, `isolation`.
 
 > **Plugin limitation:** `hooks`, `mcpServers`, and `permissionMode` are silently ignored when agents are loaded from a plugin. To use these fields, copy the agent to `.claude/agents/` instead.
-
-Current agents (24):
+Current agents (26):
 
 | Agent | Model | Purpose |
 | --- | --- | --- |
@@ -89,9 +88,11 @@ Current agents (24):
 | `code-simplifier` | sonnet | Post-review polish: flatten nesting, remove redundant comments, improve naming — no behavior changes; triggered optionally in build Phase 7 (optional) or standalone |
 | `migration-reviewer` | sonnet | Reviews DB migration files (M1–M10): DDL safety, reversibility, FK indexes, table-lock risk, zero-downtime violations, expand/contract, data batching, index types, deadlock risk |
 | `api-contract-auditor` | sonnet | Detects API breaking changes (A1–A10): removed/renamed fields, changed status codes, new required params, type narrowing, enum reordering, idempotency, pagination, error envelopes, deprecation |
+| `silent-failure-hunter` | sonnet | Hunts for silent failures — swallowed exceptions, empty catch blocks, optional chain fallbacks (CRITICAL/HIGH/MEDIUM) |
 | `skill-validator` | sonnet | Validates SKILL.md against best practices |
 | `project-onboarder` | sonnet | Bootstrap a new project into devflow: scaffold hard-rules.md + build directory |
 | `code-reviewer` | sonnet | General-purpose code reviewer with cross-session persistent memory |
+| `type-design-analyzer` | sonnet | TypeScript type design quality — 4 dimensions rated 1-10 (Encapsulation, Invariant Expression, Invariant Usefulness, Invariant Enforcement) |
 
 <important if="editing or adding hooks">
 

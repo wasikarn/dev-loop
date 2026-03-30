@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] — 2026-03-30
+
+### New specialist agents + review modes
+
+- feat: add `silent-failure-hunter` agent — zero-tolerance silent failure detection (CRITICAL/HIGH/MEDIUM)
+- feat: add `type-design-analyzer` agent — TypeScript type design quality (4 dimensions, 1-10 scale)
+- feat: add `--quick`, `--full`, `--focused [area]` modes to `/review` skill
+- feat: add path-scoped `.claude/rules/` files for agents/, hooks/, skills/, devflow-sdk/
+- fix: update hooks.json SubagentStop/SubagentStart matchers for new specialist agents
+
 ## [1.4.0] — 2026-03-30
 
 ### Enable auto-triggering for all skills
@@ -11,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - docs: update README badges and fix stale anvil reference
 - refactor: remove disable-model-invocation from all skills
 - docs: update README and CLAUDE.md to current state (v1.3.2)
+
 ## [1.3.2] — 2026-03-30
 
 ### Token optimization — reduce per-build cost by 30-35%

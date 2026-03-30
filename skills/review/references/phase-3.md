@@ -8,6 +8,14 @@
 - PR มี >500 changed lines (from diff stat) → SDK อาจ truncate diff
 - `--full` flag ระบุมา explicitly → user ต้องการ full debate
 
+**Force SDK-only (--quick flag):**
+
+ถ้า `--quick` flag ระบุมา → ข้ามการตรวจ force-Agent-Teams conditions ข้างบน และ:
+
+1. ลองรัน SDK Review Engine ก่อน (ตาม block ด้านล่าง)
+2. ถ้า SDK สำเร็จ → แสดงผลและ skip Phase 4, 5 (ไม่มี debate, ไม่มี falsification)
+3. ถ้า SDK ล้มเหลว → spawn Teammate 1 (Correctness & Security) คนเดียว → skip Phase 4, 5
+
 **Otherwise, try the SDK Review Engine first (faster, deterministic, lower token cost):**
 
 ```bash
@@ -110,15 +118,34 @@ Create an agent team named `review-pr-$0` with 3 reviewer teammates using prompt
 - **Teammate 2 — Architecture & Performance:** Focus on N+1 (#3), DRY (#4), flatten (#5), SOLID (#6), elegance (#7)
 - **Teammate 3 — DX & Testing:** Focus on naming (#8), docs (#9), testability (#11), debugging (#12)
 
-**Conditional specialist agent** — spawn at most 1, evaluated in priority order. Skip all specialists if PR has < 200 lines changed (from diff stat).
+**Conditional specialist agents** — spawn at most 1 primary specialist (Priority 1-3), plus up to 2 secondary specialists (Priority 4-5). Skip all specialists if PR has < 200 lines changed (from diff stat).
 
 | Priority | Condition | Agent to spawn |
 | --- | --- | --- |
 | 1 | Test files changed (`*.spec.*`, `*.test.*`) OR new exported functions without spec changes | `test-quality-reviewer` |
 | 2 | Controller/route/handler/interface/DTO files changed | `api-contract-auditor` |
 | 3 | Migration files changed (`*.migration.*`, files with `CREATE TABLE` / `ALTER TABLE` / `addColumn`) | `migration-reviewer` |
+| 4 | `try/catch`, `.catch()`, optional chaining (`?.`), or nullish coalescing (`??`) changed | `silent-failure-hunter` |
+| 5 | TypeScript `interface`, `type`, or `class` definitions changed | `type-design-analyzer` |
 
-Evaluate in priority order — spawn the **first matching condition only**. The specialist agent sends findings to the team lead and enters the same debate pipeline as standard teammates.
+Evaluate in priority order — spawn the **first matching condition only** from Priority 1-3 (primary). Additionally, evaluate Priority 4-5 independently and spawn up to 2 secondary specialists if conditions match. All specialist agents send findings to the team lead and enter the same debate pipeline as standard teammates.
+
+**Severity mapping:** `silent-failure-hunter` uses `CRITICAL/HIGH/MEDIUM` — map to pipeline labels before consolidation: `CRITICAL → Critical`, `HIGH → Warning`, `MEDIUM → Suggestion`.
+
+## --focused Mode: Specialist-Only Review
+
+ถ้า `--focused [area]` flag ระบุมา → ข้าม 3 main reviewers, spawn เฉพาะ specialist ที่ตรงกับ area:
+
+| area | Agent |
+| --- | --- |
+| `errors` | `silent-failure-hunter` |
+| `types` | `type-design-analyzer` |
+| `tests` | `test-quality-reviewer` |
+| `api` | `api-contract-auditor` |
+| `migrations` | `migration-reviewer` |
+
+Specialist ส่งผลโดยตรงไปยัง lead → skip Phase 4 (debate) → proceed to Phase 5 (falsification) → Phase 6 (action).
+ถ้า area ไม่ตรงกับ table → แจ้ง user: "Unknown area '{area}'. Valid areas: errors, types, tests, api, migrations"
 
 Insert into each teammate prompt:
 
@@ -131,5 +158,7 @@ Insert into each teammate prompt:
 All teammates are READ-ONLY.
 
 ## Step 3: Wait for all reviews
+
+ถ้า `--focused` flag → wait for **1 specialist** only, then skip directly to Phase 6 (no debate).
 
 Wait for all 3 teammates to complete. Track progress: show each teammate's status and key finding. **CHECKPOINT** — all 3 reviews must complete before proceeding to Phase 4 debate.

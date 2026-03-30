@@ -1,3 +1,9 @@
+## Mode Check
+
+ถ้า `--quick` หรือ `--focused` flag ระบุมา → **skip falsification** (ข้ามไปยัง Phase 6 โดยตรง).
+
+---
+
 # Phase 5: Convergence
 
 ## Falsification Pass (before consolidation)

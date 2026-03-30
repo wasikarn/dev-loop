@@ -1,7 +1,7 @@
 ---
 name: review
 description: "Adversarial PR review with 3-reviewer debate — Correctness, Architecture, DX reviewers challenge each other's findings before consolidation. Use when reviewing pull requests or code changes."
-argument-hint: "[pr-number] [jira-key?] [Author|Reviewer?]"
+argument-hint: "[pr-number] [jira-key?] [--quick?] [--full?] [--focused area?] [Author|Reviewer?]"
 compatibility: "Requires gh CLI, git, and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 enabled in settings"
 effort: high
 allowed-tools: Read, Grep, Glob, Bash(gh *), Bash(git *)
@@ -55,8 +55,8 @@ Invoke as `/review [pr-number] [jira-key?] [Author|Reviewer]`
 **PR title:** !`gh pr view $0 --json title,body,labels,author --jq '{title,body,labels: [.labels[].name],author: .author.login}' 2>/dev/null || true`
 **Changed files:** !`gh pr diff $0 --name-only 2>/dev/null || true`
 
-**Args:** `$0`=PR# (required) · `$1`=Jira key or Author/Reviewer · `$2`=Author/Reviewer
-**Modes:** Author = fix code · Reviewer = comment only (in Thai)
+**Args:** `$0`=PR# (required) · `$1`=Jira key or Author/Reviewer · `$2`=Author/Reviewer · `--quick`=fast SDK-only · `--full`=force 3-reviewer debate · `--focused [area]`=specialist only. Flags (`--quick`/`--full`/`--focused`) are detected by pattern matching — position-independent.
+**Modes:** Author = fix code · Reviewer = comment only (in Thai) · --quick = fast SDK path, no debate · --focused [area] = specialist only (errors/types/tests/api/migrations)
 **Role:** Tech Lead — improve code health via architecture, mentoring, team standards.
 **Output format:** Follow [review-output-format](../review-output-format/SKILL.md) with debate additions described in phase files.
 
