@@ -10,6 +10,7 @@ import { readDiff, readPrDiff } from './review/diff-reader.js'
 import { formatJson, formatMarkdown } from './review/output.js'
 import { runReview } from './review/orchestrator.js'
 import { triage } from './review/triage.js'
+import { toFilePath } from './types.js'
 import type { ReviewReport, ReviewRole, Verdict } from './types.js'
 
 // ─── reviewer calibration logging ────────────────────────────────────────────
@@ -483,6 +484,67 @@ async function runFixIntentVerifyCommand(args: string[]): Promise<void> {
   console.log(JSON.stringify(result, null, 2))
 }
 
+// ─── score subcommand ─────────────────────────────────────────────────────────
+
+interface ParsedScoreArgs {
+  pr: number | undefined
+  dismissed: string | undefined
+  jira: boolean
+}
+
+function parseScoreArgs(args: string[]): ParsedScoreArgs {
+  return parseFlags(args, [
+    { flag: '--pr', field: 'pr', type: 'positiveInt', required: true, errorPrefix: '[engine-score]', onError: 'exit' },
+    { flag: '--dismissed', field: 'dismissed', type: 'string', errorPrefix: '[engine-score]' },
+    { flag: '--jira', field: 'jira', type: 'boolean', errorPrefix: '[engine-score]' },
+  ], {
+    pr: undefined as number | undefined,
+    dismissed: undefined as string | undefined,
+    jira: false as boolean,
+  })
+}
+
+async function runScoreCommand(args: string[]): Promise<void> {
+  const parsed = parseScoreArgs(args)
+  if (parsed.pr === undefined) {
+    console.error('[engine-score] --pr is required')
+    process.exit(1)
+  }
+
+  let files: ReturnType<typeof readPrDiff>
+  try {
+    files = readPrDiff(parsed.pr)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error(`[engine-score] failed to read diff: ${message}`)
+    process.exit(1)
+  }
+  const loc = files.reduce((sum, f) => sum + f.diffLineCount, 0)
+  const changedFiles = files.map(f => toFilePath(f.path))
+  const diffContent = files.map(f => f.hunks).join('\n')
+  const dismissedPatterns = loadDismissedPatterns(parsed.dismissed)
+    .split('\n')
+    .map(l => l.trim())
+    .filter(l => l.length > 0 && !l.startsWith('#'))
+
+  const { computeScore } = await import('./risk-scorer.js')
+  const result = computeScore({
+    loc,
+    changedFiles,
+    hasJiraKey: parsed.jira,
+    dismissedPatterns,
+    diffContent,
+  })
+
+  const output = {
+    score: result.total,
+    mode: result.mode,
+    reasons: result.reasons,
+    breakdown: result.breakdown,
+  }
+  console.log(JSON.stringify(output, null, 2))
+}
+
 // ─── main dispatcher ──────────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
@@ -504,6 +566,10 @@ async function main(): Promise<void> {
   }
   if (subcommand === 'fix-intent-verify') {
     await runFixIntentVerifyCommand(args)
+    return
+  }
+  if (subcommand === 'score') {
+    await runScoreCommand(args)
     return
   }
 
