@@ -352,9 +352,60 @@ check_11() {
   fi
 }
 
-# ── parallel execution (checks 1–11) ─────────────────────────────────────────
+check_13() {
+  section "13. CLAUDE.md doc consistency"
 
-for N in 1 2 3 4 5 6 7 8 9 10 11; do
+  ROOT_CLAUDE="$PLUGIN_DIR/CLAUDE.md"
+  if [ ! -f "$ROOT_CLAUDE" ]; then
+    skip "CLAUDE.md not found — skipping"
+    return
+  fi
+
+  # ── 13a. agent count ───────────────────────────────────────────────────────
+  ACTUAL_AGENTS=$(grep -l "^name:" "$PLUGIN_DIR/agents/"*.md 2>/dev/null | wc -l | tr -d ' ')
+  CLAIMED_AGENTS=$(grep -oE 'Current agents \([0-9]+\)' "$ROOT_CLAUDE" | grep -oE '[0-9]+' | head -1)
+  if [ -z "$CLAIMED_AGENTS" ]; then
+    skip "agent count — 'Current agents (N):' not found in CLAUDE.md"
+  elif [ "$ACTUAL_AGENTS" -eq "$CLAIMED_AGENTS" ]; then
+    pass "agent count — $ACTUAL_AGENTS agents match CLAUDE.md claim"
+  else
+    fail "agent count — CLAUDE.md says $CLAIMED_AGENTS but found $ACTUAL_AGENTS agents with name: frontmatter"
+  fi
+
+  # ── 13b. hook registration count ──────────────────────────────────────────
+  HOOKS_JSON="$PLUGIN_DIR/hooks/hooks.json"
+  if ! command -v jq > /dev/null 2>&1; then
+    skip "hook count — jq not installed"
+  elif [ ! -f "$HOOKS_JSON" ]; then
+    skip "hook count — hooks/hooks.json not found"
+  else
+    ACTUAL_HOOKS=$(jq '[.hooks | to_entries[].value[].hooks | length] | add // 0' "$HOOKS_JSON")
+    CLAIMED_HOOKS=$(grep -oE '[0-9]+ hooks total' "$ROOT_CLAUDE" | grep -oE '^[0-9]+' | head -1)
+    if [ -z "$CLAIMED_HOOKS" ]; then
+      skip "hook count — 'N hooks total' not found in CLAUDE.md"
+    elif [ "$ACTUAL_HOOKS" -eq "$CLAIMED_HOOKS" ]; then
+      pass "hook count — $ACTUAL_HOOKS hooks match CLAUDE.md claim"
+    else
+      fail "hook count — CLAUDE.md says $CLAIMED_HOOKS but hooks.json has $ACTUAL_HOOKS hook entries"
+    fi
+  fi
+
+  # ── 13c. QA gate count ────────────────────────────────────────────────────
+  QA_SCRIPT="$PLUGIN_DIR/scripts/qa-check.sh"
+  ACTUAL_GATES=$(grep -cE 'section "[0-9]+\.' "$QA_SCRIPT" 2>/dev/null || echo 0)
+  CLAIMED_GATES=$(grep -oE '[0-9]+ gates' "$ROOT_CLAUDE" | grep -oE '^[0-9]+' | head -1)
+  if [ -z "$CLAIMED_GATES" ]; then
+    skip "gate count — 'N gates' not found in CLAUDE.md"
+  elif [ "$ACTUAL_GATES" -eq "$CLAIMED_GATES" ]; then
+    pass "gate count — $ACTUAL_GATES gates match CLAUDE.md claim"
+  else
+    fail "gate count — CLAUDE.md says $CLAIMED_GATES but qa-check.sh has $ACTUAL_GATES check functions"
+  fi
+}
+
+# ── parallel execution (checks 1–11, 13) ─────────────────────────────────────
+
+for N in 1 2 3 4 5 6 7 8 9 10 11 13; do
   OUTFILE="$QA_TMPDIR/check-${N}.out"
   RESULTFILE="$QA_TMPDIR/check-${N}.result"
   (
@@ -369,12 +420,12 @@ wait
 set -e
 
 # Print results in order
-for N in 1 2 3 4 5 6 7 8 9 10 11; do
+for N in 1 2 3 4 5 6 7 8 9 10 11 13; do
   cat "$QA_TMPDIR/check-${N}.out" 2>/dev/null || true
 done
 
 # Sum counters from result files
-for N in 1 2 3 4 5 6 7 8 9 10 11; do
+for N in 1 2 3 4 5 6 7 8 9 10 11 13; do
   RESULTFILE="$QA_TMPDIR/check-${N}.result"
   if [ -f "$RESULTFILE" ]; then
     while IFS= read -r verdict; do
