@@ -4,7 +4,7 @@
 
 **A Claude Code plugin for structured development, PR review, and debugging — powered by Agent Teams.**
 
-[![Version](https://img.shields.io/badge/version-1.6.0-blue?style=flat-square)](https://github.com/wasikarn/devflow/releases)
+[![Version](https://img.shields.io/badge/version-1.6.1-blue?style=flat-square)](https://github.com/wasikarn/devflow/releases)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-26-blue?style=flat-square)](#skills)
 [![Agents](https://img.shields.io/badge/agents-27-purple?style=flat-square)](#agents)
@@ -855,11 +855,11 @@ devflow/
 │   ├── plugin-qa/
 │   ├── analyze-claude-features/
 │   ├── promote-hard-rule/
-│   ├── generate-tests/       # v1.6.0: framework-aware test generation
-│   ├── refactor/             # v1.6.0: safe refactoring with before/after tests
-│   ├── audit/                # v1.6.0: security + dependency audit
-│   ├── generate-docs/        # v1.6.0: API / README / inline docs
-│   ├── dashboard/            # v1.6.0: metrics dashboard
+│   ├── generate-tests/       # v1.6.1: framework-aware test generation
+│   ├── refactor/             # v1.6.1: safe refactoring with before/after tests
+│   ├── audit/                # v1.6.1: security + dependency audit
+│   ├── generate-docs/        # v1.6.1: API / README / inline docs
+│   ├── dashboard/            # v1.6.1: metrics dashboard
 │   └── ...                   # background skills (review-rules, debate-protocol, etc.)
 ├── agents/                   # Custom subagent definitions (.md files)
 ├── hooks/                    # Plugin-distributed lifecycle hook scripts
