@@ -714,7 +714,11 @@ async function runTestGenCommand(args: string[]): Promise<void> {
 
   const config = resolveConfig({ ...(parsed.budget !== undefined && { budgetUsd: parsed.budget }) })
   const { runTestWriter } = await import('./test-gen/agents/test-writer.js')
-  const result = await runTestWriter({ targetFiles, packageJsonPath: parsed.packageJson, config })
+  const result = await runTestWriter({
+    targetFiles,
+    ...(parsed.packageJson !== undefined && { packageJsonPath: parsed.packageJson }),
+    config,
+  })
 
   console.log(JSON.stringify(result, null, 2))
 }
