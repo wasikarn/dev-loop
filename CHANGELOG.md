@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.3] — 2026-03-31
+
+### docs: update version badge to v1.6.3
+
+- docs: update version badge to v1.6.3
+- ci: opt into Node.js 24 for GitHub Actions to suppress deprecation warnings
+- fix(ci): restructure SC2015 pattern instead of disabling
+- fix(ci): resolve shellcheck SC2317, markdownlint MD032/MD022, and branded type errors
+- fix(hooks): skill-routing reads .prompt field and includes hookEventName
 ## [1.6.2] — 2026-03-31
 
 ### fix(changelog): add blank line between v1.6.1 and v1.6.0 entries
