@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - fix(ci): restructure SC2015 pattern instead of disabling
 - fix(ci): resolve shellcheck SC2317, markdownlint MD032/MD022, and branded type errors
 - fix(hooks): skill-routing reads .prompt field and includes hookEventName
+
 ## [1.6.2] — 2026-03-31
 
 ### fix(changelog): add blank line between v1.6.1 and v1.6.0 entries

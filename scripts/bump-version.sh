@@ -247,7 +247,7 @@ for i, line in enumerate(lines):
     if line.startswith("## ["):
         insert_at = i
         break
-lines.insert(insert_at, entry + "\n")
+lines.insert(insert_at, entry + "\n\n")
 with open("CHANGELOG.md", "w") as f:
     f.writelines(lines)
 PY
