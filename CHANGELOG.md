@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] — 2026-03-31
+
+### Cross-session memory, new skills, expanded test coverage, CI, and engine v0.2.0
+
+- feat(agents): add cross-session memory to 9 agents
+- feat(output-styles): add English variants of output styles
+- feat(scripts): distribute pre-commit hook via `scripts/git-hooks/`
+- fix(hooks): warn when `hard-rules.md` exceeds 60-line injection limit
+- feat(hooks): enable stop-failure logging by default with rotation
+- feat(hooks): add Edit/Write failure diagnostic hints
+- feat(scripts): add legacy anvil→devflow data migration
+- feat(dashboard): add metrics dashboard skill and script
+- feat(build): add post-ship health check warning
+- test(hooks): add Tier 1, 2 & 3 bats tests (86 total, was 27)
+- test(engine): add config, diff-reader, finding schema tests (178 total, was 116)
+- ci: add GitHub Actions QA and engine test workflows
+- feat(qa): add gate 13 for doc consistency validation
+- feat(skills): add `/generate-tests` and `/refactor` skills
+- feat(skills,agents): add `/audit`, `/generate-docs`, and `security-reviewer` agent
+- feat(freeze): real enforcement via temp file hook
+- feat(engine): v0.2.0 — add audit and test-gen modules
+- fix(docs): correct CLAUDE.md doc inconsistencies
+
 ## [1.5.0] — 2026-03-30
 
 ### New specialist agents + review modes
