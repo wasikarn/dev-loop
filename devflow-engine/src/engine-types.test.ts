@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'bun:test'
-import { toScore, toFilePath, toBonus } from './types.js'
+import { toScore, toFilePath, toBonus, type Score, type FilePath, type Bonus } from './types.js'
 
 describe('toScore', () => {
   it('accepts valid range', () => {
-    expect(toScore(0)).toBe(0)
-    expect(toScore(50)).toBe(50)
-    expect(toScore(100)).toBe(100)
+    expect(toScore(0)).toBe(0 as unknown as Score)
+    expect(toScore(50)).toBe(50 as unknown as Score)
+    expect(toScore(100)).toBe(100 as unknown as Score)
   })
 
   it('throws below 0', () => {
@@ -19,7 +19,7 @@ describe('toScore', () => {
 
 describe('toFilePath', () => {
   it('accepts valid path', () => {
-    expect(toFilePath('src/foo.ts')).toBe('src/foo.ts')
+    expect(toFilePath('src/foo.ts')).toBe('src/foo.ts' as unknown as FilePath)
   })
 
   it('throws on empty string', () => {
@@ -33,16 +33,16 @@ describe('toFilePath', () => {
 
 describe('toBonus', () => {
   it('clamps above +10', () => {
-    expect(toBonus(15)).toBe(10)
+    expect(toBonus(15)).toBe(10 as unknown as Bonus)
   })
 
   it('clamps below -10', () => {
-    expect(toBonus(-20)).toBe(-10)
+    expect(toBonus(-20)).toBe(-10 as unknown as Bonus)
   })
 
   it('passes through valid values', () => {
-    expect(toBonus(10)).toBe(10)
-    expect(toBonus(-10)).toBe(-10)
-    expect(toBonus(0)).toBe(0)
+    expect(toBonus(10)).toBe(10 as unknown as Bonus)
+    expect(toBonus(-10)).toBe(-10 as unknown as Bonus)
+    expect(toBonus(0)).toBe(0 as unknown as Bonus)
   })
 })

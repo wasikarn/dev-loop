@@ -32,14 +32,14 @@ SKIP=0
 # Parallel-safe output helpers.
 # When run in a subshell, OUTFILE and RESULTFILE are set per-check.
 # Fallback to /dev/stdout (direct output) and /dev/null (discard count) when unset.
-# SC2329: functions are invoked indirectly via "check_${N}" subshells and restored below.
-# shellcheck disable=SC2329
+# SC2317/SC2329: functions are invoked indirectly via "check_${N}" subshells and restored below.
+# shellcheck disable=SC2317,SC2329
 pass()    { echo -e "  ${GREEN}✓${NC} $*" >> "${OUTFILE:-/dev/stdout}"; echo "PASS" >> "${RESULTFILE:-/dev/null}"; }
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 fail()    { echo -e "  ${RED}✗${NC} $*"   >> "${OUTFILE:-/dev/stdout}"; echo "FAIL" >> "${RESULTFILE:-/dev/null}"; }
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 skip()    { echo -e "  ${YELLOW}–${NC} $*" >> "${OUTFILE:-/dev/stdout}"; echo "SKIP" >> "${RESULTFILE:-/dev/null}"; }
-# shellcheck disable=SC2329
+# shellcheck disable=SC2317,SC2329
 section() { echo ""                         >> "${OUTFILE:-/dev/stdout}"; echo -e "${CYAN}$*${NC}" >> "${OUTFILE:-/dev/stdout}"; }
 
 # Temp dir for parallel check output isolation
@@ -77,6 +77,7 @@ check_2() {
   if ! command -v markdownlint-cli2 > /dev/null 2>&1; then
     skip "markdownlint-cli2 not installed — skipping"
   else
+    # shellcheck disable=SC2015
     MD_OUTPUT=$(cd "$PLUGIN_DIR" && markdownlint-cli2 "**/*.md" 2>&1 || true)
     MD_ERRORS=$(echo "$MD_OUTPUT" | grep "^Summary:" | grep -oE '[0-9]+' | head -1 || true)
     MD_FILES=$(echo "$MD_OUTPUT" | grep "^Linting:" | grep -oE '[0-9]+' | head -1 || true)

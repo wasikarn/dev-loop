@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - fix(changelog): add blank line between v1.6.1 and v1.6.0 entries
 - fix(hooks): remove cat/find/head/tail from safe-command-approver to prevent conflict with bash-blockers
+
 ## [1.6.1] — 2026-03-31
 
 ### docs: update version badge and tree refs to v1.6.1
