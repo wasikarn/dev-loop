@@ -1,0 +1,23 @@
+{
+  "skill_name": "test-patterns",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I'm writing a test for a useUsers hook that fetches user data. The hook uses React Query v3. Help me write a proper test with mock fidelity - make sure the mock matches the real type. The hook signature is: useUsers(params: { page: number; status?: string }) => { data: User[]; isLoading: boolean; error: Error | null }. Show me the test file structure.",
+      "expected_output": "A complete test file with proper mock fidelity showing: 1) Type checking for User type, 2) React Query wrapper setup, 3) Tests for loading, success, and error states, 4) Mock that matches real IFetchResult type",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to write backend tests for a UserController with GET /users and POST /users endpoints. Show me the test structure with database cleanup between tests, test factories for User entity, and both happy path and error cases. The endpoints return IFetchResult<T> with { isOk: boolean; data: T | null; error: BaseError | null }.",
+      "expected_output": "A complete backend test file showing: 1) Database setup/teardown with transaction rollback, 2) Test factory for User entity, 3) Tests for GET and POST endpoints, 4) Happy path and error cases, 5) Proper IFetchResult type assertions",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Review this test and tell me what's wrong with it:\n\n```typescript\nit('calls fetchUsers on mount', () => {\n  const fetchSpy = vi.spyOn(service, 'fetchUsers');\n  render(<UserList />);\n  expect(fetchSpy).toHaveBeenCalledTimes(1);\n});\n```\n\nAlso suggest improvements for testing async data loading with React Query.",
+      "expected_output": "Identify that the test violates 'behavior over implementation' principle. Suggest improvements: 1) Test behavior not implementation, 2) Use findBy/waitFor for async, 3) Check for loading state then data, 4) Mock with complete type matching real response",
+      "files": []
+    }
+  ]
+}
