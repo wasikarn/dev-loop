@@ -28,6 +28,26 @@ Artifacts Dir: {artifacts_dir from debug skill header}
 
 ## Steps
 
+### Step 0: Jira Fetch
+
+If `$ARGUMENTS` contains a Jira key pattern `[A-Z]+-\d+`:
+
+**Jira Context:**
+
+- Key: extract from $ARGUMENTS
+- Preset: --preset=debug
+- Invoke issue-bootstrap agent with key and preset
+- Capture {bootstrap_context} for injection into investigator prompts
+
+If issue-bootstrap not available, fall back to MCP with fields:
+
+**MCP Fallback:**
+
+- mcp__mcp-atlassian__jira_get_issue(
+    key="<extracted_key>",
+    fields="summary,priority,issuelinks"
+  )
+
 ### Step 1: Check for build Artifacts
 
 ```bash

@@ -36,14 +36,28 @@ Look for ticket ID in:
 
 If found, fetch ticket using fallback order:
 
-1. `issue-bootstrap --depth=minimal` agent (atlassian-pm plugin — optional) — if available, delegate;
-   minimal depth fetches the story's own fields only (AC, summary, priority) — no parent/sibling traversal
-   needed for PR review context
-2. `mcp-atlassian` → `mcp__mcp-atlassian__jira_get_issue` (direct API fallback)
-3. Neither available → skip Jira section, continue without AC — output:
-   `[Jira: skipped — install atlassian-pm plugin for Jira integration]`
+**Jira Context:**
 
-Extract acceptance criteria from the issue description or custom fields (when using option 2).
+
+- Key: extract from $ARGUMENTS
+- Preset: --preset=review
+- Invoke issue-bootstrap agent with key and preset
+- Capture {bootstrap_context} for injection into reviewer prompts
+
+If issue-bootstrap not available, fall back to MCP with fields:
+
+
+**MCP Fallback:**
+
+- mcp__mcp-atlassian__jira_get_issue(
+    key="<extracted_key>",
+    fields="status,assignee,summary,description"
+  )
+
+If neither available → skip Jira section, continue without AC — output:
+`[Jira: skipped — install atlassian-pm plugin for Jira integration]`
+
+Extract acceptance criteria from the issue description or custom fields (when using MCP fallback).
 
 ### 3. Group Changed Files
 
