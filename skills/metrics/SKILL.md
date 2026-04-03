@@ -17,6 +17,39 @@ The metrics-analyst agent reads `~/.claude/devflow-metrics.jsonl` and generates 
 | **Improvement Trend** | Whether iteration counts are decreasing over time (proxy for skill improvement) |
 | **Hard Rule Candidates** | Auto-detected candidates written to `.claude/skills/review-rules/candidate-rules.md` for review via `/promote-hard-rule` |
 
+## Token Metrics
+
+When `devflow-metrics.jsonl` contains v1.1 entries with `tokens` field:
+
+| Metric | Description |
+|--------|-------------|
+| **Total Input Tokens** | Sum of `tokens.input` across sessions |
+| **Total Output Tokens** | Sum of `tokens.output` across sessions |
+| **Average Input/Skill** | Mean input tokens per skill type |
+| **Average Output/Skill** | Mean output tokens per skill type |
+| **Highest Session** | Session with highest cumulative_session |
+
+### Output Format
+
+```markdown
+## Token Summary (v1.1)
+
+| Skill | Sessions | Avg Input | Avg Output | Total |
+|-------|----------|------------|------------|-------|
+| build | 5 | 45,000 | 12,000 | 285,000 |
+| review | 3 | 25,000 | 8,000 | 99,000 |
+| debug | 2 | 15,000 | 5,000 | 40,000 |
+
+**Total:** 424,000 tokens across 10 sessions
+```
+
+### Backward Compatibility
+
+If entries lack `tokens` field (v1.0 schema):
+
+- Skip token summary section
+- Continue with iteration count analysis
+
 ## Minimum Data
 
 Meaningful analysis requires at least **3 completed build or debug sessions**. With fewer entries:

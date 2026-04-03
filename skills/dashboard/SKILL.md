@@ -81,3 +81,15 @@ bash "${CLAUDE_SKILL_DIR}/../../scripts/dashboard.sh"
 - Requires `~/.claude/devflow-metrics.jsonl` to exist (created by build/review/debug sessions)
 - Shows last 30 days by default
 - Anomaly thresholds are configurable in `~/.claude/devflow-config.json`
+
+## Token Overview
+
+If `devflow-metrics.jsonl` contains v1.1 entries:
+
+| Period | Input | Output | Total |
+|--------|-------|--------|-------|
+| Today | 150,000 | 40,000 | 190,000 |
+| This Week | 850,000 | 220,000 | 1,070,000 |
+| All Time | 2,100,000 | 550,000 | 2,650,000 |
+
+**Trend:** +15% from last week
