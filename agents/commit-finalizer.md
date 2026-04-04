@@ -3,10 +3,10 @@ name: commit-finalizer
 description: "Stages and commits changes with a well-formatted conventional commit message. Use after completing any code change. Cheaper than Sonnet for mechanical commit tasks. Accepts optional commit message hint as input. Does NOT push unless explicitly asked."
 tools: Bash
 model: haiku
+effort: low
 color: yellow
 disallowedTools: Edit, Write, Read, Grep, Glob
 maxTurns: 5
-effort: low
 ---
 
 # Commit Finalizer

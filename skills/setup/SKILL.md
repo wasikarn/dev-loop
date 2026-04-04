@@ -1,13 +1,6 @@
 ---
 name: setup
-description: |
-  Post-install setup for devflow plugin — installs devflow-engine dependencies (bun install) and runs a smoke test to verify the engine works.
-
-  Idempotent: detects what is already configured and skips those steps. Safe to re-run after plugin reinstall or Bun upgrade.
-
-  Triggers: "setup", "devflow setup", "/setup", "install devflow-engine", "setup devflow", "bun install engine"
-  Use when: first time installing the devflow plugin, or after plugin reinstall when engine stops working
-  Do NOT use for: project onboarding (use /onboard instead); daily operation (all other skills handle that)
+description: "Post-install setup for devflow plugin — installs devflow-engine dependencies (bun install) and runs a smoke test. Idempotent: detects what is already configured and skips those steps. Triggers: setup, /setup, devflow setup, bun install engine. Use after plugin install or reinstall. Do NOT use for project onboarding (use /onboard instead)."
 argument-hint: ""
 effort: low
 allowed-tools: Bash
