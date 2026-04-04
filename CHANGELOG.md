@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.1] — 2026-04-04
+
+### docs: update version badge to v1.7.0, fix skill count to 29, add hooks field limitation note
+
+- docs: update version badge to v1.7.0, fix skill count to 29, add hooks field limitation note
+
 ## [1.7.0] — 2026-04-03
 
 ### Token optimization: field filtering, PR diff filters, metrics tracking
