@@ -1,18 +1,7 @@
 {
   "description": "Workflow automation hooks for devflow — skill routing, quality gates, context injection, and file protection",
   "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/skill-routing.sh",
-            "timeout": 10,
-            "statusMessage": "Analyzing prompt..."
-          }
-        ]
-      }
-    ],
+    "UserPromptSubmit": [],
     "SessionStart": [
       {
         "matcher": "startup",
