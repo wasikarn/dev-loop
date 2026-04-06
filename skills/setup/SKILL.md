@@ -1,12 +1,12 @@
 ---
-name: devflow-setup
+name: df-setup
 description: "Post-install setup for devflow plugin — installs devflow-engine dependencies (bun install) and runs a smoke test. Idempotent: detects what is already configured and skips those steps. Triggers: devflow-setup, /devflow-setup, devflow setup, bun install engine. Use after plugin install or reinstall. Do NOT use for project onboarding (use /onboard instead)."
 argument-hint: ""
 effort: low
 allowed-tools: Bash
 ---
 
-# /devflow-setup
+# /df-setup
 
 Post-install setup for the `devflow` plugin. Idempotent — safe to re-run.
 

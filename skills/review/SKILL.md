@@ -1,5 +1,5 @@
 ---
-name: review
+name: df-review
 description: "Adversarial PR review with 3-reviewer debate — Correctness, Architecture, DX reviewers challenge each other's findings before consolidation. Use when reviewing pull requests or code changes."
 argument-hint: "[pr-number] [jira-key?] [--micro?] [--quick?] [--full?] [--focused area?] [Author|Reviewer?]"
 compatibility: "Requires gh CLI, git, and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 enabled in settings"

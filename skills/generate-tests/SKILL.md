@@ -1,5 +1,5 @@
 ---
-name: generate-tests
+name: df-tests
 description: "Generate unit or integration tests for source files or recent changes. Detects test framework (vitest/jest/bun/japa) from package.json and follows existing test conventions. Use when writing new tests, increasing coverage, or after implementing a feature. Spawns test-quality-reviewer agent to self-check output."
 argument-hint: "[file-paths | --changes]"
 effort: high

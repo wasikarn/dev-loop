@@ -1,5 +1,5 @@
 ---
-name: careful
+name: df-careful
 description: "Activate safe-mode for the current session — blocks destructive bash commands and requires confirmation for risky operations."
 effort: low
 hooks:
@@ -15,7 +15,7 @@ hooks:
             fi
 ---
 
-# /careful — Safe Mode Activated
+# /df-careful — Safe Mode Activated
 
 Safe mode is now active for this session.
 

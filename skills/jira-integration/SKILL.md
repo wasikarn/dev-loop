@@ -1,5 +1,5 @@
 ---
-name: jira-integration
+name: df-jira
 description: "Shared Jira context injection for build, review, debug, and respond — fetches AC, transitions cards, posts summaries."
 effort: low
 user-invocable: false

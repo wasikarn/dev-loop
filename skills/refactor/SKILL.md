@@ -1,5 +1,5 @@
 ---
-name: refactor
+name: df-refactor
 description: "Refactor code for clarity, maintainability, or structure. Modes: --simplify (clean up changed code, delegates to code-simplifier agent), --extract (extract functions/classes to reduce duplication), --restructure (reorganize code across files). Runs tests before and after to ensure safety. Use when code works but needs improvement."
 argument-hint: "[file-or-area] [--simplify|--extract|--restructure]"
 effort: high

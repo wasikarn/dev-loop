@@ -1,5 +1,5 @@
 ---
-name: dashboard
+name: df-dashboard
 description: "Show devflow metrics dashboard — session summary, anomaly alerts, reviewer calibration accuracy, and skill usage frequency. Triggers: metrics, dashboard, session summary, workflow health, iteration count, regression trends."
 argument-hint: ""
 effort: low

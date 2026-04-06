@@ -1,5 +1,5 @@
 ---
-name: respond
+name: df-respond
 description: "Respond to open PR review comments — reads all GitHub review threads, fixes each comment in parallel, posts replies. Use when addressing PR review feedback."
 argument-hint: "[pr-number] [jira-key?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"

@@ -1,5 +1,5 @@
 ---
-name: review-rules
+name: df-review-rules
 description: "Core 12-point review framework used across code-reviewer, build, and review agents."
 user-invocable: false
 ---

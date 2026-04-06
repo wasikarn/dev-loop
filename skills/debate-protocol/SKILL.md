@@ -1,5 +1,5 @@
 ---
-name: debate-protocol
+name: df-debate
 description: "Adversarial debate rules for devflow review workflows — pre-debate triage, rounds, escalation, and consensus criteria."
 effort: low
 user-invocable: false

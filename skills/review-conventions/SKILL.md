@@ -1,5 +1,5 @@
 ---
-name: review-conventions
+name: df-review-conventions
 description: "Shared review conventions — comment labels, dedup protocol, strengths, and PR size thresholds."
 user-invocable: false
 ---

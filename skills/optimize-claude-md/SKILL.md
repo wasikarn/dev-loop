@@ -1,5 +1,5 @@
 ---
-name: optimize-claude-md
+name: df-optimize
 description: "Audit and optimize CLAUDE.md files — compress token bloat, deduplicate content, enforce 200-line limit. Use when editing a CLAUDE.md or context file."
 argument-hint: "[--dry-run?] [--coverage?]"
 effort: medium
@@ -20,7 +20,7 @@ You are an **AI Prompt Architect** — specialist in CLAUDE.md quality, compress
 
 ---
 
-# /optimize-claude-md
+# /df-optimize
 
 Audit, score, and optimize CLAUDE.md files for maximum agent effectiveness. Invoke as `/optimize-claude-md [--dry-run]` — add `--dry-run` to run phases 1-3 only (report without edits).
 

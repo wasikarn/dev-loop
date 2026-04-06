@@ -33,35 +33,35 @@ Prefer reading source before editing — key references:
 
 | Skill | Purpose |
 | --- | --- |
-| `build` | Full development loop (Research → Plan → Implement → Review → Ship) |
-| `review` | Adversarial PR review with 3-reviewer debate |
-| `debug-parallel` | Parallel root cause analysis + DX hardening |
-| `respond` | Address PR review comments as author |
-| `merge-pr` | Git-flow merge and deploy (feature/hotfix/release modes) |
-| `refactor` | Safe refactoring — runs tests before/after; modes: `--simplify`, `--extract`, `--restructure` |
-| `generate-tests` | Framework-aware test generation (vitest/jest/bun/japa); self-reviews via test-quality-reviewer |
-| `generate-docs` | API, README, and inline JSDoc/TSDoc documentation generation |
-| `audit` | Security + dependency audit; `--deps`, `--security`, `--all` |
-| `metrics` | Retrospective report from devflow-metrics.jsonl — iteration counts, finding categories, Hard Rule candidates |
-| `dashboard` | Terminal-friendly metrics summary from all devflow tracking files; anomaly alerts |
-| `status` | Show active Devflow session artifacts and current phase |
-| `onboard` | Bootstrap a new project into the devflow ecosystem — scaffold hard-rules.md and build directories |
-| `plugin-qa` | Run QA check suite to verify all hooks, skills, and plugin structure |
-| `devflow-setup` | Post-install setup — installs devflow-engine dependencies and runs smoke test |
-| `optimize-claude-md` | Audit and optimize CLAUDE.md files |
-| `analyze-claude-features` | Audit project against official Claude Code features and score adoption coverage |
-| `promote-hard-rule` | Review auto-detected Hard Rule candidates and approve/reject/defer each one |
-| `systems-thinking` | Causal Loop Diagram analysis for architecture decisions |
-| `env-heal` | Scan and fix environment variable mismatches |
-| `careful` | Enter careful mode — elevated confirmation threshold for destructive operations |
-| `freeze` | Freeze a file or pattern from being edited for the session |
-| `test-patterns` | Test quality patterns for frontend and backend testing |
-| `review-rules` | _(background)_ 12-point review framework — preloaded into reviewer agents |
-| `review-conventions` | _(background)_ Comment labels, dedup protocol, PR size thresholds — preloaded into reviewer agents |
-| `review-output-format` | _(background)_ PR review output format templates — preloaded into reviewer agents |
-| `review-examples` | _(background)_ Code pattern examples for all 12 rules — preloaded into reviewer agents |
-| `debate-protocol` | _(background)_ Adversarial debate rules and consensus criteria — preloaded into reviewer agents |
-| `jira-integration` | _(background)_ Jira detection, fetch, and skill-specific integration — preloaded into jira-summary-poster agent |
+| `df-build` | Full development loop (Research → Plan → Implement → Review → Ship) |
+| `df-review` | Adversarial PR review with 3-reviewer debate |
+| `df-debug` | Parallel root cause analysis + DX hardening |
+| `df-respond` | Address PR review comments as author |
+| `df-merge` | Git-flow merge and deploy (feature/hotfix/release modes) |
+| `df-refactor` | Safe refactoring — runs tests before/after; modes: `--simplify`, `--extract`, `--restructure` |
+| `df-tests` | Framework-aware test generation (vitest/jest/bun/japa); self-reviews via test-quality-reviewer |
+| `df-docs` | API, README, and inline JSDoc/TSDoc documentation generation |
+| `df-audit` | Security + dependency audit; `--deps`, `--security`, `--all` |
+| `df-metrics` | Retrospective report from devflow-metrics.jsonl — iteration counts, finding categories, Hard Rule candidates |
+| `df-dashboard` | Terminal-friendly metrics summary from all devflow tracking files; anomaly alerts |
+| `df-status` | Show active Devflow session artifacts and current phase |
+| `df-onboard` | Bootstrap a new project into the devflow ecosystem — scaffold hard-rules.md and build directories |
+| `df-qa` | Run QA check suite to verify all hooks, skills, and plugin structure |
+| `df-setup` | Post-install setup — installs devflow-engine dependencies and runs smoke test |
+| `df-optimize` | Audit and optimize CLAUDE.md files |
+| `df-analyze` | Audit project against official Claude Code features and score adoption coverage |
+| `df-promote` | Review auto-detected Hard Rule candidates and approve/reject/defer each one |
+| `df-systems` | Causal Loop Diagram analysis for architecture decisions |
+| `df-env-heal` | Scan and fix environment variable mismatches |
+| `df-careful` | Enter careful mode — elevated confirmation threshold for destructive operations |
+| `df-freeze` | Freeze a file or pattern from being edited for the session |
+| `df-test-patterns` | Test quality patterns for frontend and backend testing |
+| `df-review-rules` | _(background)_ 12-point review framework — preloaded into reviewer agents |
+| `df-review-conventions` | _(background)_ Comment labels, dedup protocol, PR size thresholds — preloaded into reviewer agents |
+| `df-review-output` | _(background)_ PR review output format templates — preloaded into reviewer agents |
+| `df-review-examples` | _(background)_ Code pattern examples for all 12 rules — preloaded into reviewer agents |
+| `df-debate` | _(background)_ Adversarial debate rules and consensus criteria — preloaded into reviewer agents |
+| `df-jira` | _(background)_ Jira detection, fetch, and skill-specific integration — preloaded into jira-summary-poster agent |
 
 ## Agents
 

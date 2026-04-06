@@ -1,5 +1,5 @@
 ---
-name: generate-docs
+name: df-docs
 description: "Generate documentation for code — API endpoint docs, README sections, or inline JSDoc/TSDoc comments. Modes: --api (document REST API endpoints from route/controller files), --readme (generate or update README sections for new or changed features), --inline (add JSDoc/TSDoc to exported functions and classes lacking documentation). Reads existing docs to match project style before generating. Triggers: generate docs, document API, add JSDoc, update README, write documentation, TSDoc, API reference."
 argument-hint: "[--api|--readme|--inline] [file-or-directory?]"
 effort: high

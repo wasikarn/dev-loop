@@ -1,5 +1,5 @@
 ---
-name: status
+name: df-status
 description: "Show active devflow workflow artifacts from the current session — artifact directories, current phase, and pending actions. Triggers: status, session status, active artifacts, current phase, workflow state."
 argument-hint: ""
 ---

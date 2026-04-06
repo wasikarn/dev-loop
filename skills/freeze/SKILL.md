@@ -1,5 +1,5 @@
 ---
-name: freeze
+name: df-freeze
 description: "Lock edits to a specific directory or file for this session — blocks Edit and Write tools on matching paths."
 effort: low
 argument-hint: "[directory-path]"
@@ -20,7 +20,7 @@ hooks:
             esac
 ---
 
-# /freeze — Directory Lock
+# /df-freeze — Directory Lock
 
 If `$ARGUMENTS` is empty, ask the user which directory to lock using the AskUserQuestion tool.
 

@@ -1,5 +1,5 @@
 ---
-name: test-patterns
+name: df-test-patterns
 description: "Test quality patterns for frontend and backend testing. Triggers: writing tests, reviewing test code, generating tests, when tests fail, unit tests, E2E tests, test patterns. Covers Vitest/Jest, React Testing Library, Playwright, and backend API testing."
 effort: low
 ---

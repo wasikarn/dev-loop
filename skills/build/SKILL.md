@@ -1,5 +1,5 @@
 ---
-name: build
+name: df-build
 description: "Full development loop for any coding task — features, bug fixes, refactors, hotfixes, or Jira tickets. Research → Plan → Implement → Verify → Review → Ship with Agent Teams and auto-detected ceremony level. Pass Jira key to extract AC. Start here when unsure which workflow to use."
 argument-hint: "[task-description-or-jira-key] [--micro?] [--quick?] [--full?] [--hotfix?]"
 compatibility: "Requires gh CLI, git, CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"

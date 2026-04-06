@@ -52,7 +52,7 @@ Traditional AI assistants work solo — one agent handles everything from resear
 **How it works:**
 
 ```text
-User: /devflow:build PROJ-123
+User: /devflow:df-build PROJ-123
   ↓
 Lead Agent fetches Jira AC → spawns Explorer agents (parallel)
   ↓
@@ -169,7 +169,7 @@ claude plugin install devflow
 
 #### Step 5 — Enable Agent Teams
 
-Devflow skills (`build`, `review`, `respond`, `debug-parallel`) spawn parallel agents using Agent Teams. Without this flag, they degrade to solo mode.
+Devflow skills (`df-build`, `df-review`, `df-respond`, `df-debug`) spawn parallel agents using Agent Teams. Without this flag, they degrade to solo mode.
 
 ```bash
 claude config set env.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS 1
@@ -237,7 +237,7 @@ Typical developer day using the Devflow workflow:
 flowchart TD
     MORNING([Start of day]) --> WC
 
-    WC["/devflow:work-context
+    WC["/devflow:df-work-context
     Sprint tickets + open PRs
     + unmerged branches"]
 
@@ -248,18 +248,18 @@ flowchart TD
     DECISION -->|Review comments on my PR| RESPOND
     DECISION -->|Bug / production incident| DEBUG
 
-    BUILD["/devflow:build PROJ-123
+    BUILD["/devflow:df-build PROJ-123
     or: 'add X feature'
     Full loop → PR created"]
 
-    REVIEW["/devflow:review 42
+    REVIEW["/devflow:df-review 42
     3 reviewers → findings table
     post as GitHub review comments"]
 
-    RESPOND["/devflow:respond 42
+    RESPOND["/devflow:df-respond 42
     Fix all threads → commit → reply"]
 
-    DEBUG["/devflow:debug-parallel 'error msg'
+    DEBUG["/devflow:df-debug 'error msg'
     Root cause + DX hardening → fix PR"]
 
     BUILD --> MERGE
@@ -268,7 +268,7 @@ flowchart TD
 
     REVIEW -->|Comments posted, waiting| EOD
 
-    MERGE["/devflow:merge-pr 42
+    MERGE["/devflow:df-merge 42
     Preflight → merge → tag"]
 
     MERGE --> EOD([End of day ✓])
@@ -276,9 +276,9 @@ flowchart TD
 
 **Session tips:**
 
-- Start every session with `/devflow:work-context` — shows active sprint tickets, open PRs awaiting action, and unmerged branches
-- Run `/devflow:careful` before risky work (migrations, force-push, DROP TABLE)
-- Use `/devflow:metrics` weekly to spot recurring review findings
+- Start every session with `/devflow:df-work-context` — shows active sprint tickets, open PRs awaiting action, and unmerged branches
+- Run `/devflow:df-careful` before risky work (migrations, force-push, DROP TABLE)
+- Use `/devflow:df-metrics` weekly to spot recurring review findings
 
 ---
 
@@ -288,20 +288,20 @@ flowchart TD
 
 ```bash
 # 1. Build the feature
-/devflow:build PROJ-1234
+/devflow:df-build PROJ-1234
 # Claude fetches Jira AC → maps auth middleware → writes plan.md →
 # implements with tests → 3-reviewer debate → opens PR
 
 # 2. Address reviewer comments
-/devflow:respond 42
+/devflow:df-respond 42
 # Fetches open threads → fixes in parallel → commits → posts replies
 
 # 3. Final review before merge
-/devflow:review 42 PROJ-1234 Author
+/devflow:df-review 42 PROJ-1234 Author
 # Three agents re-examine PR against AC → debate → apply remaining fixes
 
 # 4. Merge
-/devflow:merge-pr 42
+/devflow:df-merge 42
 # Squash into develop → version bump → CHANGELOG → post-merge verification
 ```
 
@@ -351,7 +351,7 @@ flowchart TD
 
 ---
 
-#### `build` — Full Development Loop
+#### `df-build` — Full Development Loop
 
 The primary workflow for any coding task. Runs Research → Plan → Implement → Review → Ship with an iterative fix-review loop (max 3 iterations).
 
@@ -372,10 +372,10 @@ flowchart LR
 **Domain lenses (Phase 6):** Each reviewer automatically receives domain-specific lens files based on diff content — security, database, TypeScript, frontend (RSC/App Router), error handling, API design, observability, and performance. Lens injection is automatic; no configuration needed.
 
 ```bash
-/devflow:build "add rate limiting to the API"
-/devflow:build PROJ-1234           # auto-fetches Jira AC
-/devflow:build PROJ-1234 --quick   # skip research for small fixes
-/devflow:build PROJ-1234 --hotfix  # urgent production incident
+/devflow:df-build "add rate limiting to the API"
+/devflow:df-build PROJ-1234           # auto-fetches Jira AC
+/devflow:df-build PROJ-1234 --quick   # skip research for small fixes
+/devflow:df-build PROJ-1234 --hotfix  # urgent production incident
 ```
 
 | Mode | When to use |
@@ -387,7 +387,7 @@ flowchart LR
 
 ---
 
-#### `review` — Adversarial PR Review
+#### `df-review` — Adversarial PR Review
 
 Three agents independently review a PR, then debate their findings to eliminate false positives. Output is a single ranked findings table with evidence-backed verdicts.
 
@@ -396,10 +396,10 @@ Three agents independently review a PR, then debate their findings to eliminate 
 **When to use:** Any pull request — quick standards check, architecture review, or multi-perspective analysis.
 
 ```bash
-/devflow:review 42                  # PR number
-/devflow:review 42 PROJ-1234        # with Jira AC verification
-/devflow:review 42 Author           # apply fixes directly to the branch
-/devflow:review 42 Reviewer         # post findings as GitHub review comments
+/devflow:df-review 42                  # PR number
+/devflow:df-review 42 PROJ-1234        # with Jira AC verification
+/devflow:df-review 42 Author           # apply fixes directly to the branch
+/devflow:df-review 42 Reviewer         # post findings as GitHub review comments
 ```
 
 | Mode | When to use |
@@ -448,238 +448,238 @@ Three agents independently review a PR, then debate their findings to eliminate 
 
 ---
 
-#### `respond` — Address PR Review Comments
+#### `df-respond` — Address PR Review Comments
 
 Fetches all open GitHub review threads on a PR, fixes each issue in parallel, commits the changes, and posts replies to close every thread.
 
 **When to use:** After receiving PR review feedback.
 
 ```bash
-/devflow:respond 42
-/devflow:respond 42 PROJ-1234   # with Jira AC context for prioritization
+/devflow:df-respond 42
+/devflow:df-respond 42 PROJ-1234   # with Jira AC context for prioritization
 ```
 
 ---
 
-#### `debug-parallel` — Parallel Root Cause Analysis
+#### `df-debug` — Parallel Root Cause Analysis
 
 Two agents run in parallel: an Investigator traces the root cause, while a DX Analyst audits the affected area across 19 DX patterns (error handling E1–E8, observability O1–O6, prevention P1–P5). A Fixer agent then applies the fix; an optional Fix Reviewer checks safety patterns including TOCTOU, null paths, and race conditions.
 
 **When to use:** Complex bugs, production incidents, or when you want to harden the affected area alongside the fix.
 
 ```bash
-/devflow:debug-parallel "NullPointerException in UserService"
-/devflow:debug-parallel PROJ-5678           # from a Jira bug ticket
-/devflow:debug-parallel PROJ-5678 --quick   # fix only, skip DX analysis
-/devflow:debug-parallel PROJ-5678 --review  # add Fix Reviewer after Fixer (forced on P0)
+/devflow:df-debug "NullPointerException in UserService"
+/devflow:df-debug PROJ-5678           # from a Jira bug ticket
+/devflow:df-debug PROJ-5678 --quick   # fix only, skip DX analysis
+/devflow:df-debug PROJ-5678 --review  # add Fix Reviewer after Fixer (forced on P0)
 ```
 
 ---
 
 ### Utility Skills
 
-#### `merge-pr` — Git-flow Merge & Deploy
+#### `df-merge` — Git-flow Merge & Deploy
 
 Automates the merge and release process: version bumps, CHANGELOG updates, tags, backport PRs, and post-merge verification.
 
 ```bash
-/devflow:merge-pr 42           # feature/bugfix → develop
-/devflow:merge-pr --hotfix     # hotfix → main + backport to develop
-/devflow:merge-pr --release    # release → main + tag + backport
+/devflow:df-merge 42           # feature/bugfix → develop
+/devflow:df-merge --hotfix     # hotfix → main + backport to develop
+/devflow:df-merge --release    # release → main + tag + backport
 ```
 
 **Requires:** `gh` CLI (authenticated), clean working tree, GitHub remote.
 
 ---
 
-#### `optimize-claude-md` — Audit CLAUDE.md
+#### `df-optimize` — Audit CLAUDE.md
 
 Scores a CLAUDE.md across quality dimensions, identifies bloat and gaps, and rewrites sections to be more useful for Claude.
 
 ```bash
-/devflow:optimize-claude-md
-/devflow:optimize-claude-md --dry-run    # preview without editing
-/devflow:optimize-claude-md --coverage   # include coverage analysis
+/devflow:df-optimize
+/devflow:df-optimize --dry-run    # preview without editing
+/devflow:df-optimize --coverage   # include coverage analysis
 ```
 
 ---
 
-#### `env-heal` — Fix Environment Variables
+#### `df-env-heal` — Fix Environment Variables
 
 Scans for all env var references, cross-references against the validation schema and `.env.example`, classifies gaps, auto-fixes discrepancies, and runs tests to verify.
 
 ```bash
-/devflow:env-heal          # full scan and fix
-/devflow:env-heal --quick  # schema vs .env.example only
+/devflow:df-env-heal          # full scan and fix
+/devflow:df-env-heal --quick  # schema vs .env.example only
 ```
 
 **Supports:** AdonisJS (`Env.schema`), dotenv (`.env.example`), and any Node.js project.
 
 ---
 
-#### `systems-thinking` — Causal Loop Analysis
+#### `df-systems` — Causal Loop Analysis
 
 Maps causal loops, identifies feedback cycles, and surfaces second-order effects before committing to an architecture decision.
 
 ```bash
-/devflow:systems-thinking "should we move to microservices?"
-/devflow:systems-thinking "what happens if we remove the cache layer?"
+/devflow:df-systems "should we move to microservices?"
+/devflow:df-systems "what happens if we remove the cache layer?"
 ```
 
 ---
 
-#### `metrics` — Retrospective Report
+#### `df-metrics` — Retrospective Report
 
 Reads `~/.claude/devflow-metrics.jsonl` and produces a retrospective: iteration counts, critical finding categories, recurrent issues, and Hard Rule candidates.
 
 ```bash
-/devflow:metrics
+/devflow:df-metrics
 ```
 
 ---
 
-#### `onboard` — Bootstrap a New Project
+#### `df-onboard` — Bootstrap a New Project
 
 Scaffolds the devflow ecosystem into a new project: generates `hard-rules.md` with stack-appropriate starter rules and creates the `build` artifact directory.
 
 ```bash
-/devflow:onboard
+/devflow:df-onboard
 ```
 
 ---
 
-#### `careful` — Safe Mode
+#### `df-careful` — Safe Mode
 
 Activates session-level protection that blocks destructive bash commands: `rm -rf`, `DROP TABLE`, `git push --force`, `truncate`, `git reset --hard` on committed work.
 
 ```bash
-/devflow:careful
+/devflow:df-careful
 ```
 
 **When to use:** Working near production data, shared branches, or irreversible operations.
 
 ---
 
-#### `freeze` — Directory Lock
+#### `df-freeze` — Directory Lock
 
 Locks edits to a specific directory for the session. Claude will refuse to edit files outside the target path.
 
 ```bash
-/devflow:freeze src/auth     # lock edits to src/auth/
-/devflow:freeze tests/       # only touch tests/
+/devflow:df-freeze src/auth     # lock edits to src/auth/
+/devflow:df-freeze tests/       # only touch tests/
 ```
 
 ---
 
-#### `status` — Session Artifact Browser
+#### `df-status` — Session Artifact Browser
 
 Shows active Devflow workflow artifacts from the current session — artifact directories, current phase, and pending actions.
 
 ```bash
-/devflow:status
+/devflow:df-status
 ```
 
 ---
 
-#### `plugin-qa` — Plugin QA Suite
+#### `df-qa` — Plugin QA Suite
 
 Runs the full QA check suite to verify hooks, skills, and plugin structure are healthy. Runs shellcheck, markdownlint, bats tests, and `claude plugin validate`.
 
 ```bash
-/devflow:plugin-qa
+/devflow:df-qa
 ```
 
 **When to use:** Before releasing a new version of devflow.
 
 ---
 
-#### `devflow-setup` — Post-Install Setup
+#### `df-setup` — Post-Install Setup
 
 Installs `devflow-engine` dependencies via `bun install` and runs a smoke test. Idempotent — detects what is already configured and skips those steps.
 
 ```bash
-/devflow:devflow-setup
+/devflow:df-setup
 ```
 
-**When to use:** After installing or reinstalling the plugin. Not for project onboarding (use `/devflow:onboard` instead).
+**When to use:** After installing or reinstalling the plugin. Not for project onboarding (use `/devflow:df-onboard` instead).
 
 ---
 
-#### `analyze-claude-features` — Claude Feature Adoption Audit
+#### `df-analyze` — Claude Feature Adoption Audit
 
 Audits the current project against all official Claude Code features and scores adoption coverage. Reports which features are used, unused, or partially adopted.
 
 ```bash
-/devflow:analyze-claude-features
+/devflow:df-analyze
 ```
 
 ---
 
-#### `promote-hard-rule` — Hard Rule Promotion
+#### `df-promote` — Hard Rule Promotion
 
 Reviews auto-detected Hard Rule candidates from `metrics-analyst` and walks through approve / reject / defer for each candidate. Never auto-applies rules.
 
 ```bash
-/devflow:promote-hard-rule
+/devflow:df-promote
 ```
 
-**When to use:** After running `/devflow:metrics` when candidates are flagged.
+**When to use:** After running `/devflow:df-metrics` when candidates are flagged.
 
 ---
 
-#### `generate-tests` — Test Generation
+#### `df-tests` — Test Generation
 
 Detects the test framework in use (vitest/jest/bun/japa), generates tests following existing conventions, and self-reviews via `test-quality-reviewer`.
 
 ```bash
-/devflow:generate-tests src/auth/middleware.ts
-/devflow:generate-tests src/auth/            # all files in directory
+/devflow:df-tests src/auth/middleware.ts
+/devflow:df-tests src/auth/            # all files in directory
 ```
 
 ---
 
-#### `refactor` — Safe Refactoring
+#### `df-refactor` — Safe Refactoring
 
 Refactors code with a safety net: runs tests before and after to verify no behavior changes.
 
 ```bash
-/devflow:refactor src/utils/parser.ts --simplify    # delegate to code-simplifier
-/devflow:refactor src/utils/parser.ts --extract     # extract function/module
-/devflow:refactor src/utils/parser.ts --restructure # structural reorganization
+/devflow:df-refactor src/utils/parser.ts --simplify    # delegate to code-simplifier
+/devflow:df-refactor src/utils/parser.ts --extract     # extract function/module
+/devflow:df-refactor src/utils/parser.ts --restructure # structural reorganization
 ```
 
 ---
 
-#### `audit` — Security & Dependency Audit
+#### `df-audit` — Security & Dependency Audit
 
 Runs a security and/or dependency audit. `--security` spawns the `security-reviewer` agent; `--deps` runs `npm audit` or `pip-audit`.
 
 ```bash
-/devflow:audit --deps       # dependency vulnerability scan
-/devflow:audit --security   # OWASP-focused code security review
-/devflow:audit --all        # both
+/devflow:df-audit --deps       # dependency vulnerability scan
+/devflow:df-audit --security   # OWASP-focused code security review
+/devflow:df-audit --all        # both
 ```
 
 ---
 
-#### `generate-docs` — Documentation Generation
+#### `df-docs` — Documentation Generation
 
 Generates documentation from source code. Supports API docs, README sections, and inline JSDoc/TSDoc.
 
 ```bash
-/devflow:generate-docs --api src/routes/      # OpenAPI-style endpoint docs
-/devflow:generate-docs --readme               # update README from code
-/devflow:generate-docs --inline src/auth/     # add JSDoc/TSDoc comments
+/devflow:df-docs --api src/routes/      # OpenAPI-style endpoint docs
+/devflow:df-docs --readme               # update README from code
+/devflow:df-docs --inline src/auth/     # add JSDoc/TSDoc comments
 ```
 
 ---
 
-#### `dashboard` — Metrics Dashboard
+#### `df-dashboard` — Metrics Dashboard
 
 Reads all three devflow tracking files and renders a terminal-friendly metrics summary with anomaly alerts.
 
 ```bash
-/devflow:dashboard
+/devflow:df-dashboard
 ```
 
 **Sections:** session summary, anomaly alerts (avg iterations >3, critical findings shipped, rejection rate >40%), reviewer calibration, top-10 skill usage.
@@ -699,31 +699,31 @@ Specialized subagents spawned automatically by Devflow skills. Can also be invok
 | Agent | Model | Invoked by | Purpose |
 | --- | --- | --- | --- |
 | `commit-finalizer` | Haiku | Manually | Fast git commit with conventional commit formatting |
-| `devflow-build-bootstrap` | Haiku | `build` Phase 2 | Pre-gathers project structure and type definitions |
-| `build-research-summarizer` | Haiku | `build` Phase 2→3 gate | Compresses research.md into a compact JSON summary — eliminates re-reads at later phases |
+| `devflow-build-bootstrap` | Haiku | `df-build` Phase 2 | Pre-gathers project structure and type definitions |
+| `build-research-summarizer` | Haiku | `df-build` Phase 2→3 gate | Compresses research.md into a compact JSON summary — eliminates re-reads at later phases |
 | `devflow-debug-bootstrap` | Haiku | `debug-parallel` Phase 1 | Pre-gathers stack trace context and affected files |
-| `devflow-respond-bootstrap` | Haiku | `respond` Phase 1 | Pre-gathers open PR threads and affected files |
-| `pr-review-bootstrap` | Haiku | `review` Phase 1 | Fetches PR diff, Jira AC, and groups changed files |
-| `review-consolidator` | Haiku | `review` Phase 5 | Deduplicates and ranks findings from multiple reviewers |
-| `research-validator` | Haiku | `build` Phase 2→3 gate | Validates research.md completeness (file:line evidence) |
-| `fix-intent-verifier` | Haiku | `respond` Phase 2 | Verifies each fix addresses reviewer intent (ADDRESSED/PARTIAL/MISALIGNED) |
-| `jira-summary-poster` | Haiku | `build`/`debug-parallel` end | Posts ADF implementation summary to Jira; AC coverage check; optional status transition; spawns atlassian-pm agents when available |
+| `devflow-respond-bootstrap` | Haiku | `df-respond` Phase 1 | Pre-gathers open PR threads and affected files |
+| `pr-review-bootstrap` | Haiku | `df-review` Phase 1 | Fetches PR diff, Jira AC, and groups changed files |
+| `review-consolidator` | Haiku | `df-review` Phase 5 | Deduplicates and ranks findings from multiple reviewers |
+| `research-validator` | Haiku | `df-build` Phase 2→3 gate | Validates research.md completeness (file:line evidence) |
+| `fix-intent-verifier` | Haiku | `df-respond` Phase 2 | Verifies each fix addresses reviewer intent (ADDRESSED/PARTIAL/MISALIGNED) |
+| `jira-summary-poster` | Haiku | `df-build`/`df-debug` end | Posts ADF implementation summary to Jira; AC coverage check; optional status transition; spawns atlassian-pm agents when available |
 | `work-context` | Haiku | Session start | Sprint tickets + PRs awaiting action + unmerged branches digest |
-| `merge-preflight` | Haiku | `merge-pr` Confirmation Gate | Pre-merge go/no-go safety checklist |
+| `merge-preflight` | Haiku | `df-merge` Confirmation Gate | Pre-merge go/no-go safety checklist |
 | `metrics-analyst` | Haiku | `metrics` | Retrospective from devflow-metrics.jsonl: iteration patterns and Hard Rule candidates |
-| `falsification-agent` | Sonnet | `build` Phase 6, `review` Phase 5 | Challenges every finding — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
-| `plan-challenger` | Sonnet | `build` Phase 3 gate | Challenges plan for YAGNI/scope/ordering issues before implementation |
-| `test-quality-reviewer` | Sonnet | `review` Phase 3, `/generate-tests` | Test quality (T1–T9): behavior vs implementation, mock fidelity, assertion presence; cross-session memory |
-| `migration-reviewer` | Sonnet | `review` Phase 3 | DB migration safety (M1–M10): DDL reversibility, FK indexes, table-lock risk |
-| `api-contract-auditor` | Sonnet | `review` Phase 3 | API breaking changes (A1–A10): removed fields, status codes, required params; cross-session memory |
-| `security-reviewer` | Sonnet | `/audit --security`, `review` | OWASP-focused security review — cross-session memory for recurring patterns per project |
+| `falsification-agent` | Sonnet | `df-build` Phase 6, `df-review` Phase 5 | Challenges every finding — outputs SUSTAINED/DOWNGRADED/REJECTED per finding |
+| `plan-challenger` | Sonnet | `df-build` Phase 3 gate | Challenges plan for YAGNI/scope/ordering issues before implementation |
+| `test-quality-reviewer` | Sonnet | `df-review` Phase 3, `/df-tests` | Test quality (T1–T9): behavior vs implementation, mock fidelity, assertion presence; cross-session memory |
+| `migration-reviewer` | Sonnet | `df-review` Phase 3 | DB migration safety (M1–M10): DDL reversibility, FK indexes, table-lock risk |
+| `api-contract-auditor` | Sonnet | `df-review` Phase 3 | API breaking changes (A1–A10): removed fields, status codes, required params; cross-session memory |
+| `security-reviewer` | Sonnet | `/df-audit --security`, `df-review` | OWASP-focused security review — cross-session memory for recurring patterns per project |
 | `skill-validator` | Sonnet | Manually | Validates SKILL.md frontmatter and description quality |
 | `project-onboarder` | Sonnet | `onboard` | Scaffolds hard-rules.md and build directory for new projects |
 | `code-explorer` | Sonnet | Manually | Traces execution paths and maps feature architecture — read-only, no code changes |
-| `comment-analyzer` | Sonnet | Manually / `build` Phase 4 (optional) | Verifies comment accuracy against code; flags stale references and comment rot; cross-session memory |
+| `comment-analyzer` | Sonnet | Manually / `df-build` Phase 4 (optional) | Verifies comment accuracy against code; flags stale references and comment rot; cross-session memory |
 | `code-simplifier` | Sonnet | Manually / `/refactor --simplify` | Simplifies recently changed code for clarity and maintainability without altering behavior |
 | `code-reviewer` | Sonnet | Manually | General-purpose code reviewer with cross-session persistent memory; includes 6 inline domain lenses (security, database, TypeScript, frontend, error handling, API design) applied per diff content |
-| `silent-failure-hunter` | Sonnet | `review` Phase 3 | Hunts for swallowed exceptions, empty catch blocks, optional chain fallbacks; cross-session memory |
+| `silent-failure-hunter` | Sonnet | `df-review` Phase 3 | Hunts for swallowed exceptions, empty catch blocks, optional chain fallbacks; cross-session memory |
 | `type-design-analyzer` | Sonnet | Manually | TypeScript type design quality — 4 dimensions rated 1-10; cross-session memory |
 
 ---
@@ -787,12 +787,12 @@ claude plugin install <name>
 | --- | --- |
 | `superpowers@claude-plugins-official` | Core workflow skills — TDD, systematic debugging, verification before claiming done. Prevents common AI failure modes. |
 | `claude-mem@thedotmack` | Cross-session persistent memory. Claude remembers past decisions and project context across conversations. |
-| `qmd@qmd` | Local semantic search over your codebase and docs. Speeds up `build` research phase significantly. |
-| `feature-dev@claude-plugins-official` | Specialized subagents for feature exploration and architecture analysis. Pairs well with `build`. |
-| `commit-commands@claude-plugins-official` | Quick `/commit` and `/commit-push-pr` skills for the Ship phase of `build`. |
+| `qmd@qmd` | Local semantic search over your codebase and docs. Speeds up `df-build` research phase significantly. |
+| `feature-dev@claude-plugins-official` | Specialized subagents for feature exploration and architecture analysis. Pairs well with `df-build`. |
+| `commit-commands@claude-plugins-official` | Quick `/commit` and `/commit-push-pr` skills for the Ship phase of `df-build`. |
 | `playwright@claude-plugins-official` | Browser automation via MCP. Useful for `debug-parallel` when diagnosing UI or end-to-end failures. |
 | `typescript-lsp@claude-plugins-official` | TypeScript language server — real-time type errors and go-to-definition. Reduces hallucinated types in TypeScript projects. |
-| `pr-review-toolkit@claude-plugins-official` | Additional review agents (silent-failure hunter, type-design analyzer, test coverage analyzer). Complements `review`. |
+| `pr-review-toolkit@claude-plugins-official` | Additional review agents (silent-failure hunter, type-design analyzer, test coverage analyzer). Complements `df-review`. |
 
 ### Complementary MCP Servers
 
@@ -800,10 +800,10 @@ All optional — skills degrade gracefully if absent.
 
 | MCP Server | When it helps | Install |
 | --- | --- | --- |
-| `context7` | Fetches up-to-date library docs during `build` research — no more hallucinated API signatures. | [upstash/context7-mcp](https://github.com/upstash/context7-mcp) |
-| `sequential-thinking` | Structured reasoning for complex decisions. Useful in `systems-thinking` and `build` planning. | `claude mcp add sequential-thinking` |
-| `figma` | Pulls Figma frames into context. Lets `build` use actual design specs instead of descriptions. | [GLips/Figma-Context-MCP](https://github.com/GLips/Figma-Context-MCP) |
-| `mcp-atlassian` | Jira + Confluence access. `build` uses Confluence pages as additional AC context. | [sooperset/mcp-atlassian](https://github.com/sooperset/mcp-atlassian) |
+| `context7` | Fetches up-to-date library docs during `df-build` research — no more hallucinated API signatures. | [upstash/context7-mcp](https://github.com/upstash/context7-mcp) |
+| `sequential-thinking` | Structured reasoning for complex decisions. Useful in `df-systems` and `df-build` planning. | `claude mcp add sequential-thinking` |
+| `figma` | Pulls Figma frames into context. Lets `df-build` use actual design specs instead of descriptions. | [GLips/Figma-Context-MCP](https://github.com/GLips/Figma-Context-MCP) |
+| `mcp-atlassian` | Jira + Confluence access. `df-build` uses Confluence pages as additional AC context. | [sooperset/mcp-atlassian](https://github.com/sooperset/mcp-atlassian) |
 
 ---
 
@@ -908,7 +908,7 @@ devflow/
 
 ## devflow-engine
 
-`devflow-engine/` is a TypeScript SDK for running the Devflow PR review pipeline programmatically — outside of Claude Code. It implements the same multi-reviewer debate loop as the `review` skill, but as a Node.js CLI you can call from scripts or CI.
+`devflow-engine/` is a TypeScript SDK for running the Devflow PR review pipeline programmatically — outside of Claude Code. It implements the same multi-reviewer debate loop as the `df-review` skill, but as a Node.js CLI you can call from scripts or CI.
 
 ```bash
 cd devflow-engine
@@ -935,7 +935,7 @@ bun test
 | `src/review/triage.ts` | Classifies PR complexity — trivial (<50 lines) runs 1 reviewer |
 | `src/review/consolidator.ts` | Deduplicates and ranks findings from all reviewers |
 | `src/review/output.ts` | Formats output as Markdown or JSON; includes per-phase cost breakdown |
-| `src/cli.ts` | CLI entry point (`review`, `audit`, `test-gen` subcommands); appends reviewer calibration stats |
+| `src/cli.ts` | CLI entry point (`df-review`, `df-audit`, `df-tests` subcommands); appends reviewer calibration stats |
 | `src/audit/dependency-checker.ts` | Parses `npm audit` JSON; extracts CVEs by severity |
 | `src/audit/agents/security-scanner.ts` | Invokes `security-reviewer` agent for OWASP analysis |
 | `src/test-gen/framework-detector.ts` | Detects test framework from package.json (vitest/jest/bun/japa) |

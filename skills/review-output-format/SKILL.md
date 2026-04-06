@@ -1,5 +1,5 @@
 ---
-name: review-output-format
+name: df-review-output
 description: "Shared PR review output format — header, ticket understanding, findings table, strengths, and summary sections."
 user-invocable: false
 ---

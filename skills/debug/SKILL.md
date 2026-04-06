@@ -1,5 +1,5 @@
 ---
-name: debug-parallel
+name: df-debug
 description: "Parallel root cause analysis with Agent Teams — Investigator + DX Analyst run concurrently, then Fixer applies targeted fix with DX hardening. Use for bugs, test failures, or unexpected behavior."
 argument-hint: "[bug-description-or-jira-key] [--quick?] [--review?]"
 compatibility: "Requires gh CLI, git, and CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (degrades gracefully without)"

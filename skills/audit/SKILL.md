@@ -1,5 +1,5 @@
 ---
-name: audit
+name: df-audit
 description: "Audit project for security vulnerabilities and dependency CVEs. Modes: --deps (dependency vulnerability scan via npm audit / pip-audit / cargo audit), --security (OWASP Top 10 + business logic scan using security-reviewer agent), --all (both). Use for pre-release security reviews, compliance checks, or when adding new dependencies. Triggers: security audit, CVE scan, vulnerability check, npm audit, dependency audit, OWASP, security review."
 argument-hint: "[--deps|--security|--all] [path?]"
 effort: high

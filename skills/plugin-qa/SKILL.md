@@ -1,5 +1,5 @@
 ---
-name: plugin-qa
+name: df-qa
 description: "Run full QA check suite to verify hooks, skills, and plugin structure are healthy. Use before releasing a devflow version."
 effort: low
 ---

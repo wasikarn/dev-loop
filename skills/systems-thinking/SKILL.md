@@ -1,5 +1,5 @@
 ---
-name: systems-thinking
+name: df-systems
 description: "Deep Systems Thinking analysis using Causal Loop Diagrams. Use for architecture decisions, scaling problems, or any situation with feedback loops and second-order effects."
 argument-hint: "[topic/scenario]"
 compatibility: "No external tools required."

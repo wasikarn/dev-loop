@@ -1,5 +1,5 @@
 ---
-name: analyze-claude-features
+name: df-analyze
 description: "Audit project against all official Claude Code features and score adoption coverage. Triggers: feature coverage, adoption score, feature audit, Claude features, feature adoption, check features. Reports used, unused, and partially-used features with recommendations."
 effort: medium
 ---
