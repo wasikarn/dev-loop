@@ -21,3 +21,4 @@ node_modules/
 
 # Docs (internal)
 docs/eval/*.local.md
+.omc/
