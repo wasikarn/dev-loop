@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] — 2026-04-06
+
+### Skill namespace prefix (df-) + hooks cleanup
+
+- fix: update internal skill cross-references to use df- prefix
+- refactor: rename all skills with df- namespace prefix
+- chore: ignore .omc directory
+
 ## [1.7.6] — 2026-04-06
 
 ### Update agent skill references
