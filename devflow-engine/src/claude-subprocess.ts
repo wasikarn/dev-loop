@@ -171,7 +171,7 @@ export async function runClaudeSubprocess(params: SubprocessParams): Promise<Sub
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err))
         // Extract subtype from error message to decide retryability
-        const subtypeMatch = lastError.message.match(/\[claude-subprocess\] (\w+)/)
+        const subtypeMatch = lastError.message.match(/\[claude-subprocess\] ([\w_-]+)/)
         const subtype = subtypeMatch?.[1]
         // Non-retryable or last attempt — propagate immediately
         if (subtype !== undefined && !RETRYABLE_SUBTYPES.has(subtype)) throw lastError

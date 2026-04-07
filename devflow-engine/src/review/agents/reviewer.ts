@@ -125,13 +125,13 @@ export async function runReviewer(params: {
   const raw = result.structuredOutput
   if (raw === undefined || raw === null) {
     console.warn(`[sdk-review] reviewer (${params.bucket.role}) returned no structured output — skipping`)
-    return { findings: [], strengths: [], cost: 0, tokens: 0 }
+    return { findings: [], strengths: [], cost: result.costUsd, tokens: result.tokens }
   }
 
   const parsed = FindingResultSchema.safeParse(raw)
   if (!parsed.success) {
     console.warn(`[sdk-review] reviewer (${params.bucket.role}) schema failed — skipping`)
-    return { findings: [], strengths: [], cost: 0, tokens: 0 }
+    return { findings: [], strengths: [], cost: result.costUsd, tokens: result.tokens }
   }
 
   return {

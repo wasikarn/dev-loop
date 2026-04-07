@@ -3,10 +3,7 @@
  *
  * Set DEVFLOW_RETRY_DELAY_MS=0 so retry tests run instantly without sleeping.
  */
-import { describe, expect, it, mock, beforeEach } from 'bun:test'
-
-// ─── Set retry delay to 0 before module loads ────────────────────────────────
-process.env['DEVFLOW_RETRY_DELAY_MS'] = '0'
+import { describe, expect, it, mock, beforeEach, afterEach } from 'bun:test'
 
 // ─── Mock external I/O ───────────────────────────────────────────────────────
 const mockExecFile = mock()
@@ -81,6 +78,11 @@ const MIN_PARAMS = {
 describe('runClaudeSubprocess', () => {
   beforeEach(() => {
     mockExecFile.mockReset()
+    process.env['DEVFLOW_RETRY_DELAY_MS'] = '0'
+  })
+
+  afterEach(() => {
+    delete process.env['DEVFLOW_RETRY_DELAY_MS']
   })
 
   describe('happy path', () => {

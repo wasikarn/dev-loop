@@ -78,6 +78,8 @@ function parseDiffOutput(output: string): FileDiff[] {
 
 const SAFE_REF = /^[\w/.-]+$/
 
+// Thresholds based on review quality degradation: >300 files causes context dilution;
+// >10k diff lines causes reviewer focus loss; >50MB raw approaches the 250MB buffer ceiling.
 const LARGE_DIFF_FILE_THRESHOLD = 300
 const LARGE_DIFF_LINE_THRESHOLD = 10_000
 
